@@ -2,6 +2,7 @@
 
 ## Reglas Generales
 
+- Siempre debes consultar este documento antes de realizar cualquier cambio y/o de generar una respuesta.
 - Debes consultar la documentacion oficial de las tecnologias que usa el proyecto antes de implementar cualquier cambio.
 - Aplica los cambios usando las recomendaciones de la documentación en sus versiones estables.
 - No agregar nuevas dependencias sin aprobación explícita.
@@ -14,6 +15,7 @@
 El proyecto es una landing page que hara de portfolio para un desarrollador web.
 debe ser atractiva para los potenciales clientes y colaboradores.
 El publico objetivo son personas no tecnicas que buscan desarrolladores web.
+Toma en cuenta que esta web tambien servira a otros proyectos como una tienda, un blog y una web de suscripciones.
 
 ## Arquitectura del Directorio
 
