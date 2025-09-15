@@ -1,35 +1,61 @@
 ---
 ---
-<section class="relative h-screen w-full bg-gradient-to-bl from-[#19274e] to-[#220114] overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full">
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-        <div class="shooting-star"></div>
-    </div>
-    <div class="container relative mx-auto flex h-full flex-col items-center justify-center px-4 text-center">
-        <h1 class="text-4xl font-bold text-white md:text-6xl">MarkiDev</h1>
-        <p class="mt-4 text-lg text-white md:text-2xl">Desarrollo web a tu medida</p>
-    </div>
-    <div class="scroll-down-indicator absolute bottom-10 left-1/2 transform -translate-x-1/2">
-        <div class="oval">
-            <div class="arrow"></div>
+<section class="relative h-screen bg-gradient-to-bl from-[#19274e] to-[#220114]">
+    <!-- Contenedor de partículas -->
+    <div id="particles-js" class="absolute inset-0"></div>
+    
+    <!-- Contenido -->
+    <div class="relative z-10 h-full flex flex-col items-center px-4 text-center">
+        <img 
+            src="/img/logo_2_transp.png" 
+            alt="Logo MarkiDev" 
+            class="w-auto h-auto max-w-[10%] mt-8"
+        />
+        <div class="flex-grow flex flex-col justify-center">
+            <h1 class="text-4xl font-bold text-white md:text-6xl">MarkiDev</h1>
+            <p class="mt-4 text-lg text-white md:text-2xl">Desarrollo web a tu medida</p>
         </div>
     </div>
 </section>
+
+<script>
+    // Importamos particles.js directamente desde CDN para simplicidad
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+    script.onload = () => {
+        // @ts-ignore
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: { enable: true, value_area: 800 }
+                },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: { enable: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: { enable: false }
+                },
+                line_linked: { enable: false },
+                move: {
+                    enable: true,
+                    speed: 4,
+                    direction: "bottom-right",
+                    random: false,
+                    straight: true,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: { enable: false },
+            retina_detect: true
+        });
+    };
+    document.head.append(script);
+</script>

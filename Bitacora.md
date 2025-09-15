@@ -1,5 +1,12 @@
 # Bitacora del Desarrollador
 
+## 15 de Septiembre
+
+El proyecto parece estar terminado, hubo algunos cambios importantes, pues algunos componente no podian convivir entre si y varias peticiones sobre la creación de los componentes no tenian la estructura necesaria para escalarlo.
+hace falta corregir detalles de ortografia, imagenes y textos, pero son cuestiones de recolectar y cambiar.
+
+podria decirse que ya esta casi terminado el proyecto.
+
 ## 10 de Septiembre
 
 Cree los primeros dos componente Hero y Servicios, fue relativamente sencillo si en lugar de darle todas las instrucciones juntas lo hago por partes como lo haria yo.

@@ -1,0 +1,7 @@
+{
+  "id": "Proyecto_Ejemplo_2",
+  "title": "Proyecto Ejemplo 2",
+  "description": "Descripción del segundo proyecto. Un desarrollo innovador y responsivo.",
+  "tags": ["React", "Node.js", "Express"],
+  "image": "/img/job2.jpg"
+}

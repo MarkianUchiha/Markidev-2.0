@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 const especialidades = [
     {
         img: {
@@ -6,15 +8,15 @@ const especialidades = [
             alt: "Desarrollo Web",
         },
         titulo: "Desarrollo Web",
-        texto: "Creación de sitios web y aplicaciones web a medida, utilizando las últimas tecnologías y frameworks del mercado.",
+        texto: "Creo sitios web y aplicaciones moviles a medida, utilizando las últimas tecnologías y frameworks del mercado.",
     },
     {
         img: {
             src: "/ico/bd.png",
-            alt: "Bases de Datos",
+            alt: "Despliege de Sistemas",
         },
         titulo: "Bases de Datos",
-        texto: "Diseño y administración de bases de datos relacionales y no relacionales, garantizando la integridad y seguridad de los datos.",
+        texto: "Diseño y administración de sistemas tanto locales como en la nube.",
     },
     {
         img: {
@@ -22,17 +24,16 @@ const especialidades = [
             alt: "Inteligencia Artificial",
         },
         titulo: "Inteligencia Artificial",
-        texto: "Implementación de soluciones de inteligencia artificial para automatizar procesos y obtener insights a partir de los datos.",
+        texto: "Implementación de automatizaciones con inteligencia artificial para optimizar procesos y maximizar ganancias a partir de tareas repetitivias.",
     },
 ];
+
 ---
 
-<section class="relative pt-20 pb-28">
-    <div class="absolute inset-0 bg-[#220114]"></div>
-    <div
-        class="absolute inset-0 bg-cover bg-right bg-no-repeat opacity-30"
-        style="background-image: url(/img/code.png);"
-    ></div>
+<section class="relative py-20 bg-gradient-to-bl from-[#19274e] to-[#220114]">
+    <div class="absolute inset-0 bg-cover bg-right bg-no-repeat opacity-30"
+        style="background-image: url(/img/code.png);">
+    </div>
     <div class="container relative mx-auto px-4 text-center">
         <h2 class="text-4xl font-bold text-white">Mis Especialidades</h2>
         <div class="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">

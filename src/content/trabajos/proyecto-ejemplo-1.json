@@ -1,0 +1,9 @@
+{
+  "title": "Proyecto Ejemplo 1",
+  "description": "Este es un proyecto de ejemplo para mostrar cómo se verían los proyectos en el portafolio. Incluye características modernas de desarrollo web y un diseño atractivo.",
+  "image": "/img/job1.jpg",
+  "tags": ["Web Development", "Design", "UI/UX"],
+  "fecha": "2024-01-15",
+  "url": "https://ejemplo-proyecto1.com",
+  "cliente": "Cliente Ejemplo 1"
+}

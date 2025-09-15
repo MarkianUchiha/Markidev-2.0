@@ -1,0 +1,7 @@
+{
+  "id": "Proyecto_Ejemplo_3",
+  "title": "Proyecto Ejemplo 3",
+  "description": "Tercer proyecto que muestra habilidades en diseño y desarrollo full-stack.",
+  "tags": ["Vue", "Firebase", "Tailwind CSS"],
+  "image": "/img/job3.jpg"
+}

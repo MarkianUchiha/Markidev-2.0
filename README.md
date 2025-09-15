@@ -1,4 +1,112 @@
-# MarkiDev 2.0 - Portfolio Personal
+# MarkiDev Portfolio 2.0
+
+Portfolio profesional construido con Astro, enfocado en mostrar mis proyectos y servicios como desarrollador web.
+
+## 🚀 Tecnologías
+
+- [Astro](https://astro.build/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Particles.js](https://vincentgarreau.com/particles.js/)
+
+## ✨ Características
+
+- Diseño moderno y responsivo
+- Animaciones suaves y efectos visuales
+- Colecciones de contenido para proyectos
+- Formulario de contacto con integración de correo
+- Optimizado para SEO
+- Páginas dinámicas para cada proyecto
+
+## 🏗️ Estructura del Proyecto
+
+```text
+/
+├── public/
+│   ├── favicon-32x32.png
+│   ├── img/
+│   │   └── [imágenes del sitio]
+│   └── ico/
+│       └── [iconos del sitio]
+├── src/
+│   ├── components/
+│   │   ├── Hero.astro
+│   │   ├── Servicios.astro
+│   │   ├── Trabajos.astro
+│   │   ├── Exp.astro
+│   │   ├── Testi.astro
+│   │   ├── Contacto.astro
+│   │   └── Footer.astro
+│   ├── content/
+│   │   └── trabajos/
+│   │       └── [archivos JSON de proyectos]
+│   ├── layouts/
+│   │   └── Layout.astro
+│   ├── pages/
+│   │   ├── index.astro
+│   │   └── [slug].astro
+│   └── styles/
+│       └── global.css
+└── package.json
+```
+
+## 🛠️ Instalación
+
+1. Clona el repositorio:
+
+```bash
+git clone https://github.com/MarkianUchiha/Markidev-2.0.git
+```
+
+1. Instala las dependencias:
+
+```bash
+pnpm install
+```
+
+1. Inicia el servidor de desarrollo:
+
+```bash
+pnpm astro dev
+```
+
+## 📝 Uso
+
+### Agregar un nuevo proyecto
+
+1. Crea un nuevo archivo JSON en `src/content/trabajos/`
+2. Sigue la estructura definida en `content/config.ts`
+3. El proyecto se agregará automáticamente a la sección de trabajos
+
+### Estructura del archivo de proyecto
+
+```json
+{
+  "title": "Nombre del Proyecto",
+  "description": "Descripción del proyecto",
+  "image": "/img/proyecto.jpg",
+  "tags": ["tecnología1", "tecnología2"],
+  "fecha": "2024-01-15",
+  "url": "https://proyecto.com",
+  "cliente": "Nombre del Cliente"
+}
+```
+
+## 🔗 Enlaces
+
+- [Portfolio en vivo](https://markidev.com)
+- [LinkedIn](https://linkedin.com/in/markiandev)
+- [GitHub](https://github.com/MarkianUchiha)
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
+
+## ✉️ Contacto
+
+Para cualquier consulta o propuesta de trabajo, puedes contactarme en:
+
+- Email: <contacto@markidev.com>
 
 Bienvenido al repositorio de mi portafolio personal (MarkiDev 2.0). Este proyecto sirve como una carta de presentación digital, mostrando mis habilidades, experiencia y proyectos como desarrollador web. El sitio ha sido construido desde cero utilizando tecnologías modernas con un enfoque en el rendimiento y el diseño.
 
