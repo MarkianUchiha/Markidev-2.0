@@ -1,0 +1,100 @@
+---
+// src/components/Exp.astro
+
+// 1. Definir la estructura de datos para la experiencia
+interface Experiencia {
+  puesto: string;
+  descripcion: string;
+  skills: string[];
+}
+
+// 2. Crear un array con los datos de las experiencias
+const experiencias: Experiencia[] = [
+  {
+    puesto: "EnarmDuo - Líder de Proyecto",
+    descripcion: "Lideré el proyecto y a los equipos técnico, administrativo y de marketing, tomando decisiones de stack, creando el modelo de negocio y gerenciando el plan de Marketing.",
+    skills: ["Liderazgo", "Planeación", "Organización", "Redes Sociales", "CEO", "UI/UX", "Flutter", "SQLite", "Firebase", "Google ADS"],
+  },
+  {
+    puesto: "Otro Proyecto - Desarrollador Frontend",
+    descripcion: "Desarrollé interfaces de usuario interactivas y responsivas utilizando tecnologías web modernas, colaborando estrechamente con el equipo de diseño.",
+    skills: ["React", "TypeScript", "Tailwind CSS", "Figma", "Trabajo en Equipo", "Comunicación"],
+  },
+  {
+    puesto: "Tercer Empleo - Ingeniero de Software",
+    descripcion: "Diseñé y mantuve aplicaciones full-stack, optimizando el rendimiento de la base de datos y asegurando la escalabilidad del sistema.",
+    skills: ["Node.js", "Express", "PostgreSQL", "Docker", "AWS", "Resolución de Problemas"],
+  },
+];
+---
+
+<section class="py-20 bg-[#1a0110]">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl font-bold text-white text-center mb-12">Experiencia Profesional</h2>
+    <div class="max-w-3xl mx-auto">
+      {experiencias.map((exp) => (
+        <div class="accordion-item border-b border-gray-700 last:border-b-0">
+          <button class="accordion-header w-full text-left py-5 px-2 flex justify-between items-center text-white hover:bg-gray-800/50 transition-colors duration-300 focus:outline-none">
+            <h3 class="text-xl font-semibold">{exp.puesto}</h3>
+            <span class="accordion-icon text-2xl font-light transition-transform duration-300">+</span>
+          </button>
+          <div class="accordion-content overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+            <div class="p-6 bg-gray-900/50">
+              <p class="text-gray-300 mb-4">{exp.descripcion}</p>
+              <div class="flex flex-wrap gap-2">
+                {exp.skills.map(skill => (
+                  <span class="bg-gray-700/60 text-gray-300 text-xs font-semibold px-2.5 py-0.5 rounded-full">{skill}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const accordionItems = document.querySelectorAll('.accordion-item');
+
+    accordionItems.forEach(item => {
+      const header = item.querySelector('.accordion-header');
+      const content = item.querySelector('.accordion-content');
+      const icon = header.querySelector('.accordion-icon');
+
+      header.addEventListener('click', () => {
+        const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+        // Cerrar todos los acordeones
+        accordionItems.forEach(i => {
+          const c = i.querySelector('.accordion-content');
+          const h = i.querySelector('.accordion-header');
+          c.style.maxHeight = '0px';
+          h.querySelector('.accordion-icon').classList.remove('rotate-45');
+          h.classList.remove('is-open');
+        });
+
+        // Abrir o cerrar el actual
+        if (!isOpen) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.classList.add('rotate-45');
+          header.classList.add('is-open');
+        } 
+      });
+    });
+  });
+</script>
+
+<style>
+  .accordion-header.is-open .accordion-icon {
+    transform: rotate(45deg);
+  }
+  .accordion-content {
+    max-height: 0;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+  }
+  .accordion-content[style*="max-height"]:not([style*="0px"]) {
+    transition: max-height 0.5s cubic-bezier(1, 0, 1, 0);
+  }
+</style>

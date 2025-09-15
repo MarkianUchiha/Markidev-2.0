@@ -1,6 +1,33 @@
 ---
+const especialidades = [
+    {
+        img: {
+            src: "/ico/pc.png",
+            alt: "Desarrollo Web",
+        },
+        titulo: "Desarrollo Web",
+        texto: "Creación de sitios web y aplicaciones web a medida, utilizando las últimas tecnologías y frameworks del mercado.",
+    },
+    {
+        img: {
+            src: "/ico/bd.png",
+            alt: "Bases de Datos",
+        },
+        titulo: "Bases de Datos",
+        texto: "Diseño y administración de bases de datos relacionales y no relacionales, garantizando la integridad y seguridad de los datos.",
+    },
+    {
+        img: {
+            src: "/ico/ia.png",
+            alt: "Inteligencia Artificial",
+        },
+        titulo: "Inteligencia Artificial",
+        texto: "Implementación de soluciones de inteligencia artificial para automatizar procesos y obtener insights a partir de los datos.",
+    },
+];
 ---
-<section class="relative py-20">
+
+<section class="relative pt-20 pb-28">
     <div class="absolute inset-0 bg-[#220114]"></div>
     <div
         class="absolute inset-0 bg-cover bg-right bg-no-repeat opacity-30"
@@ -9,32 +36,19 @@
     <div class="container relative mx-auto px-4 text-center">
         <h2 class="text-4xl font-bold text-white">Mis Especialidades</h2>
         <div class="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div class="rounded-lg border border-gray-700 bg-gray-800 p-8 text-center">
-                <img src="/ico/pc.png" alt="Desarrollo Web" class="mx-auto h-20 w-20" />
-                <h3 class="mt-4 text-2xl font-bold text-white">Desarrollo Web</h3>
-                <p class="mt-2 text-gray-400">
-                    Creación de sitios web y aplicaciones web a medida, utilizando las
-                    últimas tecnologías y frameworks del mercado.
-                </p>
-            </div>
-            <div class="rounded-lg border border-gray-700 bg-gray-800 p-8 text-center">
-                <img src="/ico/bd.png" alt="Bases de Datos" class="mx-auto h-20 w-20" />
-                <h3 class="mt-4 text-2xl font-bold text-white">Bases de Datos</h3>
-                <p class="mt-2 text-gray-400">
-                    Diseño y administración de bases de datos relacionales y no
-                    relacionales, garantizando la integridad y seguridad de los datos.
-                </p>
-            </div>
-            <div class="rounded-lg border border-gray-700 bg-gray-800 p-8 text-center">
-                <img src="/ico/ia.png" alt="Inteligencia Artificial" class="mx-auto h-20 w-20" />
-                <h3 class="mt-4 text-2xl font-bold text-white">
-                    Inteligencia Artificial
-                </h3>
-                <p class="mt-2 text-gray-400">
-                    Implementación de soluciones de inteligencia artificial para
-                    automatizar procesos y obtener insights a partir de los datos.
-                </p>
-            </div>
+            {especialidades.map((especialidad) => (
+                <div class="rounded-lg border border-gray-700 bg-gray-800 p-8 text-center">
+                    <img
+                        src={especialidad.img.src}
+                        alt={especialidad.img.alt}
+                        class="mx-auto h-20 w-20"
+                    />
+                    <h3 class="mt-4 text-2xl font-bold text-white">
+                        {especialidad.titulo}
+                    </h3>
+                    <p class="mt-2 text-gray-400">{especialidad.texto}</p>
+                </div>
+            ))}
         </div>
     </div>
 </section>

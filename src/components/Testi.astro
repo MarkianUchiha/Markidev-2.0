@@ -1,0 +1,154 @@
+---
+// src/components/Testi.astro
+
+interface Testimonio {
+  img: string;
+  nombre: string;
+  handle: string;
+  texto: string;
+}
+
+const testimonios: Testimonio[] = [
+  {
+    img: "/ico/bd.png",
+    nombre: "Cliente Satisfecho 1",
+    handle: "@cliente_feliz_1",
+    texto: "Un trabajo excepcional, superó todas mis expectativas. El profesionalismo y la dedicación son evidentes en cada detalle del proyecto.",
+  },
+  {
+    img: "/ico/ia.png",
+    nombre: "Cliente Satisfecho 2",
+    handle: "@negocio_exitoso",
+    texto: "La comunicación fue fluida y el resultado final es increíble. Entendieron perfectamente mi visión y la convirtieron en una realidad funcional y atractiva.",
+  },
+  {
+    img: "/ico/pc.png",
+    nombre: "Cliente Satisfecho 3",
+    handle: "@startup_creativa",
+    texto: "¡Increíble! La calidad del código y la atención al detalle son de primer nivel. El proyecto se entregó a tiempo y dentro del presupuesto.",
+  },
+  {
+    img: "/placeholder-social.jpg",
+    nombre: "Cliente Satisfecho 4",
+    handle: "@empresa_innovadora",
+    texto: "Una experiencia de desarrollo sin igual. El equipo es talentoso, creativo y muy profesional. Definitivamente volveré a trabajar con ellos.",
+  },
+  {
+    img: "/img/code.png",
+    nombre: "Cliente Satisfecho 5",
+    handle: "@tech_leader",
+    texto: "El mejor equipo con el que he trabajado. Su capacidad para resolver problemas complejos es impresionante. Los resultados hablan por sí solos.",
+  },
+];
+---
+
+<section class="py-20 bg-[#220114]">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl font-bold text-white text-center mb-12">Mis Clientes</h2>
+    
+    <div id="testimonial-carousel" class="relative max-w-6xl mx-auto">
+      <!-- Carousel Wrapper -->
+      <div class="overflow-hidden relative">
+        <!-- Carousel Track -->
+        <div class="flex transition-transform duration-500 ease-in-out">
+          {testimonios.map(testimonio => (
+            <div class="carousel-slide flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
+              <div class="bg-gray-900/50 border border-white/10 rounded-lg p-6 h-full flex flex-col shadow-lg">
+                <div class="flex items-center mb-4">
+                  <img src={testimonio.img} alt={`Avatar de ${testimonio.nombre}`} class="w-12 h-12 rounded-full mr-4 border-2 border-gray-700" />
+                  <div>
+                    <h4 class="font-bold text-white">{testimonio.nombre}</h4>
+                    <p class="text-sm text-blue-400">{testimonio.handle}</p>
+                  </div>
+                </div>
+                <p class="text-gray-300 flex-grow">{testimonio.texto}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button class="carousel-prev absolute top-1/2 -left-4 transform -translate-y-1/2 bg-gray-800/50 hover:bg-gray-700/80 text-white p-3 rounded-full focus:outline-none z-10 disabled:opacity-50 disabled:cursor-not-allowed">
+        &#10094;
+      </button>
+      <button class="carousel-next absolute top-1/2 -right-4 transform -translate-y-1/2 bg-gray-800/50 hover:bg-gray-700/80 text-white p-3 rounded-full focus:outline-none z-10 disabled:opacity-50 disabled:cursor-not-allowed">
+        &#10095;
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('testimonial-carousel');
+    const track = carousel.querySelector('.flex');
+    const slides = Array.from(track.children);
+    const nextButton = carousel.querySelector('.carousel-next');
+    const prevButton = carousel.querySelector('.carousel-prev');
+    let autoSlideInterval;
+
+    const getSlidesPerPage = () => {
+      if (window.innerWidth >= 1024) return 3; // lg
+      if (window.innerWidth >= 768) return 2; // md
+      return 1; // mobile
+    };
+
+    let slidesPerPage = getSlidesPerPage();
+    const slideWidth = slides[0].getBoundingClientRect().width;
+    let currentIndex = 0;
+
+    const updateCarousel = () => {
+      track.style.transform = `translateX(-${currentIndex * slideWidth / slidesPerPage}px)`;
+      prevButton.disabled = currentIndex === 0;
+      nextButton.disabled = currentIndex >= slides.length - slidesPerPage;
+    };
+
+    const goToNext = () => {
+      if (currentIndex < slides.length - slidesPerPage) {
+        currentIndex++;
+      } else {
+        currentIndex = 0; // Loop back to start
+      }
+      updateCarousel();
+    };
+
+    const startAutoSlide = () => {
+      stopAutoSlide(); // Prevent multiple intervals
+      autoSlideInterval = setInterval(goToNext, 5000); // Slide every 5 seconds
+    };
+
+    const stopAutoSlide = () => {
+      clearInterval(autoSlideInterval);
+    };
+
+    nextButton.addEventListener('click', () => {
+      if (currentIndex < slides.length - slidesPerPage) {
+        currentIndex++;
+        updateCarousel();
+      }
+    });
+
+    prevButton.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      slidesPerPage = getSlidesPerPage();
+      // Recalculate slideWidth based on new container size
+      const newSlideWidth = slides[0].getBoundingClientRect().width;
+      track.style.transform = `translateX(-${currentIndex * newSlideWidth / slidesPerPage}px)`;
+      updateCarousel();
+    });
+
+    carousel.addEventListener('mouseenter', stopAutoSlide);
+    carousel.addEventListener('mouseleave', startAutoSlide);
+
+    // Initial setup
+    updateCarousel();
+    startAutoSlide();
+  });
+</script>

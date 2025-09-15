@@ -1,0 +1,52 @@
+---
+// src/components/Footer.astro
+
+// Lista de los iconos de redes sociales que se mostrarán
+const socialIcons = [
+  { src: "/ico/bd.png", alt: "Icono de Base de Datos", url: "#" },
+  { src: "/ico/ia.png", alt: "Icono de Inteligencia Artificial", url: "#" },
+  { src: "/ico/pc.png", alt: "Icono de Computadora", url: "#" },
+];
+---
+
+<footer class="bg-black py-8 mt-20">
+  <div class="container mx-auto px-4 text-center">
+    
+    <!-- Botón para volver al inicio de la página -->
+    <button 
+      id="to-top-button" 
+      class="mb-6 transition-transform duration-300 hover:scale-110 w-10 h-16 border-2 border-white/80 rounded-2xl flex justify-center items-center mx-auto"
+      aria-label="Volver al inicio"
+    >
+      <img src="/ico/inicio.png" alt="Volver al inicio" class="w-6 h-6 animate-bounce" />
+    </button>
+
+    <!-- Iconos de Redes Sociales -->
+    <div class="flex justify-center items-center gap-4 mb-6">
+      {socialIcons.map(icon => (
+        <a href={icon.url} target="_blank" rel="noopener noreferrer" class="block w-10 h-10 p-1.5 border-2 border-gray-700 rounded-lg hover:border-blue-500 hover:scale-110 transition-all duration-300">
+          <img src={icon.src} alt={icon.alt} class="w-full h-full object-contain" />
+        </a>
+      ))}
+    </div>
+
+    <!-- Copyright -->
+    <p class="text-gray-500 text-sm">
+      Marco Lara - 2025
+    </p>
+
+  </div>
+</footer>
+
+<script>
+  // Script para el botón "Volver al inicio"
+  const toTopButton = document.getElementById('to-top-button');
+  if (toTopButton) {
+    toTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Esto crea el efecto de desplazamiento suave
+      });
+    });
+  }
+</script>

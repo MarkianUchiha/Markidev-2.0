@@ -1,15 +1,27 @@
+---
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
 		<meta name="keywords" content="desarrollador web, portfolio, desarrollo web, programador, freelance, paginas web, sitios web" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>MarkiDev</title>
+		<title>{title}</title>
 	</head>
 	<body>
 		<slot />
+		<Footer />
 	</body>
 </html>
 
