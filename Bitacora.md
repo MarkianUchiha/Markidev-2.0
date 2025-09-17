@@ -3,7 +3,9 @@
 ## 15 de Septiembre
 
 El proyecto parece estar terminado, hubo algunos cambios importantes, pues algunos componente no podian convivir entre si y varias peticiones sobre la creación de los componentes no tenian la estructura necesaria para escalarlo.
+agregue la licencia.
 hace falta corregir detalles de ortografia, imagenes y textos, pero son cuestiones de recolectar y cambiar.
+falta cambiar la pagina dinamica.
 
 podria decirse que ya esta casi terminado el proyecto.
 

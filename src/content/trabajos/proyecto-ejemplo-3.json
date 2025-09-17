@@ -1,7 +1,14 @@
 {
-  "id": "Proyecto_Ejemplo_3",
   "title": "Proyecto Ejemplo 3",
-  "description": "Tercer proyecto que muestra habilidades en diseño y desarrollo full-stack.",
-  "tags": ["Vue", "Firebase", "Tailwind CSS"],
-  "image": "/img/job3.jpg"
+  "description": "Una aplicación web moderna desarrollada con Vue.js y Firebase. Este proyecto demuestra la capacidad de crear interfaces de usuario dinámicas y atractivas, junto con una robusta integración de backend serverless. La implementación de Tailwind CSS asegura un diseño consistente y altamente personalizable.",
+  "image": "/img/job3.jpg",
+  "images": [
+    "/img/job3.jpg",
+    "/img/code.png",
+    "/img/job1.jpg"
+  ],
+  "tags": ["Vue.js", "Firebase", "Tailwind CSS", "Serverless", "PWA"],
+  "fecha": "2024-03-15",
+  "url": "https://ejemplo-proyecto3.com",
+  "cliente": "Cliente Ejemplo 3"
 }

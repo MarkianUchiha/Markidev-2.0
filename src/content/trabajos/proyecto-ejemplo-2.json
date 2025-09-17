@@ -1,7 +1,14 @@
 {
-  "id": "Proyecto_Ejemplo_2",
   "title": "Proyecto Ejemplo 2",
-  "description": "Descripción del segundo proyecto. Un desarrollo innovador y responsivo.",
-  "tags": ["React", "Node.js", "Express"],
-  "image": "/img/job2.jpg"
+  "description": "Descripción del segundo proyecto. Un desarrollo innovador y responsivo que implementa las mejores prácticas de desarrollo web moderno. Utilizando React para el frontend y Node.js con Express para el backend, este proyecto demuestra la capacidad de crear aplicaciones web escalables y mantenibles.",
+  "image": "/img/job2.jpg",
+  "images": [
+    "/img/job2.jpg",
+    "/img/code.png",
+    "/img/job3.jpg"
+  ],
+  "tags": ["React", "Node.js", "Express", "MongoDB", "TypeScript"],
+  "fecha": "2024-02-20",
+  "url": "https://ejemplo-proyecto2.com",
+  "cliente": "Cliente Ejemplo 2"
 }

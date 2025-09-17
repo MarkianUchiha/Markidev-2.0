@@ -17,19 +17,142 @@ interface Props {
       title: string;
       description: string;
       image: string;
+      images: string[];
       tags: string[];
+      url: string;
     };
   };
 }
 
 const { trabajo } = Astro.props as Props;
+
+// Debug: Mostrar las rutas de las imágenes
+console.log('Imagen principal:', trabajo.data.image);
+console.log('Imágenes adicionales:', trabajo.data.images);
 ---
 
 <Layout 
   title={`${trabajo.data.title} - Portfolio`}
   description={trabajo.data.description}
 >
-  <div class="min-h-screen bg-gradient-to-bl from-[#19274e] to-[#220114] flex items-center justify-center">
-    <h1 class="text-white text-4xl font-bold">{trabajo.data.title}</h1>
-  </div>
+  <main class="min-h-screen bg-gradient-to-bl from-[#19274e] to-[#220114] px-4 py-8 md:px-8 lg:px-16">
+    <div class="max-w-6xl mx-auto">
+      <!-- Título -->
+      <h1 class="text-white text-4xl md:text-5xl font-bold mb-8 text-center">
+        {trabajo.data.title}
+      </h1>
+
+      <!-- Carrusel -->
+      <div class="relative w-full aspect-video mb-8 bg-black/20 rounded-lg overflow-hidden group">
+        <div class="carousel flex transition-transform duration-500 h-full" id="carousel">
+          {
+            // Si no hay imágenes adicionales, usar la imagen principal
+            (trabajo.data.images?.length > 0 ? trabajo.data.images : [trabajo.data.image]).map((image, index) => (
+              <img
+                src={image}
+                alt={`${trabajo.data.title} - Imagen ${index + 1}`}
+                class="w-full h-full object-contain flex-shrink-0"
+                loading="lazy"
+              />
+            ))
+          }
+        </div>
+        
+        <!-- Botones de navegación -->
+        <button
+          class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          id="prevBtn"
+          aria-label="Anterior imagen"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          id="nextBtn"
+          aria-label="Siguiente imagen"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Breadcrumbs con tecnologías -->
+      <div class="flex flex-wrap gap-2 mb-8 justify-center">
+        {trabajo.data.tags.map((tag) => (
+          <span class="px-3 py-1 bg-white/10 text-white rounded-full text-sm">
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <!-- Descripción -->
+      <p class="text-white/90 text-lg mb-8 max-w-3xl mx-auto text-center leading-relaxed">
+        {trabajo.data.description}
+      </p>
+
+      <!-- Botones -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a
+          href={trabajo.data.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center gap-2"
+        >
+          Ver Proyecto
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+        <a
+          href="/#trabajos"
+          class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors inline-flex items-center gap-2"
+        >
+          Volver a Proyectos
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </main>
 </Layout>
+
+<script>
+  // Lógica del carrusel
+  const carousel = document.querySelector('#carousel') as HTMLElement;
+  const prevBtn = document.querySelector('#prevBtn') as HTMLButtonElement;
+  const nextBtn = document.querySelector('#nextBtn') as HTMLButtonElement;
+  let currentIndex = 0;
+
+  function updateCarousel() {
+    if (carousel) {
+      const width = carousel.clientWidth;
+      carousel.style.transform = `translateX(-${currentIndex * width}px)`;
+    }
+  }
+
+  function nextSlide() {
+    const slides = carousel?.children.length || 0;
+    currentIndex = (currentIndex + 1) % slides;
+    updateCarousel();
+  }
+
+  function prevSlide() {
+    const slides = carousel?.children.length || 0;
+    currentIndex = (currentIndex - 1 + slides) % slides;
+    updateCarousel();
+  }
+
+  // Event listeners
+  prevBtn?.addEventListener('click', prevSlide);
+  nextBtn?.addEventListener('click', nextSlide);
+
+  // Actualizar carrusel cuando cambie el tamaño de la ventana
+  window.addEventListener('resize', updateCarousel);
+
+  // Inicializar
+  updateCarousel();
+</script>

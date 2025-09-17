@@ -1,8 +1,14 @@
 {
   "title": "Proyecto Ejemplo 1",
-  "description": "Este es un proyecto de ejemplo para mostrar cómo se verían los proyectos en el portafolio. Incluye características modernas de desarrollo web y un diseño atractivo.",
+  "description": "Este es un proyecto de ejemplo para mostrar cómo se verían los proyectos en el portafolio. Incluye características modernas de desarrollo web y un diseño atractivo. La implementación se centró en crear una experiencia de usuario fluida y atractiva, con especial atención a la optimización del rendimiento y la accesibilidad.",
   "image": "/img/job1.jpg",
-  "tags": ["Web Development", "Design", "UI/UX"],
+  "images": [
+    "/img/job1.jpg",
+    "/img/job2.jpg",
+    "/img/job3.jpg",
+    "/img/code.png"
+  ],
+  "tags": ["Web Development", "Design", "UI/UX", "Responsive", "Performance"],
   "fecha": "2024-01-15",
   "url": "https://ejemplo-proyecto1.com",
   "cliente": "Cliente Ejemplo 1"
