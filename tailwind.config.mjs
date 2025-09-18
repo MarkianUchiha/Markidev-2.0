@@ -6,6 +6,26 @@ export default {
 			animation: {
 				'meteor-shower': 'meteor 5s linear infinite',
 			},
+			typography: {
+				DEFAULT: {
+					css: {
+						'figure.video': {
+							'margin-top': '2em',
+							'margin-bottom': '2em',
+						},
+						'figure.image': {
+							'margin-top': '2em',
+							'margin-bottom': '2em',
+						},
+						iframe: {
+							'border-radius': '0.75rem',
+							'box-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+							'width': '100%',
+							'aspect-ratio': '16/9',
+						},
+					},
+				},
+			},
 			keyframes: {
 				meteor: {
 					'0%': {

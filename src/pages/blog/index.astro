@@ -10,22 +10,46 @@ const sortedPosts = allBlogPosts.sort((a, b) =>
 ---
 
 <Layout 
-  title="Mi Blog | MarkiDev"
-  description="Exploro y comparto conocimientos sobre desarrollo web, tecnologías modernas y experiencias como desarrollador. Encuentra artículos sobre Astro, React, TypeScript y más."
+  title="Blog | MarkiDev"
+  description="Explora artículos sobre desarrollo web, tecnología y experiencias en el mundo del desarrollo de software."
 >
-  <main class="max-w-4xl mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-8">Mi Blog</h1>
-    
-    <div class="grid gap-6">
-      {sortedPosts.map((post) => (
-        <BlogCard 
-          title={post.data.title}
-          description={post.data.description}
-          pubDate={post.data.pubDate}
-          slug={post.slug}
-          tags={post.data.tags}
-        />
-      ))}
+  <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+      <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+          Mi Blog
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Artículos sobre desarrollo web, tecnología y experiencias en el mundo del desarrollo de software.
+        </p>
+      </header>
+      
+      <div class="grid gap-8">
+        {sortedPosts.map((post) => (
+          <BlogCard 
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            slug={post.slug}
+            tags={post.data.tags}
+            image={post.data.image}
+          />
+        ))}
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="/" class="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+          &larr; Volver a Inicio
+        </a>
+      </div>
+
+      {sortedPosts.length === 0 && (
+        <div class="text-center py-12">
+          <p class="text-gray-600 dark:text-gray-400">
+            No hay artículos publicados aún. ¡Vuelve pronto!
+          </p>
+        </div>
+      )}
     </div>
   </main>
 </Layout>

@@ -92,6 +92,78 @@ pnpm astro dev
 }
 ```
 
+### 📚 Crear nuevos posts del blog
+
+1. Crea un nuevo archivo markdown (.md) en `src/content/blog/`
+2. El nombre del archivo será la URL del post (ej: `mi-primer-post.md`)
+3. Añade el frontmatter al inicio del archivo con la siguiente estructura:
+
+```markdown
+---
+title: "Título del Post"
+description: "Descripción corta del post para SEO y previsualizaciones"
+pubDate: 2025-09-16
+author: "Tu Nombre"
+image: "/img/blog/imagen-principal.jpg"
+tags: ["tag1", "tag2", "tag3"]
+draft: false
+---
+
+# Contenido del Post
+
+Tu contenido aquí...
+```
+
+#### Formato del contenido
+
+- **Imágenes**: Coloca las imágenes en `/public/img/blog/` y úsalas así:
+
+```markdown
+![Descripción de la imagen](/img/blog/nombre-imagen.jpg)
+```
+
+- **Videos de YouTube**: Usa el componente iframe:
+
+```markdown
+<figure class="video">
+  <iframe src="https://www.youtube.com/embed/ID_DEL_VIDEO" allowfullscreen></iframe>
+</figure>
+```
+
+- **Código**: Usa bloques de código con el lenguaje especificado:
+
+```markdown
+```javascript
+const ejemplo = "código aquí";
+```
+```
+
+#### Mejores prácticas
+
+1. **Imágenes**:
+   - Optimiza las imágenes antes de subirlas
+   - Usa nombres descriptivos
+   - Imagen principal recomendada: 1200x630px
+   - Imágenes del contenido: máximo 1600px de ancho
+
+2. **Contenido**:
+   - Usa encabezados (##, ###) para organizar el contenido
+   - Incluye enlaces relevantes
+   - Añade ejemplos de código cuando sea necesario
+   - Mantén los párrafos cortos y legibles
+
+3. **SEO**:
+   - Escribe títulos descriptivos
+   - Incluye palabras clave relevantes
+   - Usa descripciones concisas
+   - Elige tags relevantes (3-5 recomendados)
+
+4. **Desarrollo**:
+   - Prueba el post en modo desarrollo antes de publicar
+   - Verifica que las imágenes se carguen correctamente
+   - Comprueba los enlaces
+   - Revisa la visualización en móvil y escritorio
+
 ## 🔗 Enlaces
 
 - [Portfolio en vivo](https://markidev.com)

@@ -8,10 +8,17 @@ tags: ["astro", "portafolio", "desarrollo web"]
 draft: false
 ---
 
-# Mi experiencia con Astro
+### Mi experiencia con Astro
 
 Este es el contenido de mi primer post explicando cómo construí mi portafolio...
 
-## ¿Por qué elegí Astro?
+### ¿Por qué elegí Astro?  
 
-Astro me permitió crear un sitio súper rápido con...
+Astro me permitió crear un sitio súper rápido con.  
+
+lorem42  
+
+otro intento
+
+__negritas__
+_cursivas_
