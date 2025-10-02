@@ -2,10 +2,7 @@
 
 ## 01 de Octubre
 
-Quise colocar el workflow para poder subir el proyecto a hostinger, pero parece ser que las configuraciones estan mal.
-procedo a hacer un triger del action para validar la accion del workflow.
-si no resulta regresare a una versión anterior.
-nueva mente no funciona el workflow, pero creo que el problema es que no se esta subiendo el codigo fuente.
+Se agrego el workflow para el despliegue.
 
 ## 15 de Septiembre
 
