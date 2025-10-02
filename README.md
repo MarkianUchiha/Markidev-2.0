@@ -13,40 +13,34 @@ Portfolio profesional construido con Astro, enfocado en mostrar mis proyectos y 
 
 - Diseño moderno y responsivo
 - Animaciones suaves y efectos visuales
-- Colecciones de contenido para proyectos
+- Colecciones de contenido para proyectos y blog.
 - Formulario de contacto con integración de correo
 - Optimizado para SEO
-- Páginas dinámicas para cada proyecto
+- Páginas dinámicas para cada proyecto y post del blog.
 
 ## 🏗️ Estructura del Proyecto
 
+La estructura del proyecto está organizada de la siguiente manera, separando el contenido, la lógica y las páginas:
+
 ```text
 /
-├── public/
-│   ├── favicon-32x32.png
+├── public/              # Assets estáticos (imágenes, iconos, fuentes).
 │   ├── img/
-│   │   └── [imágenes del sitio]
 │   └── ico/
-│       └── [iconos del sitio]
 ├── src/
-│   ├── components/
-│   │   ├── Hero.astro
-│   │   ├── Servicios.astro
-│   │   ├── Trabajos.astro
-│   │   ├── Exp.astro
-│   │   ├── Testi.astro
-│   │   ├── Contacto.astro
-│   │   └── Footer.astro
-│   ├── content/
+│   ├── assets/          # Assets procesados por Astro (imágenes optimizadas, etc.).
+│   ├── components/      # Componentes reutilizables de Astro.
+│   ├── content/         # Colecciones de contenido (Markdown para el blog, JSON para proyectos).
+│   │   ├── blog/
 │   │   └── trabajos/
-│   │       └── [archivos JSON de proyectos]
-│   ├── layouts/
-│   │   └── Layout.astro
-│   ├── pages/
-│   │   ├── index.astro
-│   │   └── [slug].astro
-│   └── styles/
-│       └── global.css
+│   ├── layouts/         # Plantillas de página principales.
+│   ├── pages/           # Páginas y rutas del sitio.
+│   │   ├── blog/
+│   │   ├── trabajos/
+│   │   └── index.astro
+│   └── styles/          # Estilos globales.
+├── astro.config.mjs     # Archivo de configuración de Astro.
+├── tailwind.config.mjs  # Archivo de configuración de Tailwind CSS.
 └── package.json
 ```
 
@@ -102,11 +96,11 @@ pnpm astro dev
 ---
 title: "Título del Post"
 description: "Descripción corta del post para SEO y previsualizaciones"
-pubDate: 2025-09-16
+pubDate: 2025-09-16 # Fecha de publicación
 author: "Tu Nombre"
-image: "/img/blog/imagen-principal.jpg"
-tags: ["tag1", "tag2", "tag3"]
-draft: false
+image: "/img/blog/imagen-opcional.jpg" # Campo opcional
+tags: ["tag1", "tag2"] # Campo opcional
+draft: false # Poner en true para evitar que se publique
 ---
 
 # Contenido del Post
@@ -189,16 +183,11 @@ El portafolio es una aplicación de página única (SPA) que contiene las siguie
 - **Hero**: Una sección de bienvenida impactante con una animación de estrellas fugaces.
 - **Servicios**: Describe los servicios que ofrezco.
 - **Trabajos**: Una galería de mis proyectos recientes con enlaces y descripciones.
+- **Blog**: Una sección con los últimos artículos y tutoriales sobre desarrollo web.
 - **Experiencia Profesional**: Un acordeón interactivo que detalla mi experiencia laboral y habilidades.
 - **Mis Clientes**: Un carrusel automático con testimonios de clientes.
 - **Contacto**: Un formulario para que los visitantes puedan enviarme un mensaje.
 - **Footer**: Un pie de página minimalista con enlaces a redes sociales y un botón para volver al inicio.
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Framework**: [Astro](https://astro.build/) - Para un sitio web rápido y optimizado.
-- **Estilos**: [Tailwind CSS](https://tailwindcss.com/) - Para un diseño moderno y responsivo.
-- **Lenguaje**: [TypeScript](https://www.typescriptlang.org/) - Para un código más robusto y mantenible.
 
 ## 🧞 Comandos Disponibles
 
@@ -211,19 +200,3 @@ Todos los comandos se ejecutan desde la raíz del proyecto en tu terminal. Se re
 | `pnpm astro build` | Compila el sitio para producción en la carpeta `./dist/`. |
 | `pnpm astro preview` | Previsualiza la compilación de producción localmente.  |
 
-## 📁 Estructura del Proyecto
-
-La estructura principal del código se organiza de la siguiente manera:
-
-```text
-/
-├── public/              # Contiene todos los assets estáticos (imágenes, iconos).
-├── src/
-│   ├── components/      # Contiene todos los componentes de Astro reutilizables (Hero, Footer, etc.).
-│   ├── layouts/         # Contiene las plantillas de página, como el Layout principal.
-│   ├── pages/           # Contiene las páginas del sitio (index.astro).
-│   └── styles/          # Contiene los estilos globales.
-└── package.json         # Define las dependencias y scripts del proyecto.
-```
-
-Gracias por visitar mi proyecto.
