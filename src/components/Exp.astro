@@ -63,29 +63,42 @@ const experiencias: Experiencia[] = [
   document.addEventListener('DOMContentLoaded', () => {
     const accordionItems = document.querySelectorAll('.accordion-item');
 
-    accordionItems.forEach(item => {
+    // Guardamos las referencias a los elementos para no tener que buscarlos cada vez
+    const accordionData = Array.from(accordionItems).map(item => {
       const header = item.querySelector('.accordion-header');
       const content = item.querySelector('.accordion-content');
-      const icon = header.querySelector('.accordion-icon');
+      const icon = header ? header.querySelector('.accordion-icon') : null;
+      return { item, header, content, icon };
+    });
 
-      header.addEventListener('click', () => {
-        const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+    accordionData.forEach(currentItem => {
+      // Si falta algún elemento esencial, simplemente ignoramos este item para evitar errores
+      if (!currentItem.header || !currentItem.content || !currentItem.icon) {
+        console.warn('Advertencia: Un elemento del acordeón no tiene la estructura HTML esperada.');
+        return;
+      }
 
-        // Cerrar todos los acordeones
-        accordionItems.forEach(i => {
-          const c = i.querySelector('.accordion-content');
-          const h = i.querySelector('.accordion-header');
-          c.style.maxHeight = '0px';
-          h.querySelector('.accordion-icon').classList.remove('rotate-45');
-          h.classList.remove('is-open');
+      currentItem.header.addEventListener('click', () => {
+        const isOpen = currentItem.content.style.maxHeight && currentItem.content.style.maxHeight !== '0px';
+
+        // Cerramos todos los acordeones
+        accordionData.forEach(itemToClose => {
+          if (itemToClose.content && itemToClose.header && itemToClose.icon) {
+            itemToClose.content.style.maxHeight = '0px';
+            itemToClose.header.classList.remove('is-open');
+            itemToClose.icon.classList.remove('rotate-45');
+          }
         });
 
-        // Abrir o cerrar el actual
+        // Si no estaba abierto, lo abrimos
         if (!isOpen) {
-          content.style.maxHeight = content.scrollHeight + 'px';
-          icon.classList.add('rotate-45');
-          header.classList.add('is-open');
-        } 
+          // Comprobación de seguridad adicional (redundante pero explícita)
+          if (currentItem.content && currentItem.header && currentItem.icon) {
+            currentItem.content.style.maxHeight = currentItem.content.scrollHeight + 'px';
+            currentItem.header.classList.add('is-open');
+            currentItem.icon.classList.add('rotate-45');
+          }
+        }
       });
     });
   });

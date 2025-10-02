@@ -1,0 +1,15 @@
+# Normalize all text files to LF in the repository and prevent issues with line endings.
+* text=auto eol=lf
+
+# Denote files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+
+# SVG can be tricky. Treat as binary to be safe from line-ending normalization.
+*.svg binary
