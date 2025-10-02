@@ -1,5 +1,11 @@
 # Bitacora del Desarrollador
 
+## 01 de Octubre
+
+Quise colocar el workflow para poder subir el proyecto a hostinger, pero parece ser que las configuraciones estan mal.
+procedo a hacer un triger del action para validar la accion del workflow.
+si no resulta regresare a una versión anterior.
+
 ## 15 de Septiembre
 
 El proyecto parece estar terminado, hubo algunos cambios importantes, pues algunos componente no podian convivir entre si y varias peticiones sobre la creación de los componentes no tenian la estructura necesaria para escalarlo.
