@@ -31,7 +31,8 @@ jobs:
       - name: 📂 Sincronizar archivos con Hostinger (FTP/FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ftp.markidev.com
+          port: 21
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
