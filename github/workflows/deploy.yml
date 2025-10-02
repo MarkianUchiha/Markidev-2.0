@@ -3,7 +3,7 @@ name: Despliegue de Blog Astro a Hostinger
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
