@@ -1,5 +1,8 @@
 # Bitacora del Desarrollador
 
+## 10 de Octubre
+Hoy elimine la redirección del dominio y pretendo hacer un nuevo commit para ver por que no funciona el triger de github actions
+
 ## 01 de Octubre
 
 Se agrego el workflow para el despliegue.
