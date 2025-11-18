@@ -4,6 +4,6 @@
     "strictNullChecks": true,
     "allowJs": true
   },
-  "include": [".astro/types.d.ts", "**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"],
   "exclude": ["dist"],
 }

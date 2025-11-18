@@ -3,6 +3,7 @@
 @layer base {
     :root {
         --gradient-background: linear-gradient(to bottom left, #19274e, #220114);
+        scroll-behavior: smooth;
     }
 }
 
