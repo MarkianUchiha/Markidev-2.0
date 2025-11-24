@@ -1,0 +1,17 @@
+# Configuración para Netlify
+
+[build]
+  # Comando para construir el sitio.
+  # Usamos pnpm porque el proyecto tiene un pnpm-lock.yaml.
+  command = "pnpm run build"
+
+  # Directorio que Netlify publicará. Astro por defecto es 'dist'.
+  publish = "dist"
+
+[build.environment]
+  # Especifica la versión de Node.js que Netlify debe usar.
+  # Es buena práctica usar la misma versión con la que desarrollas.
+  # Reemplaza "20" con la versión que prefieras si es necesario.
+  NODE_VERSION = "20"
+
+# Redirecciones y otras reglas pueden ir aquí.
