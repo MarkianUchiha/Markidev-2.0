@@ -1,8 +1,10 @@
 ---
-import Card from '../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const trabajos = await getCollection('trabajos');
 ---
 
-<section id="trabajos" class="py-20 bg-gradient-to-bl from-[#19274e] to-[#220114]">
+<section id="trabajos" class="py-20 bg-gradient-to-br from-[#19274e] to-[#220114]">
   <div class="container mx-auto px-4">
     <h2 class="text-4xl font-bold text-white text-center">Mi Trabajo</h2>
     <p class="mt-4 text-lg text-gray-400 text-center max-w-3xl mx-auto mb-12">
@@ -10,100 +12,156 @@ import Card from '../components/BlogCard.astro';
       representa un desafío único y una oportunidad para crecer.
     </p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="bg-gray-900/50 border border-white/50 rounded-lg overflow-hidden h-full flex flex-col">
-        <a href="/trabajos/proyecto-ejemplo-1">
-          <img
-            src="/img/job1.jpg"
-            alt="Descripción del Proyecto 1"
-            class="w-full h-56 object-cover"
-          />
-        </a>
-        <div class="p-6 flex flex-col flex-grow">
-          <h3 class="text-2xl font-bold text-white">Proyecto Uno</h3>
-          <p class="text-gray-400 mt-2 flex-grow">
-            Una breve descripción de lo que implicó este proyecto, las
-            tecnologías utilizadas y el resultado final.
-          </p>
-          <div class="flex flex-wrap gap-2 mt-4">
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #DiseñoWeb
-            </span>
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #Astro
-            </span>
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #JavaScript
-            </span>
-          </div>
+    <div class="relative max-w-5xl mx-auto">
+      <!-- Carrusel -->
+      <div class="carousel-container overflow-hidden" id="trabajos-carousel">
+        <div class="flex transition-transform duration-500 gap-6" id="trabajos-carousel-track">
+          {
+            trabajos.map((trabajo) => (
+              <div class="w-full md:w-1/2 lg:w-1/3 flex-shrink-0">
+                <div class="bg-white/5 rounded-lg overflow-hidden h-full flex flex-col">
+                  <a href={`/trabajos/${trabajo.slug}`}>
+                    <img
+                      src={trabajo.data.image}
+                      alt={`Imagen del proyecto ${trabajo.data.title}`}
+                      class="w-full h-56 object-cover"
+                      loading="lazy"
+                    />
+                  </a>
+                  <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white">{trabajo.data.title}</h3>
+                    <p class="text-gray-400 mt-2 flex-grow line-clamp-3">
+                      {trabajo.data.description}
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                      {trabajo.data.tags?.slice(0, 3).map((tag) => (
+                        <span class="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded-full">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
         </div>
       </div>
+      
+      <!-- Botones de navegación -->
+      <button
+        class="absolute top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full -left-4 md:-left-8 disabled:opacity-50 disabled:cursor-not-allowed"
+        id="trabajosPrevButton"
+        aria-label="Anterior proyecto"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button
+        class="absolute top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full -right-4 md:-right-8 disabled:opacity-50 disabled:cursor-not-allowed"
+        id="trabajosNextButton"
+        aria-label="Siguiente proyecto"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
 
-      <div class="bg-gray-900/50 border border-white/50 rounded-lg overflow-hidden h-full flex flex-col">
-        <a href="/trabajos/proyecto-ejemplo-2">
-          <img
-            src="/img/job2.jpg"
-            alt="Descripción del Proyecto 2"
-            class="w-full h-56 object-cover"
-          />
-        </a>
-        <div class="p-6 flex flex-col flex-grow">
-          <h3 class="text-2xl font-bold text-white">Proyecto Dos</h3>
-          <p class="text-gray-400 mt-2 flex-grow">
-            Detalles sobre el segundo proyecto, enfocado en el desarrollo de
-            una aplicación móvil y los desafíos superados.
-          </p>
-          <div class="flex flex-wrap gap-2 mt-4">
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #AppMóvil
-            </span>
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #React
-            </span>
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #API
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-gray-900/50 border border-white/50 rounded-lg overflow-hidden h-full flex flex-col">
-        <a href="/trabajos/proyecto-ejemplo-3">
-          <img
-            src="/img/job3.jpg"
-            alt="Descripción del Proyecto 3"
-            class="w-full h-56 object-cover"
-          />
-        </a>
-        <div class="p-6 flex flex-col flex-grow">
-          <h3 class="text-2xl font-bold text-white">Proyecto Tres</h3>
-          <p class="text-gray-400 mt-2 flex-grow">
-            Información sobre el tercer proyecto, una plataforma de e-commerce
-            con integraciones de pago y un panel de administración.
-          </p>
-          <div class="flex flex-wrap gap-2 mt-4">
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #Ecommerce
-            </span>
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #NodeJS
-            </span>
-            <span class="bg-gray-700/60 text-gray-300 text-xs px-2 py-1 rounded-full">
-              #SQL
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Botón para ver todos los trabajos -->
     <div class="text-center mt-16">
       <a
         href="/trabajos"
-        class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-700 transition-colors duration-300"
+        class="inline-flex items-center gap-2 text-white bg-white/10 hover:bg-white/20 px-6 py-3 rounded-lg transition-colors"
       >
         Ver Todos los Proyectos
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
       </a>
     </div>
   </div>
 </section>
+
+<script>
+  // Lógica del carrusel de trabajos
+  const trackTrabajos = document.getElementById('trabajos-carousel-track') as HTMLDivElement;
+  const nextButtonTrabajos = document.getElementById('trabajosNextButton') as HTMLButtonElement;
+  const prevButtonTrabajos = document.getElementById('trabajosPrevButton') as HTMLButtonElement;
+  const slidesTrabajos = trackTrabajos?.children;
+  
+  if (!trackTrabajos || !slidesTrabajos || !nextButtonTrabajos || !prevButtonTrabajos) {
+    console.error('Elementos del carrusel de trabajos no encontrados');
+  } else {
+    let currentIndex = 0;
+    
+    function getSlidesPerPage() {
+      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 768) return 2;
+      return 1;
+    }
+
+    function updateCarousel() {
+      const slidesPerPage = getSlidesPerPage();
+      const maxIndex = Math.max(0, slidesTrabajos.length - slidesPerPage);
+      
+      const slideWidth = (trackTrabajos.firstElementChild as HTMLElement)?.offsetWidth ?? 0;
+      const gap = 24; // Corresponde a gap-6 en Tailwind (1.5rem = 24px)
+      trackTrabajos.style.transform = `translateX(-${currentIndex * (slideWidth + gap)}px)`;
+      
+      // Actualizar estado de los botones
+      prevButtonTrabajos.disabled = currentIndex === 0;
+      nextButtonTrabajos.disabled = currentIndex >= maxIndex;
+    }
+
+    nextButtonTrabajos.addEventListener('click', () => {
+      const slidesPerPage = getSlidesPerPage();
+      const maxIndex = Math.max(0, slidesTrabajos.length - slidesPerPage);
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updateCarousel();
+      }
+    });
+
+    prevButtonTrabajos.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+      }
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        currentIndex = 0;
+        updateCarousel();
+      }, 300);
+    });
+    
+    // Inicializar
+    updateCarousel();
+  }
+</script>
+
+<style>
+  .carousel-container {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 5%,
+      black 95%,
+      transparent
+    );
+  }
+
+  /* Limitar la descripción a 3 líneas */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
