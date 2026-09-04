@@ -1,35 +1,34 @@
 ---
-import "../styles/global.css";
-import Footer from "../components/Footer.astro";
+import '../styles/global.css';
+
 interface Props {
-	title: string;
-	description: string;
+	titulo: string;
+	descripcion: string;
 }
 
-const { title, description } = Astro.props;
+const { titulo, descripcion } = Astro.props;
+
+// Sin esto las URL canonicas salen relativas y los rastreadores las descartan.
+const canonica = new URL(Astro.url.pathname, Astro.site);
 ---
+
 <!doctype html>
 <html lang="es">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="keywords" content="desarrollador web, portfolio, desarrollo web, programador, freelance, paginas web, sitios web" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/png" href="/img/Logo_MarkiDev-BGoff.png" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{titulo}</title>
+		<meta name="description" content={descripcion} />
+		<link rel="canonical" href={canonica} />
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta property="og:title" content={titulo} />
+		<meta property="og:description" content={descripcion} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonica} />
+		<meta property="og:locale" content="es_MX" />
 	</head>
-	<body>
+	<body class="bg-canvas text-ink font-primary antialiased">
 		<slot />
-		<Footer />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

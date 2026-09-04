@@ -1,23 +1,25 @@
 ---
-import Hero from '../components/Hero.astro';
-import Servicios from '../components/Servicios.astro';
 import Layout from '../layouts/Layout.astro';
-import Trabajos from '../components/Trabajos.astro';
-import Exp from '../components/Exp.astro';
-import Testi from '../components/Testi.astro';
-import Contacto from '../components/Contacto.astro';
-import Post from '../components/Post.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout title="MarkiDev - Desarrollador Web" description="Portafolio de MarkiDev, un desarrollador web apasionado por crear experiencias digitales únicas.">
-	<Hero />
-	<Servicios />
-	<Post />
-	<Trabajos />
-	<Exp />
-	<Testi />
-	<Contacto />
+<Layout
+	titulo="MarkiDev — Automatizacion y digitalizacion de negocios"
+	descripcion="Sitio en construccion. Pronto: casos reales de automatizacion y digitalizacion para negocios en Mexico."
+>
+	<main class="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6">
+		<p class="text-caption tracking-caption text-ink-muted-48 uppercase">MarkiDev</p>
+		<h1 class="text-hero-display leading-hero-display tracking-hero-display mt-4 font-semibold">
+			Sitio en construccion.
+		</h1>
+		<p class="text-lead leading-lead text-ink-muted-80 mt-6 max-w-xl">
+			Estamos rehaciendo esta web desde cero. Mientras tanto, la forma mas rapida de contactarnos
+			sigue siendo el correo.
+		</p>
+		<a
+			href="mailto:contacto@markidev.com"
+			class="text-body-strong text-primary hover:text-primary-focus mt-8 inline-block"
+		>
+			contacto@markidev.com
+		</a>
+	</main>
 </Layout>
