@@ -1,14 +1,20 @@
 {
-	"$schema": "./node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-09-03",
-	"compatibility_flags": ["global_fetch_strictly_public"],
-	"name": "markidev",
-	"main": "@astrojs/cloudflare/entrypoints/server",
-	"assets": {
-		"directory": "./dist",
-		"binding": "ASSETS"
-	},
-	"observability": {
-		"enabled": true
-	}
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2026-09-03",
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  "name": "markidev",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  // El dominio se declara aqui y no en el panel para que el despliegue lo
+  // reconstruya solo si alguien lo borra por error.
+  "routes": [{ "pattern": "markidev.com", "custom_domain": true }],
+  // Sin esto el sitio se sirve tambien en markidev.workers.dev y Google ve dos
+  // copias del mismo contenido compitiendo entre si.
+  "workers_dev": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
 }
