@@ -1,0 +1,15 @@
+# Cloudflare aplica estas cabeceras a los assets estaticos. Como todo el sitio
+# prerenderiza, cubre tambien el HTML.
+/*
+  # Evita que el navegador adivine el tipo de un archivo y lo ejecute como algo
+  # que no es.
+  X-Content-Type-Options: nosniff
+
+  # Manda el dominio pero no la ruta al salir del sitio: la atribucion de
+  # referidos sigue funcionando sin filtrar por donde navego el visitante.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Nadie puede meter el sitio en un iframe. La segunda es la version moderna;
+  # la primera queda para navegadores que no leen CSP.
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
