@@ -1,5 +1,7 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import Pie from "../components/Pie.astro";
 
 interface Props {
 	titulo: string;
@@ -26,7 +28,23 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:url" content={canonica} />
 		<meta property="og:locale" content="es_MX" />
 	</head>
-	<body class="bg-canvas text-ink font-primary antialiased">
-		<slot />
+	<body class="bg-canvas text-ink font-primary flex min-h-screen flex-col antialiased">
+		{/* El salto al contenido es lo primero que encuentra quien navega con
+		    teclado; sin el hay que recorrer toda la navegacion en cada pagina. */}
+		<a
+			href="#contenido"
+			class="bg-canvas text-ink focus:ring-primary sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-md focus:rounded-md focus:px-lg focus:py-sm focus:ring-2"
+		>
+			Saltar al contenido
+		</a>
+
+		<Nav />
+
+		{/* flex-1 empuja el pie al fondo cuando la pagina tiene poco contenido. */}
+		<main id="contenido" class="flex-1">
+			<slot />
+		</main>
+
+		<Pie />
 	</body>
 </html>

@@ -1,0 +1,65 @@
+---
+import { site, socialLinks, availableNavigation } from "../data/site";
+
+const year = new Date().getFullYear();
+---
+
+{/* Bloque oscuro de cierre, segun el sistema: se alterna con las secciones
+    claras y nunca van dos oscuras seguidas. */}
+<footer class="bg-surface-tile-1 text-body-on-dark mt-section">
+	<div class="mx-auto max-w-[1200px] px-6 py-xxl">
+		<div class="gap-xl flex flex-col justify-between sm:flex-row">
+			<div>
+				<p class="text-body-strong font-semibold">{site.name}</p>
+				<a
+					href={`mailto:${site.email}`}
+					class="text-body text-primary-on-dark mt-xs inline-block hover:underline"
+				>
+					{site.email}
+				</a>
+			</div>
+
+			{
+				availableNavigation.length > 0 && (
+					<nav aria-label="Pie de pagina">
+						<ul class="gap-sm flex flex-col">
+							{availableNavigation.map((item) => (
+								<li>
+									<a
+										href={item.href}
+										class="text-caption text-body-muted hover:text-body-on-dark transition-colors"
+									>
+										{item.label}
+									</a>
+								</li>
+							))}
+						</ul>
+					</nav>
+				)
+			}
+
+			<nav aria-label="Redes sociales">
+				<ul class="gap-sm flex flex-col">
+					{
+						socialLinks.map((red) => (
+							<li>
+								<a
+									href={red.url}
+									target="_blank"
+									rel="noopener noreferrer me"
+									class="text-caption text-body-muted hover:text-body-on-dark transition-colors"
+								>
+									{red.name}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+		</div>
+
+		<p class="text-fine-print text-body-muted border-hairline/20 mt-xxl pt-lg border-t">
+			{site.author} — {year}
+		</p>
+	</div>
+</footer>

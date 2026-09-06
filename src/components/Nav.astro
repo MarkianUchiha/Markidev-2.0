@@ -1,0 +1,54 @@
+---
+import { site, availableNavigation } from "../data/site";
+
+// Marcar la seccion activa necesita comparar contra la ruta actual. Se compara
+// por prefijo para que /blog/un-articulo tambien resalte "Blog".
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="border-hairline bg-canvas/80 sticky top-0 z-50 border-b backdrop-blur-md">
+	<nav
+		class="mx-auto flex h-11 max-w-[1200px] items-center justify-between px-6"
+		aria-label="Principal"
+	>
+		{/* Hasta que exista el logo, la marca es la palabra. No se improvisa un
+		    simbolo ni se usa un placeholder grafico. */}
+		<a
+			href="/"
+			class="text-body-strong hover:text-primary font-semibold tracking-tight transition-colors"
+		>
+			{site.name}
+		</a>
+
+		{
+			availableNavigation.length > 0 && (
+				<ul class="flex items-center gap-lg">
+					{availableNavigation.map((item) => (
+						<li>
+							<a
+								href={item.href}
+								aria-current={isActive(item.href) ? "page" : undefined}
+								class:list={[
+									"text-nav-link tracking-nav-link transition-colors",
+									isActive(item.href)
+										? "text-ink"
+										: "text-ink-muted-80 hover:text-ink",
+								]}
+							>
+								{item.label}
+							</a>
+						</li>
+					))}
+				</ul>
+			)
+		}
+
+		<a
+			href={`mailto:${site.email}`}
+			class="text-nav-link tracking-nav-link text-primary hover:text-primary-focus transition-colors"
+		>
+			Contacto
+		</a>
+	</nav>
+</header>
