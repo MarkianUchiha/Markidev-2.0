@@ -1,0 +1,46 @@
+---
+import { render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { getPublishedPosts, formatDate } from "../../lib/content";
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+	return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout titulo={`${post.data.title} — MarkiDev`} descripcion={post.data.description}>
+	{/* En los articulos manda la capa editorial: ancho de lectura, no de galeria. */}
+	<article class="py-section mx-auto max-w-[65ch] px-6">
+		<header>
+			<h1 class="text-display-lg leading-display-lg font-semibold">{post.data.title}</h1>
+			<time datetime={post.data.pubDate.toISOString()} class="text-caption text-ink-muted-48 mt-lg block">
+				{formatDate(post.data.pubDate)}
+				{
+					post.data.updatedDate && (
+						<span> · actualizado el {formatDate(post.data.updatedDate)}</span>
+					)
+				}
+			</time>
+		</header>
+
+		<div class="prose-markidev mt-xxl">
+			<Content />
+		</div>
+
+		{
+			post.data.tags.length > 0 && (
+				<footer class="border-hairline mt-xxl pt-lg gap-xs flex flex-wrap border-t">
+					{post.data.tags.map((tag) => (
+						<span class="text-caption text-ink-muted-48 bg-canvas-parchment rounded-pill px-sm py-xxs">
+							{tag}
+						</span>
+					))}
+				</footer>
+			)
+		}
+	</article>
+</Layout>

@@ -1,0 +1,43 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPublishedWork } from "../../lib/content";
+
+const work = await getPublishedWork();
+---
+
+<Layout
+	titulo="Trabajos — MarkiDev"
+	descripcion="Casos reales de automatizacion y digitalizacion de negocios: que se hizo, para quien y que cambio despues."
+>
+	<section class="py-section mx-auto max-w-[1200px] px-6">
+		<h1 class="text-display-lg leading-display-lg font-semibold">Trabajos</h1>
+		<p class="text-lead-airy text-ink-muted-80 mt-lg max-w-[65ch]">
+			Que se hizo, para quien, y que cambio despues.
+		</p>
+
+		{
+			work.length === 0 ? (
+				<p class="text-body text-ink-muted-48 mt-xxl">Todavia no hay casos publicados.</p>
+			) : (
+				<ul class="mt-xxl gap-lg grid sm:grid-cols-2">
+					{work.map((item) => (
+						<li class="border-hairline bg-surface-pearl rounded-lg border p-lg">
+							<article>
+								<p class="text-caption text-ink-muted-48 uppercase">{item.data.client}</p>
+								<h2 class="text-tagline leading-tagline mt-xs font-semibold">
+									<a href={`/trabajos/${item.id}`} class="hover:text-primary transition-colors">
+										{item.data.title}
+									</a>
+								</h2>
+								<p class="text-body text-ink-muted-80 mt-sm">{item.data.description}</p>
+								{/* El resultado es lo que decide al que compara casos: se separa de
+								    la descripcion con peso, no solo con espacio. */}
+								<p class="text-body-strong mt-md text-ink font-semibold">{item.data.result}</p>
+							</article>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</Layout>

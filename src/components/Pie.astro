@@ -1,6 +1,8 @@
 ---
-import { site, socialLinks, availableNavigation } from "../data/site";
+import { site, socialLinks } from "../data/site";
+import { getVisibleNavigation } from "../lib/content";
 
+const availableNavigation = await getVisibleNavigation();
 const year = new Date().getFullYear();
 ---
 

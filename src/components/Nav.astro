@@ -1,5 +1,8 @@
 ---
-import { site, availableNavigation } from "../data/site";
+import { site } from "../data/site";
+import { getVisibleNavigation } from "../lib/content";
+
+const availableNavigation = await getVisibleNavigation();
 
 // Marcar la seccion activa necesita comparar contra la ruta actual. Se compara
 // por prefijo para que /blog/un-articulo tambien resalte "Blog".

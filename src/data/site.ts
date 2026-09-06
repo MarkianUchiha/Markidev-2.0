@@ -17,13 +17,13 @@ export const socialLinks = [
   { name: "GitHub", url: "https://github.com/MarkianUchiha" },
 ] as const;
 
-// `available` evita enlazar rutas que todavia no existen: una navegacion que
-// lleva a 404 es peor que una navegacion corta. Se pone en true cuando la
-// pagina se construye, y la entrada aparece sola en el menu y en el pie.
+// Una seccion se enlaza solo cuando tiene algo que enseñar. Las que dependen de
+// una coleccion se anuncian con `collection` y el menu las muestra sola cuando
+// existe la primera entrada publicada; las demas llevan `available` a mano.
+// Enlazar una seccion vacia es peor que no enlazarla: el cliente que entra a
+// verificar encuentra el hueco.
 export const navigation = [
-  { label: "Trabajos", href: "/trabajos", available: false },
-  { label: "Blog", href: "/blog", available: false },
+  { label: "Trabajos", href: "/trabajos", collection: "work" },
+  { label: "Blog", href: "/blog", collection: "blog" },
   { label: "Sobre mi", href: "/sobre-mi", available: false },
 ] as const;
-
-export const availableNavigation = navigation.filter((item) => item.available);

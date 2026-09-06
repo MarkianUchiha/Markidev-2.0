@@ -90,3 +90,95 @@
   --radius-pill: 9999px;
   --radius-full: 9999px;
 }
+
+/* Estilos del contenido que viene de Markdown. Tailwind quita los estilos por
+   defecto del navegador, asi que sin esto un articulo sale como un bloque de
+   texto plano. Se aplican por descendencia porque el HTML lo genera Astro al
+   renderizar la coleccion y no se le pueden poner clases a cada etiqueta. */
+.prose-markidev {
+  font-size: var(--text-body);
+  line-height: var(--leading-body, 1.47);
+  color: var(--color-ink-muted-80);
+}
+
+.prose-markidev > * + * {
+  margin-top: var(--spacing-md);
+}
+
+.prose-markidev h2 {
+  margin-top: var(--spacing-xxl);
+  font-size: var(--text-display-md);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+.prose-markidev h3 {
+  margin-top: var(--spacing-xl);
+  font-size: var(--text-tagline);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.prose-markidev strong {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.prose-markidev a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-markidev a:hover {
+  color: var(--color-primary-focus);
+}
+
+.prose-markidev ul,
+.prose-markidev ol {
+  padding-left: var(--spacing-lg);
+}
+
+.prose-markidev ul {
+  list-style: disc;
+}
+
+.prose-markidev ol {
+  list-style: decimal;
+}
+
+.prose-markidev li + li {
+  margin-top: var(--spacing-xs);
+}
+
+.prose-markidev blockquote {
+  border-left: 2px solid var(--color-hairline);
+  padding-left: var(--spacing-md);
+  color: var(--color-ink-muted-48);
+}
+
+.prose-markidev code {
+  background-color: var(--color-canvas-parchment);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  font-size: 0.9em;
+}
+
+.prose-markidev pre {
+  background-color: var(--color-surface-tile-1);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  overflow-x: auto;
+}
+
+/* Dentro de un bloque de codigo manda el fondo del bloque, no el del code suelto. */
+.prose-markidev pre code {
+  background-color: transparent;
+  padding: 0;
+  color: var(--color-body-on-dark);
+}
+
+.prose-markidev img {
+  border-radius: var(--radius-md);
+}

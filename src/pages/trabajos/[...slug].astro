@@ -1,0 +1,62 @@
+---
+import { render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { getPublishedWork } from "../../lib/content";
+
+export async function getStaticPaths() {
+	const work = await getPublishedWork();
+	return work.map((item) => ({ params: { slug: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+---
+
+<Layout titulo={`${item.data.title} — MarkiDev`} descripcion={item.data.description}>
+	<article class="py-section mx-auto max-w-[1200px] px-6">
+		<header class="max-w-[65ch]">
+			<p class="text-caption text-ink-muted-48 uppercase">{item.data.client}</p>
+			<h1 class="text-display-lg leading-display-lg mt-sm font-semibold">{item.data.title}</h1>
+			<p class="text-lead-airy text-ink-muted-80 mt-lg">{item.data.description}</p>
+		</header>
+
+		{/* El resultado va arriba y destacado: es lo unico que el cliente busca
+		    cuando compara casos. */}
+		<div class="bg-canvas-parchment rounded-lg mt-xl p-lg">
+			<p class="text-caption text-ink-muted-48 uppercase">Resultado</p>
+			<p class="text-tagline leading-tagline mt-xs font-semibold">{item.data.result}</p>
+		</div>
+
+		<dl class="gap-lg mt-xl flex flex-wrap">
+			<div>
+				<dt class="text-caption text-ink-muted-48 uppercase">Año</dt>
+				<dd class="text-body mt-xxs">{item.data.year}</dd>
+			</div>
+			<div>
+				<dt class="text-caption text-ink-muted-48 uppercase">Servicios</dt>
+				<dd class="text-body mt-xxs">{item.data.services.join(", ")}</dd>
+			</div>
+			{
+				item.data.url && (
+					<div>
+						<dt class="text-caption text-ink-muted-48 uppercase">Sitio</dt>
+						<dd class="text-body mt-xxs">
+							<a
+								href={item.data.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-primary hover:text-primary-focus"
+							>
+								Ver en linea
+							</a>
+						</dd>
+					</div>
+				)
+			}
+		</dl>
+
+		<div class="prose-markidev mt-xxl max-w-[65ch]">
+			<Content />
+		</div>
+	</article>
+</Layout>
