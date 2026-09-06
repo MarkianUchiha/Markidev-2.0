@@ -24,7 +24,10 @@
   --color-surface-chip-translucent: #d2d2d7;
   --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
-  --font-primary: Inter, system-ui, sans-serif;
+  /* Se aparta del valor exportado a proposito: la variable que genera Astro es
+     Inter mas un fallback con las metricas ajustadas, asi el texto no salta de
+     tamano cuando la fuente termina de cargar. La familia es la misma. */
+  --font-primary: var(--font-inter);
   --font-family-2: Inter, system-ui, sans-serif;
   --text-hero-display: 56px;
   --leading-hero-display: 1.07;

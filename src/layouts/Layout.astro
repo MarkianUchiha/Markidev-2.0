@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { Font } from "astro:assets";
 import Nav from "../components/Nav.astro";
 import Pie from "../components/Pie.astro";
 
@@ -27,6 +28,10 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonica} />
 		<meta property="og:locale" content="es_MX" />
+
+		{/* Solo se precargan las caras normales, que dibujan casi todo el texto. Las
+		    cursivas bajan solo si un articulo las usa. */}
+		<Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
 	</head>
 	<body class="bg-canvas text-ink font-primary flex min-h-screen flex-col antialiased">
 		{/* El salto al contenido es lo primero que encuentra quien navega con
