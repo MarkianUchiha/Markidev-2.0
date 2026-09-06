@@ -23,7 +23,7 @@ export const socialLinks = [
 // Enlazar una seccion vacia es peor que no enlazarla: el cliente que entra a
 // verificar encuentra el hueco.
 export const navigation = [
-  { label: "Trabajos", href: "/trabajos", collection: "work" },
-  { label: "Blog", href: "/blog", collection: "blog" },
-  { label: "Sobre mi", href: "/sobre-mi", available: false },
+  { label: "Trabajos", href: "/trabajos/", collection: "work" },
+  { label: "Blog", href: "/blog/", collection: "blog" },
+  { label: "Sobre mi", href: "/sobre-mi/", available: false },
 ] as const;

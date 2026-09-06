@@ -13,6 +13,8 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
+		// El valor por defecto (auto-trailing-slash) redirige con 307 temporal.
+		"html_handling": "force-trailing-slash",
   },
   "observability": {
     "enabled": true,
