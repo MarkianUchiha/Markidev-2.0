@@ -1,4 +1,40 @@
+# Criterio: entran los bots que citan con enlace y traen visitas; se quedan
+# fuera los que absorben el contenido para entrenar modelos sin devolver nada.
+#
+# Por eso NO se bloquean OAI-SearchBot (ChatGPT), PerplexityBot, Googlebot,
+# Bingbot ni Applebot: esos consultan el sitio para responder una pregunta y
+# enlazan la fuente. Bloquearlos costaria visibilidad.
+
 User-agent: *
+Content-Signal: search=yes,ai-train=no,use=reference
 Allow: /
+
+# Entrenamiento de modelos. No citan, no enlazan, no traen trafico.
+# Revisar cuando el sitio tenga volumen suficiente para que aparecer en el
+# entrenamiento compense ceder el contenido.
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
 
 Sitemap: https://markidev.com/sitemap-index.xml
