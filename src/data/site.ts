@@ -34,5 +34,5 @@ export const socialLinks = [
 export const navigation = [
   { label: "Trabajos", href: "/trabajos/", collection: "work" },
   { label: "Blog", href: "/blog/", collection: "blog" },
-  { label: "Sobre mi", href: "/sobre-mi/", available: false },
+  { label: "Sobre mí", href: "/sobre-mi/", available: true },
 ] as const;

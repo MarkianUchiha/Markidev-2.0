@@ -1,0 +1,285 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+import { getPublishedWork } from "../lib/content";
+
+// El orden de los bloques no es narrativo, es el de las dudas que trae quien
+// esta decidiendo si escribe: existe, es lo mio, ya lo hizo antes, me va a
+// dejar colgado, me va a decir que si a todo. Contar la vida en orden
+// cronologico responde otra pregunta que nadie hizo.
+
+// El bloque de "ya lo hice antes" se alimenta de los casos publicados en vez de
+// una lista escrita a mano: asi aparece solo cuando exista el primer caso y no
+// hay dos sitios donde actualizar lo mismo.
+const casos = await getPublishedWork();
+
+// Las condiciones se escriben completas a proposito. Este es el bloque que el
+// cliente que ya se quemo con un proyecto abandonado viene a buscar, y medio
+// contestado no sirve: la duda que no se responde aqui se responde sola, mal.
+const comoTrabajo = [
+	{
+		titulo: "Cómo cobro",
+		descripcion:
+			"Por hora o por fases, según lo que convenga al proyecto. El precio se cierra cuando el alcance está claro, no antes.",
+	},
+	{
+		titulo: "Cuándo se paga",
+		descripcion: "Tres esquemas. Se elige el que le acomode al negocio:",
+		puntos: [
+			"30% al arrancar, 40% en la primera entrega —normalmente al mes— y 30% al cerrar.",
+			"50% al arrancar y 50% al cerrar.",
+			"Si el proyecto además lleva mantenimiento: 25% de descuento sobre el desarrollo y un contrato de un año en mensualidades ajustadas al proyecto.",
+		],
+	},
+	{
+		titulo: "Cuánto tarda",
+		descripcion:
+			"Lo decide qué tan claro tengas tu propio proceso, no el tamaño del sistema.",
+		puntos: [
+			"Tres meses si ya tienes los procesos definidos y solo hay que digitalizarlos y automatizarlos.",
+			"Hasta un año si hoy no hay proceso de ninguna clase y primero tenemos que levantarlo.",
+		],
+	},
+	{
+		titulo: "Qué incluye la entrega",
+		descripcion: "Entregar no es soltar el sistema y desaparecer. Va incluido:",
+		puntos: [
+			"Un mes de revisión.",
+			"Cinco cambios de funcionamiento —pasos y funciones, sin tocar el núcleo— y diez cambios estéticos.",
+			"Manual de operación y tres meses para capacitar a tu personal.",
+			"Tu repositorio y tus dominios, a tu nombre.",
+		],
+	},
+	{
+		titulo: "Después de eso",
+		descripcion:
+			"Cada cambio nuevo se cobra por horas. Sin paquetes, sin mínimos y sin cuota por tenerme cerca.",
+	},
+	{
+		titulo: "Si el proyecto se atora",
+		descripcion: "Pasa, y casi nunca por el código. La regla es la misma para todos:",
+		puntos: [
+			"Tienes tres meses para retomarlo; pasado ese plazo se archiva.",
+			"Si lo retomas dentro de los nueve meses siguientes, se ajusta el precio por lo que haya que actualizar.",
+			"Más allá de eso se cotiza como proyecto nuevo.",
+		],
+	},
+];
+
+// El filtro sale del plan, no de la intuicion: son los encargos que ya se
+// rechazaron antes y la razon por la que se rechazaron.
+const noAyudo = [
+	{
+		titulo: "Ideas a cambio de sociedad",
+		descripcion:
+			"“Tú pones el desarrollo y luego repartimos.” Eso no es una sociedad, es trabajo sin pagar con pasos de más.",
+	},
+	{
+		titulo: "Clones de plataformas grandes",
+		descripcion:
+			"Copiar una plataforma internacional no falla por el código. Falla por todo lo que la sostiene, y eso no se programa.",
+	},
+	{
+		titulo: "Negocios montados sobre marcas ajenas",
+		descripcion:
+			"Revender producto de otra marca sin su permiso te expone legalmente. Es la única línea que no cruzo.",
+	},
+	{
+		titulo: "Mantenimiento, equipo y publicidad",
+		descripcion:
+			"Impresoras, cámaras, reparación de equipo y campañas de marketing. Hay quien lo hace mejor que yo.",
+	},
+];
+---
+
+<Layout
+	titulo={`Sobre mí — ${site.name}`}
+	descripcion="Quién está detrás de MarkiDev: Marco Lara, desarrollador en Durango. Cómo cobro, cuánto tardo, con qué ayudo y con qué no, antes de que me escribas."
+>
+	<section
+		class="mx-auto grid max-w-[1180px] items-center gap-16 px-8 pt-24 pb-20 lg:grid-cols-[1fr_0.8fr]"
+	>
+		<div>
+			<p
+				class="bg-accent-soft text-accent-deep text-eyebrow rounded-pill mb-6 inline-flex items-center gap-2 px-3 py-1.5 font-semibold"
+			>
+				<span class="bg-accent block size-1.5 rounded-full" aria-hidden="true"></span>
+				Durango, México
+			</p>
+			<h1
+				class="font-display text-ink-strong text-hero leading-hero tracking-hero mb-4 font-bold"
+			>
+				{site.author}
+			</h1>
+			<p class="text-lead leading-lead text-ink-strong mb-6 font-semibold">
+				Desarrollador de software. Digitalizo negocios que van en papel.
+			</p>
+			<p class="text-lead leading-lead text-ink-subtle mb-6 max-w-[480px]">
+				Construyo sistemas de gestión, puntos de venta y sitios web para negocios que ya
+				operan y quieren dejar de llevar el control a mano.
+			</p>
+			<p class="text-body leading-lead text-ink-muted max-w-[480px]">
+				Trabajo solo y de forma directa: la persona con la que hablas al principio es la
+				misma que escribe el código y la que te contesta seis meses después.
+			</p>
+		</div>
+
+		{/* La foto real es lo primero que baja la duda de “¿existe de verdad?”. El
+		    hueco se dibuja hasta que exista una: una foto de banco de imágenes
+		    hace justo lo contrario de lo que esta página busca. */}
+		<div
+			class="border-hairline placeholder-hatch flex aspect-[4/5] items-center justify-center overflow-hidden rounded-xl border"
+		>
+			<span
+				class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]"
+			>
+				foto profesional
+			</span>
+		</div>
+	</section>
+
+	{
+		casos.length > 0 && (
+			<section class="mx-auto max-w-[1180px] px-8 py-24">
+				<div class="mb-14 max-w-[560px]">
+					<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+						Ya lo hice antes
+					</p>
+					<h2 class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold">
+						Negocios que hoy operan con algo que construí
+					</h2>
+				</div>
+				<ul class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-xl border sm:grid-cols-2">
+					{casos.map((caso) => (
+						<li class="bg-surface px-7 py-8">
+							<p class="text-micro text-accent-text font-semibold tracking-[0.04em] uppercase">
+								{caso.data.client}
+							</p>
+							<h3 class="text-title text-ink-strong mt-1.5 mb-2 font-semibold">
+								<a
+									href={`/trabajos/${caso.id}/`}
+									class="hover:text-accent-text transition-colors"
+								>
+									{caso.data.title}
+								</a>
+							</h3>
+							<p class="text-body-sm leading-body-sm text-ink-strong font-semibold">
+								{caso.data.result}
+							</p>
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	<section class="bg-dark">
+		<div class="mx-auto max-w-[1180px] px-8 py-24">
+			<div class="mb-16 max-w-[560px]">
+				<p
+					class="text-eyebrow tracking-eyebrow text-accent-on-dark font-semibold uppercase"
+				>
+					Cómo trabajo
+				</p>
+				<h2
+					class="font-display text-on-dark text-section leading-section tracking-section mt-3 font-bold"
+				>
+					Tiempos, dinero y qué pasa si algo se atora
+				</h2>
+			</div>
+
+			<ul class="grid gap-x-12 gap-y-10 sm:grid-cols-2">
+				{
+					comoTrabajo.map((item) => (
+						<li>
+							<h3 class="text-title text-on-dark mb-2 font-semibold">{item.titulo}</h3>
+							<p class="text-body-sm leading-body-sm text-on-dark-muted">
+								{item.descripcion}
+							</p>
+							{item.puntos && (
+								<ul class="mt-3 flex flex-col gap-2">
+									{item.puntos.map((punto) => (
+										<li class="text-body-sm leading-body-sm text-on-dark-muted flex gap-2.5">
+											<span
+												class="bg-accent-on-dark mt-2 block size-1 shrink-0 rounded-full"
+												aria-hidden="true"
+											/>
+											<span>{punto}</span>
+										</li>
+									))}
+								</ul>
+							)}
+						</li>
+					))
+				}
+			</ul>
+
+			<p class="text-body-sm leading-body-sm text-on-dark-muted mt-14">
+				No hay devoluciones, en ningún sentido. Lo digo aquí y no en la letra chica.
+			</p>
+		</div>
+	</section>
+
+	<section class="mx-auto max-w-[1180px] px-8 py-24">
+		<div class="mb-14 max-w-[560px]">
+			<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+				Con qué no ayudo
+			</p>
+			<h2
+				class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold"
+			>
+				Prefiero decirlo antes de que me escribas
+			</h2>
+			<p class="text-body leading-lead text-ink-muted mt-4">
+				Decir que sí a todo termina en un proyecto que ninguno de los dos quería. Estos
+				encargos no los tomo:
+			</p>
+		</div>
+
+		<ul class="grid gap-6 sm:grid-cols-2">
+			{
+				noAyudo.map((item) => (
+					<li class="border-hairline bg-surface rounded-lg border px-7 py-6">
+						<h3 class="text-title text-ink-strong mb-2 font-semibold">{item.titulo}</h3>
+						<p class="text-body-sm leading-body-sm text-ink-muted">{item.descripcion}</p>
+					</li>
+				))
+			}
+		</ul>
+
+		<p
+			class="border-hairline bg-surface-sunken text-body leading-lead text-ink mt-8 rounded-lg border px-7 py-6"
+		>
+			<strong class="font-semibold">Con lo que sí ayudo:</strong> automatizar el trabajo
+			repetitivo, digitalizar un negocio que va en papel y rescatar un proyecto que alguien
+			más dejó a medias. Meter inteligencia artificial a tu propio negocio también entra.
+		</p>
+	</section>
+
+	<section class="border-hairline mx-auto max-w-[1180px] border-t px-8 py-20">
+		<h2
+			class="font-display text-ink-strong text-section leading-section tracking-section mb-5 font-bold"
+		>
+			¿Encajamos?
+		</h2>
+		<p class="text-lead leading-lead text-ink-muted mb-8 max-w-[440px]">
+			Cuéntame qué hace tu negocio hoy y en qué se te complica. Te respondo yo mismo.
+		</p>
+		<div class="flex flex-wrap gap-3.5">
+			<a
+				href={site.whatsapp.url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+			>
+				WhatsApp {site.whatsapp.display}
+			</a>
+			<a
+				href={`mailto:${site.email}`}
+				class="border-border text-ink hover:border-ink-soft text-body rounded-md border px-6 py-3.5 font-semibold transition-colors"
+			>
+				{site.email}
+			</a>
+		</div>
+	</section>
+</Layout>
