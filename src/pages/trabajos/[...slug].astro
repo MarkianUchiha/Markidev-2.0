@@ -13,39 +13,39 @@ const { Content } = await render(item);
 ---
 
 <Layout titulo={`${item.data.title} — MarkiDev`} descripcion={item.data.description}>
-	<article class="py-section mx-auto max-w-[1200px] px-6">
+	<article class="py-24 mx-auto max-w-[1200px] px-6">
 		<header class="max-w-[65ch]">
-			<p class="text-caption text-ink-muted-48 uppercase">{item.data.client}</p>
-			<h1 class="text-display-lg leading-display-lg mt-sm font-semibold">{item.data.title}</h1>
-			<p class="text-lead-airy text-ink-muted-80 mt-lg">{item.data.description}</p>
+			<p class="text-body-sm text-ink-soft uppercase">{item.data.client}</p>
+			<h1 class="text-section leading-section mt-3 font-semibold">{item.data.title}</h1>
+			<p class="text-lead text-ink-subtle mt-6">{item.data.description}</p>
 		</header>
 
 		{/* El resultado va arriba y destacado: es lo unico que el cliente busca
 		    cuando compara casos. */}
-		<div class="bg-canvas-parchment rounded-lg mt-xl p-lg">
-			<p class="text-caption text-ink-muted-48 uppercase">Resultado</p>
-			<p class="text-tagline leading-tagline mt-xs font-semibold">{item.data.result}</p>
+		<div class="bg-surface-sunken rounded-lg mt-8 p-6">
+			<p class="text-body-sm text-ink-soft uppercase">Resultado</p>
+			<p class="text-title mt-2 font-semibold">{item.data.result}</p>
 		</div>
 
-		<dl class="gap-lg mt-xl flex flex-wrap">
+		<dl class="gap-6 mt-8 flex flex-wrap">
 			<div>
-				<dt class="text-caption text-ink-muted-48 uppercase">Año</dt>
-				<dd class="text-body mt-xxs">{item.data.year}</dd>
+				<dt class="text-body-sm text-ink-soft uppercase">Año</dt>
+				<dd class="text-body mt-1">{item.data.year}</dd>
 			</div>
 			<div>
-				<dt class="text-caption text-ink-muted-48 uppercase">Servicios</dt>
-				<dd class="text-body mt-xxs">{item.data.services.join(", ")}</dd>
+				<dt class="text-body-sm text-ink-soft uppercase">Servicios</dt>
+				<dd class="text-body mt-1">{item.data.services.join(", ")}</dd>
 			</div>
 			{
 				item.data.url && (
 					<div>
-						<dt class="text-caption text-ink-muted-48 uppercase">Sitio</dt>
-						<dd class="text-body mt-xxs">
+						<dt class="text-body-sm text-ink-soft uppercase">Sitio</dt>
+						<dd class="text-body mt-1">
 							<a
 								href={item.data.url}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="text-primary hover:text-primary-focus"
+								class="text-accent-text hover:text-accent-hover"
 							>
 								Ver en linea
 							</a>
@@ -55,7 +55,7 @@ const { Content } = await render(item);
 			}
 		</dl>
 
-		<div class="prose-markidev mt-xxl max-w-[65ch]">
+		<div class="prose-markidev mt-12 max-w-[65ch]">
 			<Content />
 		</div>
 	</article>

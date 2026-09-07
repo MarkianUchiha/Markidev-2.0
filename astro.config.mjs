@@ -18,14 +18,24 @@ export default defineConfig({
 
   // Astro baja los archivos durante el build y los sirve desde el propio
   // dominio: ni una peticion a un tercero, ni la IP del visitante viajando a
-  // Google. El subconjunto latin ya trae acentos, ñ y los signos de apertura,
-  // asi que latin-ext solo agregaria peso muerto.
+  // Google. El subconjunto latin ya trae acentos, ñ y los signos de apertura.
+  //
+  // De Space Grotesk solo se usa el peso 700 (logo, titulares y los numeros del
+  // proceso); pedir 500 y 600 seria peso muerto.
   fonts: [
     {
-      name: "Inter",
-      cssVariable: "--font-inter",
+      name: "Space Grotesk",
+      cssVariable: "--font-space-grotesk",
       provider: fontProviders.fontsource(),
-      weights: [400, 600],
+      weights: [700],
+      styles: ["normal"],
+      subsets: ["latin"],
+    },
+    {
+      name: "IBM Plex Sans",
+      cssVariable: "--font-ibm-plex-sans",
+      provider: fontProviders.fontsource(),
+      weights: [400, 500, 600],
       styles: ["normal", "italic"],
       subsets: ["latin"],
     },

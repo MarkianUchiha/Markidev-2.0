@@ -1,29 +1,284 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { site } from "../data/site";
+import { getPublishedWork } from "../lib/content";
+
+const destacados = (await getPublishedWork()).slice(0, 4);
+
+// El icono alterna verde y naranja para que la rejilla no se lea monotona; los
+// colores no significan categorias distintas.
+const servicios = [
+	{
+		titulo: "Sistemas de gestión",
+		descripcion:
+			"Control de inventario, ventas y clientes en un solo lugar, adaptado a cómo ya trabajas.",
+		fondo: "bg-accent-soft",
+		forma: "bg-accent-text rounded-[4px]",
+	},
+	{
+		titulo: "Puntos de venta",
+		descripcion:
+			"Cobra rápido, controla caja y ve tus reportes sin depender de papel ni Excel.",
+		fondo: "bg-warm-soft",
+		forma: "bg-warm rounded-full",
+	},
+	{
+		titulo: "Pedidos por WhatsApp",
+		descripcion:
+			"Tu catálogo y pedidos organizados, directo desde el canal que tus clientes ya usan.",
+		fondo: "bg-accent-soft",
+		forma: "bg-accent-text rounded-[4px]",
+	},
+	{
+		titulo: "Sitios web",
+		descripcion: "Presencia en línea rápida, clara y que representa bien a tu negocio.",
+		fondo: "bg-warm-soft",
+		forma: "bg-warm rounded-[4px]",
+	},
+];
+
+const credenciales = [
+	"4 proyectos en producción",
+	"Atención directa, sin intermediarios",
+	"Precios claros, sin letras chiquitas",
+	"Soporte local en Durango",
+];
+
+const pasos = [
+	{
+		num: "01",
+		titulo: "Diagnóstico",
+		descripcion: "Entiendo cómo opera tu negocio hoy y dónde está la fricción.",
+	},
+	{
+		num: "02",
+		titulo: "Diseño",
+		descripcion: "Propongo el sistema o sitio que resuelve justo eso, sin de más.",
+	},
+	{
+		num: "03",
+		titulo: "Desarrollo",
+		descripcion: "Construyo y pruebo contigo antes de lanzar, sin sorpresas.",
+	},
+	{
+		num: "04",
+		titulo: "Lanzamiento",
+		descripcion: "Puesta en marcha y soporte directo conmigo, no un call center.",
+	},
+];
 ---
 
 <Layout
-	titulo="MarkiDev — Automatizacion y digitalizacion de negocios"
-	descripcion="Sitio en construccion. Pronto: casos reales de automatizacion y digitalizacion para negocios en Mexico."
+	titulo="MarkiDev — Automatización y digitalización de negocios"
+	descripcion="Sistemas de gestión, puntos de venta, pedidos por WhatsApp y sitios web hechos a la medida de negocios reales, desde Durango, México."
 >
-	{/* El main ya lo pone el layout: aqui solo va el contenido de la pagina. */}
-	<section class="mx-auto flex max-w-[1200px] flex-col justify-center px-6 py-section">
-		<p class="text-caption tracking-caption text-ink-muted-48 uppercase">{site.name}</p>
-		<h1 class="text-hero-display leading-hero-display tracking-hero-display mt-lg max-w-3xl font-semibold">
-			Sitio en construccion.
-		</h1>
-		{/* La medida va en ch, no en max-w-xl: los tokens de espaciado del sistema
-		    ocupan los nombres xs..xxl, asi que max-w-xl resolveria a 32px. */}
-		<p class="text-lead leading-lead text-ink-muted-80 mt-lg max-w-[65ch]">
-			Estamos rehaciendo esta web desde cero. Mientras tanto, la forma mas rapida de contactarnos
-			sigue siendo el correo.
-		</p>
-		<a
-			href={`mailto:${site.email}`}
-			class="text-body-strong text-primary hover:text-primary-focus mt-xl inline-block"
+	<section
+		class="mx-auto grid max-w-[1180px] items-center gap-16 px-8 pt-24 pb-20 lg:grid-cols-[1.1fr_1fr]"
+	>
+		<div>
+			<p
+				class="bg-accent-soft text-accent-deep text-eyebrow rounded-pill mb-6 inline-flex items-center gap-2 px-3 py-1.5 font-semibold"
+			>
+				<span class="bg-accent block size-1.5 rounded-full" aria-hidden="true"></span>
+				Estudio independiente · Durango, México
+			</p>
+			<h1
+				class="font-display text-ink-strong text-hero leading-hero tracking-hero mb-6 font-bold"
+			>
+				Digitalizamos tu negocio, sin complicarte la vida.
+			</h1>
+			<p class="text-lead leading-lead text-ink-subtle mb-9 max-w-[480px]">
+				Sistemas de gestión, puntos de venta, pedidos por WhatsApp y sitios web — hechos a
+				la medida de negocios reales, por alguien que entiende cómo operan.
+			</p>
+			<div class="flex flex-wrap gap-3.5">
+				<a
+					href={site.whatsapp.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+				>
+					Escríbeme por WhatsApp
+				</a>
+				<a
+					href="#contacto"
+					class="border-border text-ink hover:border-ink-soft text-body rounded-md border px-6 py-3.5 font-semibold transition-colors"
+				>
+					Ver cómo trabajo
+				</a>
+			</div>
+		</div>
+
+		{/* Hueco declarado, no disimulado: aqui va la captura del panel en cuanto
+		    exista una con datos ficticios sembrados. */}
+		<div
+			class="border-hairline placeholder-hatch flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border"
 		>
-			{site.email}
-		</a>
+			<span
+				class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]"
+			>
+				captura del dashboard / POS
+			</span>
+		</div>
+	</section>
+
+	<section class="border-hairline bg-surface-sunken border-y">
+		<ul
+			class="text-body-sm text-ink-subtle mx-auto flex max-w-[1180px] flex-wrap justify-between gap-x-12 gap-y-3 px-8 py-7 font-medium"
+		>
+			{credenciales.map((dato) => <li>{dato}</li>)}
+		</ul>
+	</section>
+
+	<section id="servicios" class="mx-auto max-w-[1180px] px-8 py-24">
+		<div class="mb-14 max-w-[560px]">
+			<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+				Servicios
+			</p>
+			<h2
+				class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold"
+			>
+				Todo lo que un negocio necesita para operar en línea
+			</h2>
+		</div>
+
+		{/* La rejilla se dibuja con un gap de 1px sobre fondo hairline: las lineas
+		    entre tarjetas son el propio fondo asomando, no bordes. */}
+		<ul
+			class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-xl border sm:grid-cols-2 lg:grid-cols-4"
+		>
+			{
+				servicios.map((servicio) => (
+					<li class="bg-surface px-7 py-8">
+						<span
+							class:list={[
+								"mb-5 flex size-10 items-center justify-center rounded-[10px]",
+								servicio.fondo,
+							]}
+							aria-hidden="true"
+						>
+							<span class:list={["block size-[18px]", servicio.forma]} />
+						</span>
+						<h3 class="text-title text-ink-strong mb-2 font-semibold">
+							{servicio.titulo}
+						</h3>
+						<p class="text-body-sm leading-body-sm text-ink-muted">
+							{servicio.descripcion}
+						</p>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	{
+		destacados.length > 0 && (
+			<section id="proyectos" class="mx-auto max-w-[1180px] px-8 py-24">
+				<div class="mb-14 max-w-[560px]">
+					<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+						Proyectos
+					</p>
+					<h2 class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold">
+						Qué se hizo, para quién, y qué cambió después
+					</h2>
+				</div>
+
+				<ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					{destacados.map((item) => (
+						<li class="border-hairline bg-surface overflow-hidden rounded-lg border">
+							<article>
+								<div class="placeholder-hatch flex aspect-[16/10] items-center justify-center">
+									<span class="border-hairline bg-canvas text-ink-soft rounded-sm border px-2.5 py-1 font-mono text-[11.5px]">
+										captura de {item.data.client}
+									</span>
+								</div>
+								<div class="px-5 pt-5 pb-6">
+									<p class="text-micro text-accent-text font-semibold tracking-[0.04em] uppercase">
+										{item.data.client}
+									</p>
+									<h3 class="text-title text-ink-strong mt-1.5 mb-2 font-semibold">
+										<a
+											href={`/trabajos/${item.id}/`}
+											class="hover:text-accent-text transition-colors"
+										>
+											{item.data.title}
+										</a>
+									</h3>
+									<p class="text-body-sm leading-body-sm text-ink-muted">
+										{item.data.description}
+									</p>
+									<p class="text-body-sm text-ink-strong mt-3 font-semibold">
+										{item.data.result}
+									</p>
+								</div>
+							</article>
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	<section id="proceso" class="bg-dark">
+		<div class="mx-auto max-w-[1180px] px-8 py-24">
+			<div class="mb-16 max-w-[560px]">
+				<p
+					class="text-eyebrow tracking-eyebrow text-accent-on-dark font-semibold uppercase"
+				>
+					Proceso
+				</p>
+				<h2
+					class="font-display text-on-dark text-section leading-section tracking-section mt-3 font-bold"
+				>
+					De la idea a un sistema funcionando
+				</h2>
+			</div>
+			<ol class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+				{
+					pasos.map((paso) => (
+						<li>
+							<p class="font-display text-accent-on-dark mb-4 text-[15px] font-bold">
+								{paso.num}
+							</p>
+							<h3 class="text-title text-on-dark mb-2 font-semibold">{paso.titulo}</h3>
+							<p class="text-body-sm leading-body-sm text-on-dark-muted">
+								{paso.descripcion}
+							</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	{/* El mockup pone aqui un formulario. Se deja fuera hasta que exista donde
+	    guardar el mensaje: un formulario que no envia pierde al cliente sin que
+	    ninguno de los dos se entere. */}
+	<section id="contacto" class="mx-auto max-w-[1180px] px-8 py-24">
+		<h2
+			class="font-display text-ink-strong text-section leading-section tracking-section mb-5 font-bold"
+		>
+			¿Listo para dejar de operar a mano?
+		</h2>
+		<p class="text-lead leading-lead text-ink-muted mb-8 max-w-[440px]">
+			Cuéntame qué hace tu negocio hoy y en qué se te complica. Te respondo yo mismo,
+			directo por WhatsApp o correo.
+		</p>
+		<div class="flex flex-wrap gap-3.5">
+			<a
+				href={site.whatsapp.url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+			>
+				WhatsApp {site.whatsapp.display}
+			</a>
+			<a
+				href={`mailto:${site.email}`}
+				class="border-border text-ink hover:border-ink-soft text-body rounded-md border px-6 py-3.5 font-semibold transition-colors"
+			>
+				{site.email}
+			</a>
+		</div>
 	</section>
 </Layout>

@@ -14,10 +14,10 @@ const { Content } = await render(post);
 
 <Layout titulo={`${post.data.title} — MarkiDev`} descripcion={post.data.description}>
 	{/* En los articulos manda la capa editorial: ancho de lectura, no de galeria. */}
-	<article class="py-section mx-auto max-w-[65ch] px-6">
+	<article class="py-24 mx-auto max-w-[65ch] px-6">
 		<header>
-			<h1 class="text-display-lg leading-display-lg font-semibold">{post.data.title}</h1>
-			<time datetime={post.data.pubDate.toISOString()} class="text-caption text-ink-muted-48 mt-lg block">
+			<h1 class="text-section leading-section font-semibold">{post.data.title}</h1>
+			<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft mt-6 block">
 				{formatDate(post.data.pubDate)}
 				{
 					post.data.updatedDate && (
@@ -27,15 +27,15 @@ const { Content } = await render(post);
 			</time>
 		</header>
 
-		<div class="prose-markidev mt-xxl">
+		<div class="prose-markidev mt-12">
 			<Content />
 		</div>
 
 		{
 			post.data.tags.length > 0 && (
-				<footer class="border-hairline mt-xxl pt-lg gap-xs flex flex-wrap border-t">
+				<footer class="border-hairline mt-12 pt-6 gap-2 flex flex-wrap border-t">
 					{post.data.tags.map((tag) => (
-						<span class="text-caption text-ink-muted-48 bg-canvas-parchment rounded-pill px-sm py-xxs">
+						<span class="text-body-sm text-ink-soft bg-surface-sunken rounded-pill px-3 py-1">
 							{tag}
 						</span>
 					))}

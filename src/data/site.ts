@@ -1,10 +1,19 @@
 // Datos reales del sitio en un solo lugar: si el correo o una red cambian, se
 // tocan aqui y no en cada plantilla que los repite.
 
+// Se escribe una sola vez: el enlace de WhatsApp lo exige pegado y con el 52
+// del pais, pero a un mexicano se le ensena agrupado. Derivar uno del otro evita
+// que al cambiar de numero se actualice solo la mitad.
+const whatsappNumber = "6181121871";
+
 export const site = {
   name: "MarkiDev",
   author: "Marco Lara",
   email: "contacto@markidev.com",
+  whatsapp: {
+    display: "618 112 1871",
+    url: `https://wa.me/52${whatsappNumber}`,
+  },
 } as const;
 
 // Solo se enlazan los perfiles que representan al negocio. El Facebook personal

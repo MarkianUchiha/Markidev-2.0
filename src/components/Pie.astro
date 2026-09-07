@@ -6,30 +6,32 @@ const availableNavigation = await getVisibleNavigation();
 const year = new Date().getFullYear();
 ---
 
-{/* Bloque oscuro de cierre, segun el sistema: se alterna con las secciones
-    claras y nunca van dos oscuras seguidas. */}
-<footer class="bg-surface-tile-1 text-body-on-dark mt-section">
-	<div class="mx-auto max-w-[1200px] px-6 py-xxl">
-		<div class="gap-xl flex flex-col justify-between sm:flex-row">
-			<div>
-				<p class="text-body-strong font-semibold">{site.name}</p>
-				<a
-					href={`mailto:${site.email}`}
-					class="text-body text-primary-on-dark mt-xs inline-block hover:underline"
-				>
-					{site.email}
-				</a>
-			</div>
+{/* El mockup trae un pie de una sola linea. Los enlaces de seccion se suman solos
+    cuando exista contenido; mientras tanto se ve exactamente como el diseno. */}
+<footer class="border-hairline mt-auto border-t">
+	<div
+		class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-4 px-8 py-8"
+	>
+		<div class="flex flex-wrap items-center gap-6">
+			<span class="font-display text-ink-strong text-[15px] font-bold">
+				{site.name}
+			</span>
+			<a
+				href={`mailto:${site.email}`}
+				class="text-accent-text hover:text-accent-hover text-body-sm transition-colors"
+			>
+				{site.email}
+			</a>
 
 			{
 				availableNavigation.length > 0 && (
 					<nav aria-label="Pie de pagina">
-						<ul class="gap-sm flex flex-col">
+						<ul class="flex flex-wrap gap-5">
 							{availableNavigation.map((item) => (
 								<li>
 									<a
 										href={item.href}
-										class="text-caption text-body-muted hover:text-body-on-dark transition-colors"
+										class="text-body-sm text-ink-soft hover:text-ink transition-colors"
 									>
 										{item.label}
 									</a>
@@ -39,9 +41,11 @@ const year = new Date().getFullYear();
 					</nav>
 				)
 			}
+		</div>
 
+		<div class="flex flex-wrap items-center gap-6">
 			<nav aria-label="Redes sociales">
-				<ul class="gap-sm flex flex-col">
+				<ul class="flex gap-5">
 					{
 						socialLinks.map((red) => (
 							<li>
@@ -49,7 +53,7 @@ const year = new Date().getFullYear();
 									href={red.url}
 									target="_blank"
 									rel="noopener noreferrer me"
-									class="text-caption text-body-muted hover:text-body-on-dark transition-colors"
+									class="text-body-sm text-ink-soft hover:text-ink transition-colors"
 								>
 									{red.name}
 								</a>
@@ -58,10 +62,9 @@ const year = new Date().getFullYear();
 					}
 				</ul>
 			</nav>
+			<span class="text-eyebrow text-ink-soft">
+				Durango, México · © {year} {site.author}
+			</span>
 		</div>
-
-		<p class="text-fine-print text-body-muted border-hairline/20 mt-xxl pt-lg border-t">
-			{site.author} — {year}
-		</p>
 	</div>
 </footer>

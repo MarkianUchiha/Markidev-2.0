@@ -9,29 +9,29 @@ const posts = await getPublishedPosts();
 	titulo="Blog — MarkiDev"
 	descripcion="Respuestas a las preguntas que los clientes hacen antes de contratar: automatizacion, digitalizacion y desarrollo web para negocios."
 >
-	<section class="py-section mx-auto max-w-[1200px] px-6">
-		<h1 class="text-display-lg leading-display-lg font-semibold">Blog</h1>
-		<p class="text-lead-airy text-ink-muted-80 mt-lg max-w-[65ch]">
+	<section class="py-24 mx-auto max-w-[1200px] px-6">
+		<h1 class="text-section leading-section font-semibold">Blog</h1>
+		<p class="text-lead text-ink-subtle mt-6 max-w-[65ch]">
 			Las preguntas que me hacen los clientes antes de contratar, respondidas a fondo.
 		</p>
 
 		{
 			posts.length === 0 ? (
-				<p class="text-body text-ink-muted-48 mt-xxl">Todavia no hay articulos publicados.</p>
+				<p class="text-body text-ink-soft mt-12">Todavia no hay articulos publicados.</p>
 			) : (
-				<ul class="mt-xxl gap-xl flex flex-col">
+				<ul class="mt-12 gap-8 flex flex-col">
 					{posts.map((post) => (
-						<li class="border-hairline border-b pb-xl last:border-b-0">
+						<li class="border-hairline border-b pb-8 last:border-b-0">
 							<article>
-								<h2 class="text-display-md leading-display-md tracking-display-md font-semibold">
-									<a href={`/blog/${post.id}/`} class="hover:text-primary transition-colors">
+								<h2 class="text-section leading-section tracking-section font-semibold">
+									<a href={`/blog/${post.id}/`} class="hover:text-accent-text transition-colors">
 										{post.data.title}
 									</a>
 								</h2>
-								<p class="text-body text-ink-muted-80 mt-sm max-w-[65ch]">
+								<p class="text-body text-ink-subtle mt-3 max-w-[65ch]">
 									{post.data.description}
 								</p>
-								<time datetime={post.data.pubDate.toISOString()} class="text-caption text-ink-muted-48 mt-sm block">
+								<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft mt-3 block">
 									{formatDate(post.data.pubDate)}
 								</time>
 							</article>
