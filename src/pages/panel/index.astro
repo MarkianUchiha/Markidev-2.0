@@ -1,0 +1,104 @@
+---
+import Panel from "../../layouts/Panel.astro";
+import Tablero from "../../components/panel/Tablero.tsx";
+import { listarLeads } from "../../lib/db";
+import { CANALES } from "../../lib/pipeline";
+
+export const prerender = false;
+
+// El middleware garantiza que exista; el guard es para TypeScript y por si algun
+// dia cambia la lista de rutas privadas.
+const usuario = Astro.locals.usuario;
+if (!usuario) return new Response("No autorizado.", { status: 401 });
+
+const leads = await listarLeads();
+const error = Astro.url.searchParams.get("error");
+
+const campo =
+	"border-border bg-surface text-ink text-body-sm focus:border-ink-soft w-full rounded-md border px-3 py-2 focus:outline-none";
+---
+
+<Panel titulo="Prospectos" usuario={usuario.email}>
+	<div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+		<div>
+			<h1 class="font-display text-ink-strong text-section leading-section font-bold">
+				Prospectos
+			</h1>
+			<p class="text-body-sm text-ink-soft mt-1">
+				{leads.length} en total. Arrastra una tarjeta para moverla de etapa.
+			</p>
+		</div>
+	</div>
+
+	{
+		error && (
+			<p class="border-border text-ink text-body mb-6 rounded-md border px-5 py-4" role="alert">
+				{error}
+			</p>
+		)
+	}
+
+	{/* La isla solo hidrata el tablero. El alta de abajo es un formulario normal:
+	    no necesita JavaScript y por eso no entra en el bundle. */}
+	<Tablero client:load iniciales={leads} />
+
+	<details class="border-hairline bg-surface mt-10 rounded-lg border p-6">
+		<summary class="text-title text-ink-strong cursor-pointer font-semibold">
+			Registrar un prospecto a mano
+		</summary>
+		<p class="text-body-sm text-ink-muted mt-2 mb-6 max-w-[60ch]">
+			Para quien llega por WhatsApp o recomendado, que es la mayoría de los que
+			cierran. Solo el nombre y el canal son obligatorios.
+		</p>
+
+		{/* Con barra final: `trailingSlash: "always"` responde 404 sin ella. */}
+		<form method="POST" action="/api/panel/leads/" class="grid max-w-[720px] gap-4 sm:grid-cols-2">
+			<div>
+				<label for="nombre" class="text-body-sm text-ink-strong mb-1.5 block font-semibold">
+					Nombre
+				</label>
+				<input id="nombre" class={campo} type="text" name="nombre" required maxlength="120" />
+			</div>
+
+			<div>
+				<label for="canal" class="text-body-sm text-ink-strong mb-1.5 block font-semibold">
+					Cómo llegó
+				</label>
+				<select id="canal" class={campo} name="canal" required>
+					{CANALES.map((canal) => <option value={canal.id}>{canal.nombre}</option>)}
+				</select>
+			</div>
+
+			<div>
+				<label for="contacto" class="text-body-sm text-ink-strong mb-1.5 block font-semibold">
+					Correo o teléfono
+				</label>
+				<input id="contacto" class={campo} type="text" name="contacto" maxlength="160" />
+			</div>
+
+			<div>
+				<label for="valor_estimado" class="text-body-sm text-ink-strong mb-1.5 block font-semibold">
+					Valor estimado (MXN)
+				</label>
+				<input id="valor_estimado" class={campo} type="number" name="valor_estimado" min="0" step="1000" />
+			</div>
+
+			<div class="sm:col-span-2">
+				<label for="mensaje" class="text-body-sm text-ink-strong mb-1.5 block font-semibold">
+					Qué necesita
+				</label>
+				<textarea id="mensaje" class={`${campo} min-h-[100px] resize-y`} name="mensaje" maxlength="4000"
+				></textarea>
+			</div>
+
+			<div class="sm:col-span-2">
+				<button
+					type="submit"
+					class="bg-accent text-on-accent hover:bg-accent-hover text-body-sm rounded-md px-5 py-2.5 font-semibold transition-colors"
+				>
+					Agregar al tablero
+				</button>
+			</div>
+		</form>
+	</details>
+</Panel>

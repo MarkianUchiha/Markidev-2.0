@@ -1,0 +1,42 @@
+---
+import "../styles/global.css";
+import { Font } from "astro:assets";
+
+interface Props {
+	titulo: string;
+	usuario: string;
+}
+
+const { titulo, usuario } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{titulo} — Panel MarkiDev</title>
+		{/* Cloudflare Access ya impide entrar, pero si alguna vez una URL del panel
+		    se filtrara a un enlace, esto evita que acabe en un indice. */}
+		<meta name="robots" content="noindex, nofollow" />
+		<Font cssVariable="--font-space-grotesk" preload={[{ weight: 700 }]} />
+		<Font cssVariable="--font-ibm-plex-sans" preload={[{ weight: 400, style: "normal" }]} />
+	</head>
+	<body class="bg-canvas text-ink font-body min-h-screen antialiased">
+		<header class="border-hairline bg-surface border-b">
+			<div class="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4">
+				<div class="flex items-baseline gap-3">
+					<span class="font-display text-ink-strong text-title font-bold">MarkiDev</span>
+					<span class="text-body-sm text-ink-soft">Panel</span>
+				</div>
+				{/* El correo a la vista no es adorno: cuando haya mas de una persona,
+				    dice con que cuenta se esta escribiendo en el historial. */}
+				<span class="text-body-sm text-ink-soft">{usuario}</span>
+			</div>
+		</header>
+
+		<main class="mx-auto max-w-[1400px] px-6 py-10">
+			<slot />
+		</main>
+	</body>
+</html>
