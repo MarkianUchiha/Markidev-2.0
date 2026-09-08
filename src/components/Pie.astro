@@ -62,7 +62,13 @@ const year = new Date().getFullYear();
 					}
 				</ul>
 			</nav>
+			{/* El aviso va aparte de la navegacion: es una obligacion legal que debe
+			    alcanzarse desde cualquier pagina, no una seccion que se visite. */}
 			<span class="text-eyebrow text-ink-soft">
+				<a href="/aviso-de-privacidad/" class="hover:text-ink transition-colors">
+					Aviso de privacidad
+				</a>
+				<span class="mx-2">·</span>
 				Durango, México · © {year} {site.author}
 			</span>
 		</div>

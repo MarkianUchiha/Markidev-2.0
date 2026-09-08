@@ -1,0 +1,100 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+
+// Obligatorio por la LFPDPPP desde el momento en que el formulario captura un
+// dato. Es una pagina del sitio, no letra chica escondida en el pie.
+//
+// Se escribe en primera persona y sin jerga: quien lo lee esta decidiendo si te
+// confia sus datos, y un texto copiado de una plantilla corporativa resta la
+// misma credibilidad que gana la pagina de condiciones.
+
+const actualizado = "8 de septiembre de 2026";
+---
+
+<Layout
+	titulo="Aviso de privacidad — MarkiDev"
+	descripcion="Qué datos guardo cuando me escribes por el formulario, para qué los uso, cuánto los conservo y cómo pedirme que los borre."
+>
+	<article class="mx-auto max-w-[1200px] px-6 py-24">
+		<header class="max-w-[65ch]">
+			<h1 class="font-display text-ink-strong text-section leading-section tracking-section font-bold">
+				Aviso de privacidad
+			</h1>
+			<p class="text-body-sm text-ink-soft mt-4">
+				Última actualización: <time datetime="2026-09-08">{actualizado}</time>
+			</p>
+		</header>
+
+		<div class="prose-markidev mt-12 max-w-[65ch]">
+			<h2>Quién guarda tus datos</h2>
+			<p>
+				{site.author}, que opera como {site.name}, con domicilio en Durango, México y
+				correo <a href={`mailto:${site.email}`}>{site.email}</a>. Soy una sola persona:
+				nadie más de mi lado ve lo que me escribes.
+			</p>
+
+			<h2>Qué datos recojo</h2>
+			<p>
+				Únicamente los que tú escribes en el formulario de contacto: tu nombre, el
+				correo o teléfono que dejas para que te responda, y el mensaje.
+			</p>
+			<p>
+				No pido ni guardo datos sensibles, datos financieros ni identificaciones. El
+				sitio no usa cookies de rastreo ni de publicidad, y la analítica que uso no
+				registra tu identidad.
+			</p>
+
+			<h2>Para qué los uso</h2>
+			<p>
+				Para responderte y, si decidimos trabajar juntos, para dar seguimiento a esa
+				conversación. Nada más.
+			</p>
+			<p>
+				<strong>No te voy a suscribir a ninguna lista por escribirme.</strong> Si algún
+				día abro una lista de correo, será con una casilla aparte que tú marques a
+				propósito.
+			</p>
+
+			<h2>Con quién se comparten</h2>
+			<p>No vendo ni comparto tus datos. Solo pasan por dos proveedores que me hacen falta para operar:</p>
+			<ul>
+				<li><strong>Cloudflare</strong>, donde vive el sitio y la base de datos en la que se guarda tu mensaje.</li>
+				<li><strong>Resend</strong>, que me manda el aviso por correo de que escribiste.</li>
+			</ul>
+			<p>
+				Ambos actúan solo por instrucción mía y no pueden usar tus datos para lo suyo.
+			</p>
+
+			<h2>Cuánto los conservo</h2>
+			<p>
+				Mientras la conversación siga viva y hasta dos años después del último
+				contacto, por si retomamos. Pasado ese plazo los borro. Si me pides antes que
+				los elimine, los borro cuando me lo pidas.
+			</p>
+
+			<h2>Tus derechos ARCO</h2>
+			<p>
+				Puedes pedirme en cualquier momento <strong>acceder</strong> a los datos que
+				tengo tuyos, <strong>rectificarlos</strong> si están mal,
+				<strong>cancelarlos</strong> para que los borre, u <strong>oponerte</strong> a
+				que los use.
+			</p>
+			<p>
+				Se hace escribiendo a <a href={`mailto:${site.email}`}>{site.email}</a> desde el
+				mismo correo con el que me contactaste, diciéndome qué quieres que haga. Te
+				contesto en un máximo de 20 días hábiles. No cobro por esto.
+			</p>
+			<p>
+				Si no te convence mi respuesta, puedes acudir al INAI, que es la autoridad en
+				México para estos casos.
+			</p>
+
+			<h2>Si cambia este aviso</h2>
+			<p>
+				Cualquier cambio se publica en esta misma página y se actualiza la fecha de
+				arriba. No hay avisos por separado: esta URL es la versión vigente.
+			</p>
+		</div>
+	</article>
+</Layout>

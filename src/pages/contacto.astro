@@ -1,0 +1,157 @@
+---
+import { env } from "cloudflare:workers";
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+
+// Bajo demanda, no estatica. La alternativa era hornear la llave de Turnstile en
+// el build con una variable PUBLIC_, lo que obliga a mantener dos archivos de
+// entorno: uno para el build y otro para el Worker. Una sola pagina renderizada
+// por peticion cuesta menos que esa duplicidad.
+export const prerender = false;
+
+const parametros = Astro.url.searchParams;
+const enviado = parametros.get("enviado") === "1";
+const error = parametros.get("error");
+
+const turnstileSiteKey = env.TURNSTILE_SITE_KEY;
+
+const campo =
+	"border-border bg-surface text-ink text-body focus:border-ink-soft focus:ring-accent w-full rounded-md border px-4 py-3 transition-colors focus:ring-2 focus:outline-none";
+const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
+---
+
+<Layout
+	titulo="Contacto — MarkiDev"
+	descripcion="Cuéntame qué hace tu negocio hoy y en qué se te complica. Respondo yo mismo por WhatsApp, correo o con una llamada agendada."
+>
+	<section class="mx-auto max-w-[1180px] px-8 py-24">
+		<h1
+			class="font-display text-ink-strong text-section leading-section tracking-section mb-5 font-bold"
+		>
+			Hablemos de tu negocio
+		</h1>
+		<p class="text-lead leading-lead text-ink-muted mb-12 max-w-[520px]">
+			Cuéntame qué hace tu negocio hoy y en qué se te complica. Te respondo yo mismo,
+			por el medio que prefieras.
+		</p>
+
+		<div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+			<div>
+				{
+					enviado && (
+						<p
+							class="bg-accent-soft text-accent-deep text-body rounded-md px-5 py-4 mb-8"
+							role="status"
+						>
+							Listo, tu mensaje quedó guardado. Te respondo en menos de 24 horas.
+						</p>
+					)
+				}
+				{
+					error && (
+						<p
+							class="border-border text-ink text-body mb-8 rounded-md border px-5 py-4"
+							role="alert"
+						>
+							{error}
+						</p>
+					)
+				}
+
+				{/* La barra final no es opcional: `trailingSlash: "always"` hace que
+				    /api/contacto sin ella responda 404. */}
+				<form method="POST" action="/api/contacto/" class="max-w-[520px]">
+					{/* Campo trampa. `hidden` lo saca del flujo y de la navegacion por
+					    teclado; `tabindex` y `autocomplete` evitan que un gestor de
+					    contraseñas lo rellene por su cuenta y descarte a una persona real. */}
+					<div hidden aria-hidden="true">
+						<label for="empresa">No llenar este campo</label>
+						<input id="empresa" type="text" name="empresa" tabindex="-1" autocomplete="off" />
+					</div>
+
+					<div class="mb-6">
+						<label for="nombre" class={etiqueta}>Tu nombre</label>
+						<input id="nombre" class={campo} type="text" name="nombre" required maxlength="120" />
+					</div>
+
+					<div class="mb-6">
+						<label for="contacto" class={etiqueta}>Correo o teléfono</label>
+						<input
+							id="contacto"
+							class={campo}
+							type="text"
+							name="contacto"
+							required
+							maxlength="160"
+							autocomplete="email"
+						/>
+						<p class="text-body-sm text-ink-soft mt-2">Lo que prefieras. Por ahí te respondo.</p>
+					</div>
+
+					<div class="mb-6">
+						<label for="mensaje" class={etiqueta}>¿Qué hace tu negocio y en qué se complica?</label>
+						<textarea
+							id="mensaje"
+							class={`${campo} min-h-[160px] resize-y`}
+							name="mensaje"
+							required
+							maxlength="4000"></textarea>
+					</div>
+
+					<div class="mb-8 flex gap-3">
+						<input
+							id="privacidad"
+							type="checkbox"
+							name="privacidad"
+							required
+							class="accent-accent mt-1 h-4 w-4 shrink-0"
+						/>
+						<label for="privacidad" class="text-body-sm leading-body-sm text-ink-muted">
+							Acepto que guardes estos datos para responderme, según el
+							<a href="/aviso-de-privacidad/" class="text-accent-text hover:text-accent-hover underline">
+								aviso de privacidad
+							</a>.
+						</label>
+					</div>
+
+					{
+						turnstileSiteKey && (
+							<div class="cf-turnstile mb-8" data-sitekey={turnstileSiteKey} />
+						)
+					}
+
+					<button
+						type="submit"
+						class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+					>
+						Enviar mensaje
+					</button>
+				</form>
+			</div>
+
+			{/* Los tres medios juntos: quien llega recomendado casi siempre prefiere
+			    WhatsApp, y obligarlo al formulario lo pierde. */}
+			<aside class="bg-surface-sunken rounded-lg h-fit p-6">
+				<p class="text-body-sm text-ink-soft mb-4 uppercase">O directo</p>
+				<a
+					href={site.whatsapp.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="bg-accent text-on-accent hover:bg-accent-hover text-body mb-3 block rounded-md px-5 py-3 text-center font-semibold transition-colors"
+				>
+					WhatsApp {site.whatsapp.display}
+				</a>
+				<a
+					href={`mailto:${site.email}`}
+					class="border-border text-ink hover:border-ink-soft text-body block rounded-md border px-5 py-3 text-center font-semibold transition-colors"
+				>
+					{site.email}
+				</a>
+			</aside>
+		</div>
+	</section>
+
+	{turnstileSiteKey && (
+		<script is:inline async src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+	)}
+</Layout>
