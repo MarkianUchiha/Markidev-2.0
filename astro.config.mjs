@@ -4,6 +4,7 @@ import { defineConfig, fontProviders } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
+import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
@@ -45,5 +46,14 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [sitemap()],
+  // React vive solo dentro de /panel. El sitio publico no carga ni un byte suyo:
+  // las islas se declaran pagina por pagina, no globalmente.
+  integrations: [
+    sitemap({
+      // El panel es privado. Aunque se renderiza bajo demanda y no deberia
+      // llegar al sitemap, el filtro lo garantiza sin depender de ese detalle.
+      filter: (pagina) => !pagina.includes("/panel"),
+    }),
+    react(),
+  ],
 });

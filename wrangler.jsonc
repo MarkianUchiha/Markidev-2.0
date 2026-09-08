@@ -13,9 +13,28 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-		// El valor por defecto (auto-trailing-slash) redirige con 307 temporal.
-		"html_handling": "force-trailing-slash",
+    // El valor por defecto (auto-trailing-slash) redirige con 307 temporal.
+    "html_handling": "force-trailing-slash",
   },
+  // Configuracion de Cloudflare Access. No son secretos y por eso viven aqui y no
+  // en .dev.vars: el AUD viaja dentro del JWT de todo el que entra y el dominio
+  // esta en la URL del login. La firma la controla Cloudflare, asi que conocerlos
+  // no permite falsificar un token. Tenerlos en la config evita mantener el mismo
+  // valor en dos sitios.
+  "vars": {
+    "TEAM_DOMAIN": "purple-snowflake-b373.cloudflareaccess.com",
+    "POLICY_AUD": "302746405ff6cbfe03b2112b66cb2fe8499fa15941999240a70180457f621b35",
+  },
+  // Los leads y el contenido viven aqui. El id se llena al crear la base con
+  // `wrangler d1 create markidev`; en local, miniflare la simula sin credenciales.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "markidev",
+      "database_id": "c9c88746-972b-489f-a4b7-1a5993dd1bba",
+      "migrations_dir": "migrations",
+    },
+  ],
   "observability": {
     "enabled": true,
   },

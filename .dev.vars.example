@@ -1,0 +1,20 @@
+# Plantilla de las variables del servidor. Copia este archivo a `.dev.vars`
+# (ignorado por git) y llena los valores para desarrollo local.
+#
+# En produccion NO se usa este archivo: cada valor se sube con
+#   pnpm exec wrangler secret put NOMBRE
+#
+# Ninguno de estos valores debe acabar en un commit, en un log ni en el codigo.
+
+
+# --- Turnstile (antispam del formulario de contacto) ---
+# Del panel de Cloudflare > Turnstile. La clave de sitio es publica y viaja al
+# navegador; la secreta solo se usa al validar en el servidor.
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
+
+# --- Resend (aviso de lead nuevo) ---
+RESEND_API_KEY=
+# Remitente verificado en Resend y destinatario del aviso.
+RESEND_FROM=
+RESEND_TO=
