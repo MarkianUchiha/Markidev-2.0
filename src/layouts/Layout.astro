@@ -32,15 +32,17 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
 		{/* Se precarga solo la cara con la que abre la pagina: el titular en Space
 		    Grotesk y el cuerpo en IBM Plex regular. Las demas caras bajan cuando
 		    aparecen, y las cursivas solo si un articulo las usa. */}
-		<Font cssVariable="--font-space-grotesk" preload={[{ weight: 700 }]} />
-		<Font cssVariable="--font-ibm-plex-sans" preload={[{ weight: 400, style: "normal" }]} />
+		<Font cssVariable="--font-poppins" preload={[{ weight: 700 }]} />
+		<Font cssVariable="--font-open-sans" preload={[{ weight: 400, style: "normal" }]} />
+		{/* La serif no se precarga: aparece solo en citas, y a veces en ninguna. */}
+		<Font cssVariable="--font-crimson-pro" />
 	</head>
 	<body class="bg-canvas text-ink font-body flex min-h-screen flex-col text-pretty antialiased">
 		{/* El salto al contenido es lo primero que encuentra quien navega con
 		    teclado; sin el hay que recorrer toda la navegacion en cada pagina. */}
 		<a
 			href="#contenido"
-			class="bg-canvas text-ink focus:ring-accent sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-4 focus:rounded-md focus:px-6 focus:py-3 focus:ring-2"
+			class="bg-canvas text-ink focus:ring-brand-solid sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-4 focus:rounded-md focus:px-6 focus:py-3 focus:ring-2"
 		>
 			Saltar al contenido
 		</a>

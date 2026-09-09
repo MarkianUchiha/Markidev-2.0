@@ -5,15 +5,16 @@ import { getPublishedWork } from "../lib/content";
 
 const destacados = (await getPublishedWork()).slice(0, 4);
 
-// El icono alterna verde y naranja para que la rejilla no se lea monotona; los
-// colores no significan categorias distintas.
+// El icono alterna purpura y naranja para que la rejilla no se lea monotona; los
+// colores no significan categorias distintas. El verde no entra aqui: es el color
+// de accion y un icono no se pulsa.
 const servicios = [
 	{
 		titulo: "Sistemas de gestión",
 		descripcion:
 			"Control de inventario, ventas y clientes en un solo lugar, adaptado a cómo ya trabajas.",
-		fondo: "bg-accent-soft",
-		forma: "bg-accent-text rounded-[4px]",
+		fondo: "bg-brand-soft",
+		forma: "bg-brand-solid rounded-[4px]",
 	},
 	{
 		titulo: "Puntos de venta",
@@ -26,8 +27,8 @@ const servicios = [
 		titulo: "Pedidos por WhatsApp",
 		descripcion:
 			"Tu catálogo y pedidos organizados, directo desde el canal que tus clientes ya usan.",
-		fondo: "bg-accent-soft",
-		forma: "bg-accent-text rounded-[4px]",
+		fondo: "bg-brand-soft",
+		forma: "bg-brand-solid rounded-[4px]",
 	},
 	{
 		titulo: "Sitios web",
@@ -77,9 +78,11 @@ const pasos = [
 	>
 		<div>
 			<p
-				class="bg-accent-soft text-accent-deep text-eyebrow rounded-pill mb-6 inline-flex items-center gap-2 px-3 py-1.5 font-semibold"
+				class="bg-brand-soft text-brand-deep text-eyebrow rounded-pill mb-6 inline-flex items-center gap-2 px-3 py-1.5 font-semibold"
 			>
-				<span class="bg-accent block size-1.5 rounded-full" aria-hidden="true"></span>
+				{/* Naranja: un punto purpura sobre el tinte purpura del chip no se
+				    distinguia. No va verde porque el verde es accion y esto no se pulsa. */}
+				<span class="bg-warm block size-1.5 rounded-full" aria-hidden="true"></span>
 				Estudio independiente · Durango, México
 			</p>
 			<h1
@@ -96,7 +99,7 @@ const pasos = [
 					href={site.whatsapp.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+					class="bg-action text-on-action hover:bg-action-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
 				>
 					Escríbeme por WhatsApp
 				</a>
@@ -132,7 +135,7 @@ const pasos = [
 
 	<section id="servicios" class="mx-auto max-w-[1180px] px-8 py-24">
 		<div class="mb-14 max-w-[560px]">
-			<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+			<p class="text-eyebrow tracking-eyebrow text-brand font-semibold uppercase">
 				Servicios
 			</p>
 			<h2
@@ -175,7 +178,7 @@ const pasos = [
 		destacados.length > 0 && (
 			<section id="proyectos" class="mx-auto max-w-[1180px] px-8 py-24">
 				<div class="mb-14 max-w-[560px]">
-					<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+					<p class="text-eyebrow tracking-eyebrow text-brand font-semibold uppercase">
 						Proyectos
 					</p>
 					<h2 class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold">
@@ -193,13 +196,13 @@ const pasos = [
 									</span>
 								</div>
 								<div class="px-5 pt-5 pb-6">
-									<p class="text-micro text-accent-text font-semibold tracking-[0.04em] uppercase">
+									<p class="text-micro text-brand font-semibold tracking-[0.04em] uppercase">
 										{item.data.client}
 									</p>
 									<h3 class="text-title text-ink-strong mt-1.5 mb-2 font-semibold">
 										<a
 											href={`/trabajos/${item.id}/`}
-											class="hover:text-accent-text transition-colors"
+											class="hover:text-brand transition-colors"
 										>
 											{item.data.title}
 										</a>
@@ -223,7 +226,7 @@ const pasos = [
 		<div class="mx-auto max-w-[1180px] px-8 py-24">
 			<div class="mb-16 max-w-[560px]">
 				<p
-					class="text-eyebrow tracking-eyebrow text-accent-on-dark font-semibold uppercase"
+					class="text-eyebrow tracking-eyebrow text-brand-on-dark font-semibold uppercase"
 				>
 					Proceso
 				</p>
@@ -237,7 +240,7 @@ const pasos = [
 				{
 					pasos.map((paso) => (
 						<li>
-							<p class="font-display text-accent-on-dark mb-4 text-[15px] font-bold">
+							<p class="font-display text-brand-on-dark mb-4 text-[15px] font-bold">
 								{paso.num}
 							</p>
 							<h3 class="text-title text-on-dark mb-2 font-semibold">{paso.titulo}</h3>
@@ -269,7 +272,7 @@ const pasos = [
 				href={site.whatsapp.url}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+				class="bg-action text-on-action hover:bg-action-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
 			>
 				WhatsApp {site.whatsapp.display}
 			</a>

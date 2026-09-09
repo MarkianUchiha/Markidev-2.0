@@ -207,8 +207,12 @@ function Columna({
     <section
       ref={setNodeRef}
       className={`rounded-lg border p-3 transition-colors ${
+        // El verde neon marca donde va a caer la tarjeta. Es el uso mas
+        // justificado de este color: sobre el negro mate del panel da 14.54 de
+        // contraste, el mas alto de la paleta, y una zona de destino que no se
+        // ve al instante hace soltar la tarjeta en la columna equivocada.
         isOver
-          ? "border-accent bg-accent-soft"
+          ? "border-action bg-action-soft"
           : "border-hairline bg-surface-sunken"
       }`}
     >
@@ -265,7 +269,7 @@ function Tarjeta({
       )}
       <p className="text-micro text-ink-soft mt-2 uppercase">{lead.canal}</p>
       {lead.retomar_el && (
-        <p className="text-micro text-accent-text mt-2">
+        <p className="text-micro text-brand mt-2">
           Retomar: {lead.retomar_el}
         </p>
       )}
@@ -320,7 +324,7 @@ function DialogoDato({
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-accent text-on-accent hover:bg-accent-hover text-body-sm rounded-md px-5 py-2.5 font-semibold transition-colors"
+            className="bg-action text-on-action hover:bg-action-hover text-body-sm rounded-md px-5 py-2.5 font-semibold transition-colors"
           >
             Mover
           </button>

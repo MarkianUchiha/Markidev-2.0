@@ -1,53 +1,107 @@
 @import "tailwindcss";
 
-/* Tokens tomados del mockup de Claude Design (MarkiDev.dc.html). Se conservan en
-   oklch, como venian: es el espacio en el que se eligieron y convertirlos a hex
-   perderia precision en el verde de acento. */
+/* Paleta de marca de MarkiDev. Los cuatro colores se definieron en hex y en hex
+   se conservan: son la fuente de verdad y convertirlos a otro espacio invitaria
+   a que alguien "ajuste" un tono y deje de coincidir con la marca.
+
+     Purpura Eva   #684198   identidad
+     Verde Neon    #85FF00   accion
+     Naranja       #FF9900   lineas
+     Negro Mate    #121212   fondo del panel y del modo oscuro
+
+   Cada color tiene un trabajo y no invade el de los otros:
+
+     PURPURA el fondo de los botones y del menu. La identidad.
+     VERDE   el texto sobre el purpura. Nunca un fondo grande: chilla.
+     NARANJA la estructura. Toda linea: bordes de tarjeta, divisiones, tablas.
+
+   REGLA QUE MANDA SOBRE TODAS: el texto de lectura nunca lleva color de marca.
+   Es negro en claro y blanco en oscuro. Los colores visten titulos, botones,
+   chips, lineas e iconos.
+
+   La regla no es estetica, es de contraste medido:
+
+     verde neon sobre blanco       1.29   ilegible
+     verde neon sobre negro mate  14.54   perfecto
+     naranja sobre blanco          2.14   ilegible
+     naranja sobre negro mate      8.75   perfecto
+     purpura sobre blanco          7.51   perfecto
+     purpura sobre negro mate      2.50   ilegible
+
+   De ahi salen las tres reglas de uso:
+     1. El verde y el naranja NUNCA son texto sobre fondo claro. Van de relleno o
+        de linea, con texto casi negro encima cuando lo llevan (14.54 y 8.75).
+     2. El purpura NUNCA es texto sobre fondo oscuro. Se aclara a #9B72D0 (5.10).
+     3. Verde sobre morado da 5.83 y pasa AA. Ese par no depende del fondo de la
+        pagina, asi que el boton es identico en los dos modos. */
 
 @theme {
-  /* Superficies. El lienzo es crema, no blanco: el blanco puro solo aparece en
-     las tarjetas, y ese medio tono es lo que las separa del fondo sin sombra. */
-  --color-canvas: oklch(0.98 0.005 70);
-  --color-surface: oklch(0.99 0.005 70);
-  --color-surface-sunken: oklch(0.96 0.005 70);
-  --color-dark: oklch(0.16 0.01 70);
+  /* Superficies. El lienzo no es blanco puro: ese medio tono es lo que separa
+     las tarjetas del fondo sin usar una sola sombra. Si se vuelve blanco, las
+     tarjetas desaparecen y hay que meter sombras para recuperarlas. */
+  --color-canvas: #f7f7f8;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #efeff1;
+  --color-dark: #121212;
 
-  /* Texto */
-  --color-ink-strong: oklch(0.16 0.01 70);
-  --color-ink: oklch(0.2 0.01 70);
-  --color-ink-subtle: oklch(0.4 0.01 70);
-  --color-ink-muted: oklch(0.45 0.01 70);
-  --color-ink-soft: oklch(0.5 0.01 70);
-  --color-on-dark: oklch(0.97 0.005 70);
-  --color-on-dark-muted: oklch(0.65 0.01 70);
-  --color-on-accent: oklch(0.99 0.005 165);
+  /* Texto. Negro y sus grises: ningun token de aqui lleva color de marca. */
+  --color-ink-strong: #121212;
+  --color-ink: #1f1f22;
+  --color-ink-subtle: #45454b;
+  --color-ink-muted: #55555c;
+  --color-ink-soft: #6b6b73;
+  --color-on-dark: #f5f5f7;
+  --color-on-dark-muted: #a5a5ae;
 
-  /* Bordes */
-  --color-hairline: oklch(0.9 0.01 70);
-  --color-border: oklch(0.85 0.01 70);
+  /* LINEAS — Naranja Comics, el color exacto de marca. Toda division del diseno
+     pasa por aqui: bordes de tarjeta, separadores, orillas de tabla, contorno del
+     boton secundario y de los campos.
 
-  /* Acento verde: el color de accion. El texto usa un tono mas oscuro que el
-     boton porque sobre crema el del boton no llega al contraste de lectura. */
-  --color-accent: oklch(0.55 0.14 165);
-  --color-accent-hover: oklch(0.48 0.14 165);
-  --color-accent-text: oklch(0.5 0.13 165);
-  --color-accent-deep: oklch(0.4 0.13 165);
-  --color-accent-soft: oklch(0.93 0.03 165);
-  --color-accent-on-dark: oklch(0.7 0.14 165);
+     Nota de accesibilidad, para que conste: #ff9900 sobre blanco da 2.14, por
+     debajo del 3.0 que la WCAG pide para el contorno de un control. Se ve de
+     sobra —es un naranja vivo—, pero formalmente no llega. Sobre negro mate da
+     8.75 y ahi sobra. */
+  --color-hairline: #ff9900;
+  --color-border: #ff9900;
 
-  /* Naranja. No es un segundo color de marca: solo alterna con el verde en los
-     iconos de servicios para que la rejilla no se lea monotona. */
-  --color-warm: oklch(0.5 0.13 40);
-  --color-warm-soft: oklch(0.93 0.03 40);
+  /* ACCION — boton Purpura Eva con el texto en Verde Neon. Ese par da 5.83 y
+     pasa AA, y no depende del fondo de la pagina: el boton es identico en claro y
+     en oscuro. El verde deja de ser fondo porque en grandes superficies chilla. */
+  --color-action: #684198;
+  --color-action-hover: #56347e;
+  --color-on-action: #85ff00;
+  --color-action-soft: #efe9f6;
+
+  /* IDENTIDAD — Purpura Eva. Enlaces, antetitulos, chips, logo y titulos de
+     color. No es boton: el boton es verde. */
+  --color-brand: #5c3888;
+  --color-brand-deep: #3f2760;
+  --color-brand-soft: #efe9f6;
+  /* Sobre negro mate el purpura de marca cae a 2.50. Este llega a 5.10. */
+  --color-brand-on-dark: #9b72d0;
+  /* El purpura exacto de marca, para rellenos donde no es texto: el logo, la
+     forma dentro del icono, el foco del teclado. */
+  --color-brand-solid: #684198;
+
+  /* Naranja de relleno: la forma dentro del icono de servicios. Mismo hex que las
+     lineas, es el mismo color de marca en otro papel. */
+  --color-warm: #ff9900;
+  --color-warm-soft: #fff0db;
+  --color-warm-deep: #7a4a00;
+  --color-on-warm: #121212;
 
   /* Boton neutro oscuro (el de la barra superior) */
-  --color-btn-dark: oklch(0.2 0.01 70);
-  --color-btn-dark-hover: oklch(0.3 0.01 70);
+  --color-btn-dark: #1f1f22;
+  --color-btn-dark-hover: #35353b;
 
-  /* Dos familias con papeles distintos: Space Grotesk titula, IBM Plex Sans se
-     lee. Mezclarlas al reves rompe el contraste que sostiene el diseno. */
-  --font-display: var(--font-space-grotesk);
-  --font-body: var(--font-ibm-plex-sans);
+  /* Tres familias con papeles que no se cruzan:
+       Poppins 700    titula
+       Open Sans      se lee
+       Crimson Pro    cita
+     Mezclarlas al reves rompe el contraste que sostiene el diseno. */
+  --font-display: var(--font-poppins);
+  --font-body: var(--font-open-sans);
+  --font-quote: var(--font-crimson-pro);
 
   --text-hero: 52px;
   --leading-hero: 1.05;
@@ -73,16 +127,118 @@
   --radius-pill: 100px;
 }
 
+/* Modo oscuro por preferencia del sistema: sin boton y sin una sola linea de
+   JavaScript. Solo se redefinen los tokens; ninguna plantilla cambia, porque
+   todas usan nombres semanticos y no colores sueltos.
+
+   Las superficies se invierten pero conservan sus tres escalones, para que las
+   tarjetas se sigan separando sin sombra igual que en claro. */
+/* Los valores del tema oscuro se escriben UNA sola vez aqui, porque se aplican en
+   dos situaciones distintas y si se copiaran acabarian divergiendo. */
+:root {
+  --oscuro-canvas: #121212;
+  --oscuro-surface: #1a1a1d;
+  --oscuro-sunken: #0d0d0f;
+  /* En claro el bloque de proceso es mas oscuro que la pagina. En oscuro tiene
+     que ser mas CLARO, o desaparece contra el fondo. */
+  --oscuro-bloque: #1f1f23;
+  --oscuro-ink-strong: #ffffff;
+  --oscuro-ink: #ededf0;
+  --oscuro-ink-subtle: #b8b8c0;
+  --oscuro-ink-muted: #a0a0a8;
+  --oscuro-ink-soft: #8a8a93;
+  /* Las lineas no cambian de color: el naranja es el mismo hex en los dos modos y
+     sobre negro mate da 8.75, mejor que sobre blanco. */
+  --oscuro-hairline: #ff9900;
+  --oscuro-border: #ff9900;
+  /* El boton verde tampoco cambia: negro sobre #85ff00 son 14.54 y ese par no
+     depende del fondo de la pagina. Lo que cambia es el purpura de texto, que
+     sobre negro mate caeria a 2.50. */
+  --oscuro-brand: #9b72d0;
+  --oscuro-brand-deep: #d8c6ec;
+  --oscuro-brand-soft: #2a1c3d;
+  --oscuro-action-soft: #1d2b0a;
+  --oscuro-warm-soft: #33240c;
+  --oscuro-warm-deep: #ffc266;
+  --oscuro-btn: #ededf0;
+  --oscuro-btn-hover: #ffffff;
+}
+
+/* Caso 1: el visitante tiene su sistema en oscuro. Sin boton y sin una sola
+   linea de JavaScript.
+   Caso 2: el panel, que va en Negro Mate siempre, sin importar el sistema.
+
+   Ninguna plantilla cambia en ninguno de los dos: todas usan nombres semanticos
+   y no colores sueltos. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-canvas: var(--oscuro-canvas);
+    --color-surface: var(--oscuro-surface);
+    --color-surface-sunken: var(--oscuro-sunken);
+    --color-dark: var(--oscuro-bloque);
+    --color-ink-strong: var(--oscuro-ink-strong);
+    --color-ink: var(--oscuro-ink);
+    --color-ink-subtle: var(--oscuro-ink-subtle);
+    --color-ink-muted: var(--oscuro-ink-muted);
+    --color-ink-soft: var(--oscuro-ink-soft);
+    --color-hairline: var(--oscuro-hairline);
+    --color-border: var(--oscuro-border);
+    --color-brand: var(--oscuro-brand);
+    --color-brand-deep: var(--oscuro-brand-deep);
+    --color-brand-soft: var(--oscuro-brand-soft);
+    --color-action-soft: var(--oscuro-action-soft);
+    --color-warm-soft: var(--oscuro-warm-soft);
+    --color-warm-deep: var(--oscuro-warm-deep);
+    --color-btn-dark: var(--oscuro-btn);
+    --color-btn-dark-hover: var(--oscuro-btn-hover);
+  }
+}
+
+.tema-oscuro {
+  color-scheme: dark;
+  --color-canvas: var(--oscuro-canvas);
+  --color-surface: var(--oscuro-surface);
+  --color-surface-sunken: var(--oscuro-sunken);
+  --color-dark: var(--oscuro-bloque);
+  --color-ink-strong: var(--oscuro-ink-strong);
+  --color-ink: var(--oscuro-ink);
+  --color-ink-subtle: var(--oscuro-ink-subtle);
+  --color-ink-muted: var(--oscuro-ink-muted);
+  --color-ink-soft: var(--oscuro-ink-soft);
+  --color-hairline: var(--oscuro-hairline);
+  --color-border: var(--oscuro-border);
+  --color-brand: var(--oscuro-brand);
+  --color-brand-deep: var(--oscuro-brand-deep);
+  --color-brand-soft: var(--oscuro-brand-soft);
+  --color-action-soft: var(--oscuro-action-soft);
+  --color-warm-soft: var(--oscuro-warm-soft);
+  --color-warm-deep: var(--oscuro-warm-deep);
+  --color-btn-dark: var(--oscuro-btn);
+  --color-btn-dark-hover: var(--oscuro-btn-hover);
+}
+
 /* El hueco de una imagen que todavia no existe se dibuja a proposito, en vez de
-   dejar un rectangulo gris que parece un fallo de carga. */
+   dejar un rectangulo gris que parece un fallo de carga. Las bandas usan tokens
+   para que el rayado siga al modo oscuro en vez de quedarse claro. */
 @utility placeholder-hatch {
   background: repeating-linear-gradient(
     135deg,
-    oklch(0.93 0.01 70) 0px,
-    oklch(0.93 0.01 70) 10px,
-    oklch(0.96 0.005 70) 10px,
-    oklch(0.96 0.005 70) 20px
+    var(--color-surface-sunken) 0px,
+    var(--color-surface-sunken) 10px,
+    var(--color-canvas) 10px,
+    var(--color-canvas) 20px
   );
+}
+
+/* Una cita o frase destacada. Es el unico lugar donde entra la serif: aparece
+   poco y por eso pesa cuando aparece. */
+@utility cita {
+  font-family: var(--font-quote);
+  font-size: 24px;
+  line-height: 1.4;
+  font-style: italic;
+  color: var(--color-ink-strong);
 }
 
 /* Estilos del contenido que viene de Markdown. Tailwind quita los estilos por
@@ -111,8 +267,9 @@
 
 .prose-markidev h3 {
   margin-top: 1.6em;
+  font-family: var(--font-display);
   font-size: var(--text-title);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-ink-strong);
 }
 
@@ -122,13 +279,13 @@
 }
 
 .prose-markidev a {
-  color: var(--color-accent-text);
+  color: var(--color-brand);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .prose-markidev a:hover {
-  color: var(--color-accent-hover);
+  color: var(--color-brand-deep);
 }
 
 .prose-markidev ul,
@@ -148,10 +305,15 @@
   margin-top: 0.5em;
 }
 
+/* La cita del cuerpo de un articulo hereda la serif por la misma razon que la
+   utilidad `cita`: es la voz de otro, y cambiar de familia lo dice sin comillas. */
 .prose-markidev blockquote {
-  border-left: 2px solid var(--color-accent);
+  border-left: 2px solid var(--color-hairline);
   padding-left: 1em;
-  color: var(--color-ink-soft);
+  font-family: var(--font-quote);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--color-ink-subtle);
 }
 
 .prose-markidev code {

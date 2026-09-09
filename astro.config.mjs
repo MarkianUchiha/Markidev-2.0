@@ -21,23 +21,37 @@ export default defineConfig({
   // dominio: ni una peticion a un tercero, ni la IP del visitante viajando a
   // Google. El subconjunto latin ya trae acentos, ñ y los signos de apertura.
   //
-  // De Space Grotesk solo se usa el peso 700 (logo, titulares y los numeros del
-  // proceso); pedir 500 y 600 seria peso muerto.
+  // Poppins sustituye a Century Gothic, que es de Monotype y no se puede
+  // incrustar sin licencia. Comparte su construccion geometrica y circular, y a
+  // diferencia de Questrial —la mas parecida en proporciones— si tiene un bold
+  // de verdad, que es lo que exigen los titulares.
+  //
+  // De Poppins solo se usa el 700 (logo, titulares y los numeros del proceso);
+  // pedir 500 y 600 seria peso muerto. De Crimson Pro solo la cursiva, que es la
+  // unica forma en que aparece: citas y frases destacadas.
   fonts: [
     {
-      name: "Space Grotesk",
-      cssVariable: "--font-space-grotesk",
+      name: "Poppins",
+      cssVariable: "--font-poppins",
       provider: fontProviders.fontsource(),
       weights: [700],
       styles: ["normal"],
       subsets: ["latin"],
     },
     {
-      name: "IBM Plex Sans",
-      cssVariable: "--font-ibm-plex-sans",
+      name: "Open Sans",
+      cssVariable: "--font-open-sans",
       provider: fontProviders.fontsource(),
       weights: [400, 500, 600],
       styles: ["normal", "italic"],
+      subsets: ["latin"],
+    },
+    {
+      name: "Crimson Pro",
+      cssVariable: "--font-crimson-pro",
+      provider: fontProviders.fontsource(),
+      weights: [400],
+      styles: ["italic"],
       subsets: ["latin"],
     },
   ],

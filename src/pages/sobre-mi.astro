@@ -101,9 +101,9 @@ const noAyudo = [
 	>
 		<div>
 			<p
-				class="bg-accent-soft text-accent-deep text-eyebrow rounded-pill mb-6 inline-flex items-center gap-2 px-3 py-1.5 font-semibold"
+				class="bg-brand-soft text-brand-deep text-eyebrow rounded-pill mb-6 inline-flex items-center gap-2 px-3 py-1.5 font-semibold"
 			>
-				<span class="bg-accent block size-1.5 rounded-full" aria-hidden="true"></span>
+				<span class="bg-action block size-1.5 rounded-full" aria-hidden="true"></span>
 				Durango, México
 			</p>
 			<h1
@@ -142,7 +142,7 @@ const noAyudo = [
 		casos.length > 0 && (
 			<section class="mx-auto max-w-[1180px] px-8 py-24">
 				<div class="mb-14 max-w-[560px]">
-					<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+					<p class="text-eyebrow tracking-eyebrow text-brand font-semibold uppercase">
 						Ya lo hice antes
 					</p>
 					<h2 class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold">
@@ -152,13 +152,13 @@ const noAyudo = [
 				<ul class="border-hairline bg-hairline grid gap-px overflow-hidden rounded-xl border sm:grid-cols-2">
 					{casos.map((caso) => (
 						<li class="bg-surface px-7 py-8">
-							<p class="text-micro text-accent-text font-semibold tracking-[0.04em] uppercase">
+							<p class="text-micro text-brand font-semibold tracking-[0.04em] uppercase">
 								{caso.data.client}
 							</p>
 							<h3 class="text-title text-ink-strong mt-1.5 mb-2 font-semibold">
 								<a
 									href={`/trabajos/${caso.id}/`}
-									class="hover:text-accent-text transition-colors"
+									class="hover:text-brand transition-colors"
 								>
 									{caso.data.title}
 								</a>
@@ -177,7 +177,7 @@ const noAyudo = [
 		<div class="mx-auto max-w-[1180px] px-8 py-24">
 			<div class="mb-16 max-w-[560px]">
 				<p
-					class="text-eyebrow tracking-eyebrow text-accent-on-dark font-semibold uppercase"
+					class="text-eyebrow tracking-eyebrow text-brand-on-dark font-semibold uppercase"
 				>
 					Cómo trabajo
 				</p>
@@ -201,7 +201,7 @@ const noAyudo = [
 									{item.puntos.map((punto) => (
 										<li class="text-body-sm leading-body-sm text-on-dark-muted flex gap-2.5">
 											<span
-												class="bg-accent-on-dark mt-2 block size-1 shrink-0 rounded-full"
+												class="bg-brand-on-dark mt-2 block size-1 shrink-0 rounded-full"
 												aria-hidden="true"
 											/>
 											<span>{punto}</span>
@@ -218,7 +218,7 @@ const noAyudo = [
 
 	<section class="mx-auto max-w-[1180px] px-8 py-24">
 		<div class="mb-14 max-w-[560px]">
-			<p class="text-eyebrow tracking-eyebrow text-accent-text font-semibold uppercase">
+			<p class="text-eyebrow tracking-eyebrow text-brand font-semibold uppercase">
 				Con qué no ayudo
 			</p>
 			<h2
@@ -266,7 +266,7 @@ const noAyudo = [
 				href={site.whatsapp.url}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+				class="bg-action text-on-action hover:bg-action-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
 			>
 				WhatsApp {site.whatsapp.display}
 			</a>

@@ -16,7 +16,7 @@ const error = parametros.get("error");
 const turnstileSiteKey = env.TURNSTILE_SITE_KEY;
 
 const campo =
-	"border-border bg-surface text-ink text-body focus:border-ink-soft focus:ring-accent w-full rounded-md border px-4 py-3 transition-colors focus:ring-2 focus:outline-none";
+	"border-border bg-surface text-ink text-body focus:border-ink-soft focus:ring-brand-solid w-full rounded-md border px-4 py-3 transition-colors focus:ring-2 focus:outline-none";
 const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 ---
 
@@ -40,7 +40,7 @@ const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 				{
 					enviado && (
 						<p
-							class="bg-accent-soft text-accent-deep text-body rounded-md px-5 py-4 mb-8"
+							class="bg-brand-soft text-brand-deep text-body rounded-md px-5 py-4 mb-8"
 							role="status"
 						>
 							Listo, tu mensaje quedó guardado. Te respondo en menos de 24 horas.
@@ -104,11 +104,11 @@ const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 							type="checkbox"
 							name="privacidad"
 							required
-							class="accent-accent mt-1 h-4 w-4 shrink-0"
+							class="accent-brand-solid mt-1 h-4 w-4 shrink-0"
 						/>
 						<label for="privacidad" class="text-body-sm leading-body-sm text-ink-muted">
 							Acepto que guardes estos datos para responderme, según el
-							<a href="/aviso-de-privacidad/" class="text-accent-text hover:text-accent-hover underline">
+							<a href="/aviso-de-privacidad/" class="text-brand hover:text-brand-deep underline">
 								aviso de privacidad
 							</a>.
 						</label>
@@ -122,7 +122,7 @@ const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 
 					<button
 						type="submit"
-						class="bg-accent text-on-accent hover:bg-accent-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
+						class="bg-action text-on-action hover:bg-action-hover text-body rounded-md px-6 py-3.5 font-semibold transition-colors"
 					>
 						Enviar mensaje
 					</button>
@@ -137,7 +137,7 @@ const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 					href={site.whatsapp.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="bg-accent text-on-accent hover:bg-accent-hover text-body mb-3 block rounded-md px-5 py-3 text-center font-semibold transition-colors"
+					class="bg-action text-on-action hover:bg-action-hover text-body mb-3 block rounded-md px-5 py-3 text-center font-semibold transition-colors"
 				>
 					WhatsApp {site.whatsapp.display}
 				</a>
