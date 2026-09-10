@@ -1,0 +1,130 @@
+---
+// Las capturas del hero rotan solas porque MarkiDev vende cuatro cosas distintas
+// y una sola imagen subrepresenta el trabajo. Se hace con `@keyframes` y no con
+// JavaScript por la misma decision que sostiene el resto del sitio publico: aqui
+// no entra React ni una libreria de carrusel por una animacion de opacidad.
+//
+// Mientras no existan las capturas cada diapositiva es un hueco rayado con su
+// etiqueta. El dia que existan, el <img> sustituye al <span> de adentro y ni el
+// ciclo ni los tiempos cambian.
+const diapositivas = [
+	"Sistemas de gestión",
+	"Puntos de venta",
+	"Pedidos por WhatsApp",
+	"Sitios web",
+];
+---
+
+{/* Una sola raiz: el hero es una rejilla de dos columnas y dos raices meterian
+    un tercer hijo que la descuadra. */}
+<div>
+	<div class="grid" aria-label="Capturas de los sistemas que construyo">
+		{
+			diapositivas.map((etiqueta) => (
+				<div class="diapositiva border-hairline placeholder-hatch col-start-1 row-start-1 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border">
+					<span class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]">
+						{etiqueta}
+					</span>
+				</div>
+			))
+		}
+	</div>
+
+	{/* Los puntos solo avisan que hay mas de una captura: quien mira dos segundos
+	    no lo sabria de otro modo. No se pueden pulsar, asi que no son controles y
+	    por eso no entran en el arbol de accesibilidad. */}
+	<ul class="mt-4 flex justify-center gap-2" aria-hidden="true">
+		{diapositivas.map(() => <li class="punto bg-hairline size-1.5 rounded-full" />)}
+	</ul>
+</div>
+
+<style>
+	/* Las cuatro diapositivas se apilan en la misma celda de la rejilla en vez de
+	   con `position: absolute`, asi el contenedor conserva la altura de una sola
+	   y no hay que fijarsela a mano. */
+
+	/* Cuatro diapositivas de 4s dan un ciclo de 16s. El fundido ocupa el 3% del
+	   ciclo (~0.5s) y las transiciones se cruzan: la que sale y la que entra
+	   comparten esos 0.5s, asi que nunca hay un instante en blanco. */
+	.diapositiva {
+		opacity: 0;
+		animation: rotar-captura 16s infinite;
+	}
+
+	.diapositiva:nth-child(2) {
+		animation-delay: 4s;
+	}
+
+	.diapositiva:nth-child(3) {
+		animation-delay: 8s;
+	}
+
+	.diapositiva:nth-child(4) {
+		animation-delay: 12s;
+	}
+
+	@keyframes rotar-captura {
+		0% {
+			opacity: 0;
+		}
+		3% {
+			opacity: 1;
+		}
+		25% {
+			opacity: 1;
+		}
+		28% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	/* El punto sigue el mismo ciclo que la diapositiva que le toca. */
+	.punto {
+		animation: encender-punto 16s infinite;
+	}
+
+	.punto:nth-child(2) {
+		animation-delay: 4s;
+	}
+
+	.punto:nth-child(3) {
+		animation-delay: 8s;
+	}
+
+	.punto:nth-child(4) {
+		animation-delay: 12s;
+	}
+
+	@keyframes encender-punto {
+		0%,
+		28%,
+		100% {
+			background-color: var(--color-hairline);
+		}
+		3%,
+		25% {
+			background-color: var(--color-warm);
+		}
+	}
+
+	/* Un elemento que se mueve solo junto al titular es exactamente lo que esta
+	   preferencia existe para detener. Sin animacion queda fija la primera
+	   captura, que es la que mas vende. */
+	@media (prefers-reduced-motion: reduce) {
+		.diapositiva,
+		.punto {
+			animation: none;
+		}
+
+		.diapositiva:first-child {
+			opacity: 1;
+		}
+
+		.punto:first-child {
+			background-color: var(--color-warm);
+		}
+	}
+</style>

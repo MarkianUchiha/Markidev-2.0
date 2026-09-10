@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { site } from "../data/site";
 import { getPublishedWork } from "../lib/content";
+import CapturasHero from "../components/CapturasHero.astro";
 
 const destacados = (await getPublishedWork()).slice(0, 4);
 
@@ -112,17 +113,7 @@ const pasos = [
 			</div>
 		</div>
 
-		{/* Hueco declarado, no disimulado: aqui va la captura del panel en cuanto
-		    exista una con datos ficticios sembrados. */}
-		<div
-			class="border-hairline placeholder-hatch flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border"
-		>
-			<span
-				class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]"
-			>
-				captura del dashboard / POS
-			</span>
-		</div>
+		<CapturasHero />
 	</section>
 
 	<section class="border-hairline bg-surface-sunken border-y">
