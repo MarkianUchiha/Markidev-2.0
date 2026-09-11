@@ -13,6 +13,11 @@ const { titulo, descripcion } = Astro.props;
 
 // Sin esto las URL canonicas salen relativas y los rastreadores las descartan.
 const canonica = new URL(Astro.url.pathname, Astro.site);
+
+// Misma razon que la canonica, y aqui pesa mas: el canal principal es WhatsApp
+// y con una ruta relativa el enlace se comparte sin imagen. Una sola previa
+// para todo el sitio; las paginas no la cambian.
+const previa = new URL("/og-markidev.png", Astro.site);
 ---
 
 <!doctype html>
@@ -28,6 +33,21 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonica} />
 		<meta property="og:locale" content="es_MX" />
+		<meta property="og:image" content={previa} />
+		{/* Declarar el tamano evita que WhatsApp y Facebook enseñen un hueco
+		    mientras bajan la imagen para medirla. */}
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="MarkiDev" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={previa} />
+
+		{/* El SVG cambia de color con el modo del navegador; el PNG queda de
+		    respaldo para quien no lo lea. El de iOS va aparte porque Apple no
+		    acepta SVG y pinta de negro lo que sea transparente: ese va a sangre. */}
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 		{/* Se precarga solo la cara con la que abre la pagina: el titular en Space
 		    Grotesk y el cuerpo en IBM Plex regular. Las demas caras bajan cuando

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 10 180 180">
+  <!-- El viewBox recorta el margen del isotipo: en una pestaña sobran 16 px y
+       no se pueden gastar en aire. La forma es la misma, solo va a sangre. -->
+  <style>
+    :root {
+      --placa: #684198;
+      --trazo: #fafaf9;
+      --punto: #ff9900;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --placa: #ff9900;
+        --trazo: #121212;
+        --punto: #85ff00;
+      }
+    }
+  </style>
+  <rect x="10" y="10" width="180" height="180" rx="40" fill="var(--placa)" />
+  <path
+    d="M80,58 L128,100 L80,142"
+    fill="none"
+    stroke="var(--trazo)"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="152" cy="52" r="14" fill="var(--punto)" />
+</svg>
