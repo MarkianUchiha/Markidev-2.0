@@ -24,15 +24,38 @@ const year = new Date().getFullYear();
 	<div
 		class="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-8 py-[18px]"
 	>
-		{/* Marca provisional del mockup: un cuadro con un acento dentro. No es el
-		    logo definitivo, y por eso no vive como archivo en public/. */}
+		{/* El isotipo va inline y no como <img> a public/: son 364 bytes, asi que
+		    un request de mas cuesta mas que el markup, y un <img> no puede seguir
+		    al modo oscuro sin duplicar el archivo. Los tres colores salen de
+		    tokens, de modo que la placa pasa de morada a naranja sola.
+
+		    Dentro del sitio va el isotipo, nunca el lockup: el nombre ya esta
+		    aqui al lado como texto, en Poppins 700 de verdad. */}
 		<a href="/" class="flex items-center gap-2.5">
-			<span
-				class="bg-ink flex h-[30px] w-[30px] items-center justify-center rounded-md"
+			<svg
+				viewBox="0 0 200 200"
+				class="h-8 w-8 shrink-0"
 				aria-hidden="true"
+				focusable="false"
 			>
-				<span class="bg-brand-on-dark block h-3 w-3"></span>
-			</span>
+				<rect
+					x="10"
+					y="10"
+					width="180"
+					height="180"
+					rx="40"
+					class="fill-logo-placa"
+				/>
+				<path
+					d="M80,58 L128,100 L80,142"
+					fill="none"
+					stroke-width="18"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="stroke-logo-trazo"
+				/>
+				<circle cx="152" cy="52" r="14" class="fill-logo-punto" />
+			</svg>
 			<span
 				class="font-display text-ink-strong text-[18px] font-bold tracking-[-0.01em]"
 			>

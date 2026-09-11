@@ -94,6 +94,14 @@
   --color-btn-dark: #1f1f22;
   --color-btn-dark-hover: #35353b;
 
+  /* LOGO — los tres colores del isotipo. No reusan los tokens de arriba porque
+     entre claro y oscuro la placa cambia de PAPEL, no de tono: pasa de morado a
+     naranja. Ningun token existente hace ese salto, y forzarlo obligaria a
+     escribir el hex a mano en el SVG. */
+  --color-logo-placa: #684198;
+  --color-logo-trazo: #fafaf9;
+  --color-logo-punto: #ff9900;
+
   /* Tres familias con papeles que no se cruzan:
        Poppins 700    titula
        Open Sans      se lee
@@ -162,6 +170,13 @@
   --oscuro-warm-deep: #ffc266;
   --oscuro-btn: #ededf0;
   --oscuro-btn-hover: #ffffff;
+  /* El isotipo invierte: sobre negro mate la placa morada se apaga (2.50), asi
+     que la placa pasa a naranja (8.75) y el chevron a negro. El punto salta de
+     naranja a verde para que siga leyendose como acento y no como parte de la
+     placa. */
+  --oscuro-logo-placa: #ff9900;
+  --oscuro-logo-trazo: #121212;
+  --oscuro-logo-punto: #85ff00;
 }
 
 /* Caso 1: el visitante tiene su sistema en oscuro. Sin boton y sin una sola
@@ -192,6 +207,9 @@
     --color-warm-deep: var(--oscuro-warm-deep);
     --color-btn-dark: var(--oscuro-btn);
     --color-btn-dark-hover: var(--oscuro-btn-hover);
+    --color-logo-placa: var(--oscuro-logo-placa);
+    --color-logo-trazo: var(--oscuro-logo-trazo);
+    --color-logo-punto: var(--oscuro-logo-punto);
   }
 }
 
@@ -216,6 +234,9 @@
   --color-warm-deep: var(--oscuro-warm-deep);
   --color-btn-dark: var(--oscuro-btn);
   --color-btn-dark-hover: var(--oscuro-btn-hover);
+  --color-logo-placa: var(--oscuro-logo-placa);
+  --color-logo-trazo: var(--oscuro-logo-trazo);
+  --color-logo-punto: var(--oscuro-logo-punto);
 }
 
 /* El hueco de una imagen que todavia no existe se dibuja a proposito, en vez de
