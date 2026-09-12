@@ -3,13 +3,22 @@ import "../styles/global.css";
 import { Font } from "astro:assets";
 import Nav from "../components/Nav.astro";
 import Pie from "../components/Pie.astro";
+import { grafo, negocio, persona } from "../lib/schema";
 
 interface Props {
 	titulo: string;
 	descripcion: string;
+	/** Entidades propias de la pagina: el articulo, el caso, las migas. */
+	schema?: object[];
 }
 
-const { titulo, descripcion } = Astro.props;
+const { titulo, descripcion, schema = [] } = Astro.props;
+
+// El negocio y la persona van en TODAS las paginas, con el mismo `@id`. No es
+// repetir por repetir: un rastreador no garantiza haber visto la portada antes
+// de llegar aqui, y sin la entidad en el documento las referencias del articulo
+// a su autor apuntan a la nada.
+const datosEstructurados = grafo([negocio(), persona(), ...schema]);
 
 // Sin esto las URL canonicas salen relativas y los rastreadores las descartan.
 const canonica = new URL(Astro.url.pathname, Astro.site);
@@ -48,6 +57,12 @@ const previa = new URL("/og-markidev.png", Astro.site);
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+		{/* `set:html` y no interpolacion normal: Astro escaparia las comillas del
+		    JSON y el bloque llegaria roto. El contenido no viene de fuera —sale de
+		    lib/schema.ts y del frontmatter del repositorio—, asi que no hay texto
+		    ajeno que pueda colarse aqui. */}
+		<script type="application/ld+json" is:inline set:html={datosEstructurados} />
 
 		{/* Se precarga solo la cara con la que abre la pagina: el titular en Space
 		    Grotesk y el cuerpo en IBM Plex regular. Las demas caras bajan cuando

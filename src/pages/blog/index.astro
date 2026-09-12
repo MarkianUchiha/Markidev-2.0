@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getPublishedPosts, formatDate } from "../../lib/content";
+import { migas } from "../../lib/schema";
 
 const posts = await getPublishedPosts();
 ---
@@ -8,6 +9,7 @@ const posts = await getPublishedPosts();
 <Layout
 	titulo="Blog — MarkiDev"
 	descripcion="Respuestas a las preguntas que los clientes hacen antes de contratar: automatizacion, digitalizacion y desarrollo web para negocios."
+	schema={[migas([{ nombre: "Inicio", url: "/" }, { nombre: "Blog", url: "/blog/" }])]}
 >
 	<section class="py-24 mx-auto max-w-[1200px] px-6">
 		<h1 class="text-section leading-section font-semibold">Blog</h1>

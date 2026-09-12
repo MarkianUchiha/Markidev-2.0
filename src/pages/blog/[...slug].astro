@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { getPublishedPosts, formatDate } from "../../lib/content";
+import { articulo, migas } from "../../lib/schema";
 
 export async function getStaticPaths() {
 	const posts = await getPublishedPosts();
@@ -12,7 +13,18 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<Layout titulo={`${post.data.title} — MarkiDev`} descripcion={post.data.description}>
+<Layout
+	titulo={`${post.data.title} — MarkiDev`}
+	descripcion={post.data.description}
+	schema={[
+		articulo(post),
+		migas([
+			{ nombre: "Inicio", url: "/" },
+			{ nombre: "Blog", url: "/blog/" },
+			{ nombre: post.data.title, url: `/blog/${post.id}/` },
+		]),
+	]}
+>
 	{/* En los articulos manda la capa editorial: ancho de lectura, no de galeria. */}
 	<article class="py-24 mx-auto max-w-[65ch] px-6">
 		<header>

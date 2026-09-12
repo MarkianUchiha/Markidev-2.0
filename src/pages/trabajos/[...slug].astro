@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { getPublishedWork } from "../../lib/content";
+import { caso, migas } from "../../lib/schema";
 
 export async function getStaticPaths() {
 	const work = await getPublishedWork();
@@ -12,7 +13,18 @@ const { item } = Astro.props;
 const { Content } = await render(item);
 ---
 
-<Layout titulo={`${item.data.title} — MarkiDev`} descripcion={item.data.description}>
+<Layout
+	titulo={`${item.data.title} — MarkiDev`}
+	descripcion={item.data.description}
+	schema={[
+		caso(item),
+		migas([
+			{ nombre: "Inicio", url: "/" },
+			{ nombre: "Trabajos", url: "/trabajos/" },
+			{ nombre: item.data.title, url: `/trabajos/${item.id}/` },
+		]),
+	]}
+>
 	<article class="py-24 mx-auto max-w-[1200px] px-6">
 		<header class="max-w-[65ch]">
 			<p class="text-body-sm text-ink-soft uppercase">{item.data.client}</p>

@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getPublishedWork } from "../../lib/content";
+import { migas } from "../../lib/schema";
 
 const work = await getPublishedWork();
 ---
@@ -8,6 +9,7 @@ const work = await getPublishedWork();
 <Layout
 	titulo="Trabajos — MarkiDev"
 	descripcion="Casos reales de automatizacion y digitalizacion de negocios: que se hizo, para quien y que cambio despues."
+	schema={[migas([{ nombre: "Inicio", url: "/" }, { nombre: "Trabajos", url: "/trabajos/" }])]}
 >
 	<section class="py-24 mx-auto max-w-[1200px] px-6">
 		<h1 class="text-section leading-section font-semibold">Trabajos</h1>

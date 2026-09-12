@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { site } from "../data/site";
 import { getPublishedWork } from "../lib/content";
+import { paginaDePerfil } from "../lib/schema";
 
 // El orden de los bloques no es narrativo, es el de las dudas que trae quien
 // esta decidiendo si escribe: existe, es lo mio, ya lo hizo antes, me va a
@@ -95,6 +96,7 @@ const noAyudo = [
 <Layout
 	titulo={`Sobre mí — ${site.name}`}
 	descripcion="Quién está detrás de MarkiDev: Marco Lara, desarrollador independiente. Cómo cobro, cuánto tardo, con qué ayudo y con qué no, antes de que me escribas."
+	schema={[paginaDePerfil()]}
 >
 	<section
 		class="mx-auto grid max-w-[1180px] items-center gap-16 px-8 pt-24 pb-20 lg:grid-cols-[1fr_0.8fr]"
