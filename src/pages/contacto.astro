@@ -107,7 +107,9 @@ const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 							class="accent-brand-solid mt-1 h-4 w-4 shrink-0"
 						/>
 						<label for="privacidad" class="text-body-sm leading-body-sm text-ink-muted">
-							Acepto que guardes estos datos para responderme, según el
+							{/* El espacio va explicito: un salto de linea antes de una etiqueta
+							    lo come el compilador y el texto sale pegado al enlace. */}
+							Acepto que guardes estos datos para responderme, según el{" "}
 							<a href="/aviso-de-privacidad/" class="text-brand hover:text-brand-deep underline">
 								aviso de privacidad
 							</a>.
@@ -140,6 +142,24 @@ const etiqueta = "text-body-sm text-ink-strong mb-2 block font-semibold";
 					class="bg-action text-on-action hover:bg-action-hover text-body mb-3 block rounded-md px-5 py-3 text-center font-semibold transition-colors"
 				>
 					WhatsApp {site.whatsapp.display}
+				</a>
+				{/* La agenda va antes que el correo: quien quiere avanzar rapido elige
+				    una hora y se acabo, mientras que el correo abre una conversacion
+				    que puede tardar dias. La duracion se dice aqui y no solo en la
+				    pagina de Google: "llamada" sin numero suena a que puede ser larga
+				    y eso frena a quien solo esta tanteando. */}
+				<a
+					href={site.agenda.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="border-border text-ink hover:border-ink-soft text-body mb-3 block rounded-md border px-5 py-3 text-center font-semibold transition-colors"
+				>
+					{/* El espacio no se ve —el span es `block`— pero sin el un lector de
+					    pantalla anuncia "Agendar llamada30 min". */}
+					Agendar llamada{" "}
+					<span class="text-body-sm text-ink-soft block font-normal">
+						{site.agenda.duracion}, eliges el horario
+					</span>
 				</a>
 				<a
 					href={`mailto:${site.email}`}
