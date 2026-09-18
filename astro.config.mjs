@@ -28,7 +28,7 @@ export default defineConfig({
   //
   // De Poppins solo se usa el 700 (logo, titulares y los numeros del proceso);
   // pedir 500 y 600 seria peso muerto. De Crimson Pro solo la cursiva, que es la
-  // unica forma en que aparece: citas y frases destacadas.
+  // unica forma en que aparece: las citas (`blockquote`) de los articulos.
   fonts: [
     {
       name: "Poppins",

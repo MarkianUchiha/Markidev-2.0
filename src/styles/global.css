@@ -252,16 +252,6 @@
   );
 }
 
-/* Una cita o frase destacada. Es el unico lugar donde entra la serif: aparece
-   poco y por eso pesa cuando aparece. */
-@utility cita {
-  font-family: var(--font-quote);
-  font-size: 24px;
-  line-height: 1.4;
-  font-style: italic;
-  color: var(--color-ink-strong);
-}
-
 /* Estilos del contenido que viene de Markdown. Tailwind quita los estilos por
    defecto del navegador, asi que sin esto un articulo sale como un bloque de
    texto plano. Se aplican por descendencia porque el HTML lo genera Astro al
@@ -326,8 +316,8 @@
   margin-top: 0.5em;
 }
 
-/* La cita del cuerpo de un articulo hereda la serif por la misma razon que la
-   utilidad `cita`: es la voz de otro, y cambiar de familia lo dice sin comillas. */
+/* Unico lugar donde entra la serif: aparece poco y por eso pesa. Es la voz de
+   otro, y cambiar de familia lo dice sin comillas. */
 .prose-markidev blockquote {
   border-left: 2px solid var(--color-hairline);
   padding-left: 1em;
