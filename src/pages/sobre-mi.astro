@@ -128,9 +128,12 @@ const noAyudo = [
 
 		{/* La foto real es lo primero que baja la duda de “¿existe de verdad?”. El
 		    hueco se dibuja hasta que exista una: una foto de banco de imágenes
-		    hace justo lo contrario de lo que esta página busca. */}
+		    hace justo lo contrario de lo que esta página busca.
+		    El tope de 480px es para una columna (tableta, plegables abiertos): sin él
+		    un retrato 4:5 a todo lo ancho mide más que la pantalla y entierra el
+		    texto. En escritorio no actúa, la columna ya es más angosta. */}
 		<div
-			class="border-hairline placeholder-hatch flex aspect-[4/5] items-center justify-center overflow-hidden rounded-xl border"
+			class="border-hairline placeholder-hatch flex aspect-[4/5] w-full max-w-[480px] items-center justify-center overflow-hidden rounded-xl border"
 		>
 			<span
 				class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]"
