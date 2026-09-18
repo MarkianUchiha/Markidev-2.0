@@ -353,3 +353,38 @@
 .prose-markidev img {
   border-radius: var(--radius-lg);
 }
+
+/* `display: block` deja que la tabla se desplace dentro de la columna de 65ch
+   en vez de ensancharla en movil. Es lo que hace GitHub con su Markdown; la
+   alternativa, envolver cada tabla con un plugin de rehype, es mas codigo para
+   el mismo efecto. `max-content` evita que una tabla corta se estire a lo ancho. */
+.prose-markidev table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+.prose-markidev th,
+.prose-markidev td {
+  border: 1px solid var(--color-hairline);
+  padding: 0.6em 0.9em;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose-markidev th {
+  background-color: var(--color-surface-sunken);
+  font-weight: 600;
+  color: var(--color-ink-strong);
+}
+
+/* La misma linea que divide el resto del sitio, no el gris del navegador. */
+.prose-markidev hr {
+  border: 0;
+  border-top: 1px solid var(--color-hairline);
+  margin-block: 2.5em;
+}
