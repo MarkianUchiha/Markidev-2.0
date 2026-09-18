@@ -24,6 +24,13 @@
   "vars": {
     "TEAM_DOMAIN": "purple-snowflake-b373.cloudflareaccess.com",
     "POLICY_AUD": "302746405ff6cbfe03b2112b66cb2fe8499fa15941999240a70180457f621b35",
+    // Publica por diseño: viaja en el HTML de /contacto/. La secreta va aparte,
+    // con `node scripts/cf-secretos.mjs`, y debe subirse despues de desplegar
+    // esta: sin el widget en la pagina, el servidor rechazaria todo envio.
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAE7Sr_vsxpa5supY",
+    // Subdominio y no markidev.com: si los avisos tienen un problema de
+    // entregabilidad, no arrastran al correo donde escriben los clientes.
+    "RESEND_FROM": "MarkiDev <leads@avisos.markidev.com>",
   },
   // Los leads y el contenido viven aqui. El id se llena al crear la base con
   // `wrangler d1 create markidev`; en local, miniflare la simula sin credenciales.

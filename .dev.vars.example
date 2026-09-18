@@ -10,6 +10,8 @@
 # --- Turnstile (antispam del formulario de contacto) ---
 # Del panel de Cloudflare > Turnstile. La clave de sitio es publica y viaja al
 # navegador; la secreta solo se usa al validar en el servidor.
+# En produccion la de sitio vive en `vars` de wrangler.jsonc. Aqui vacia la
+# apaga en local: el widget de produccion no acepta `localhost`.
 TURNSTILE_SITE_KEY=
 TURNSTILE_SECRET_KEY=
 
