@@ -5,6 +5,8 @@ import { site } from "../data/site";
 import { getPublishedWork } from "../lib/content";
 import CapturasHero from "../components/CapturasHero.astro";
 import Testimonios from "../components/Testimonios.astro";
+import VideoSistema from "../components/VideoSistema.astro";
+import posterVideoPortada from "../assets/trabajos/suudai-sistema-poster.png";
 
 const destacados = (await getPublishedWork()).slice(0, 4);
 
@@ -166,6 +168,28 @@ const pasos = [
 				))
 			}
 		</ul>
+	</section>
+
+	{/* Servicios dice qué hago; esto lo muestra funcionando antes de los casos.
+	    Mientras llega un video propio para la portada reutiliza el de Suudai:
+	    al cambiarlo se tocan las dos rutas, el póster y el pie. */}
+	<section id="en-uso" class="mx-auto max-w-[1180px] px-8 py-24">
+		<div class="mb-14 max-w-[560px]">
+			<p class="text-eyebrow tracking-eyebrow text-brand font-semibold uppercase">
+				El sistema en uso
+			</p>
+			<h2
+				class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold"
+			>
+				Así se ve un día de trabajo
+			</h2>
+		</div>
+		<VideoSistema
+			mp4="/videos/suudai-sistema.mp4"
+			webm="/videos/suudai-sistema.webm"
+			poster={posterVideoPortada}
+			caption="Del punto de venta al corte del día, con datos de prueba."
+		/>
 	</section>
 
 	{
