@@ -1,5 +1,7 @@
 ---
+import { Picture } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import fotoProfesional from "../assets/sobre-mi/foto-profesional.png";
 import { site } from "../data/site";
 import { getPublishedWork } from "../lib/content";
 import { paginaDePerfil } from "../lib/schema";
@@ -126,20 +128,27 @@ const noAyudo = [
 			</p>
 		</div>
 
-		{/* La foto real es lo primero que baja la duda de “¿existe de verdad?”. El
-		    hueco se dibuja hasta que exista una: una foto de banco de imágenes
-		    hace justo lo contrario de lo que esta página busca.
+		{/* La foto real es lo primero que baja la duda de “¿existe de verdad?”: una
+		    de banco de imágenes haría justo lo contrario de lo que esta página busca.
 		    El tope de 480px es para una columna (tableta, plegables abiertos): sin él
 		    un retrato 4:5 a todo lo ancho mide más que la pantalla y entierra el
-		    texto. En escritorio no actúa, la columna ya es más angosta. */}
+		    texto. En escritorio no actúa, la columna ya es más angosta.
+		    El original es 3:4; `fit="cover"` lo recorta a 4:5 en el build para que
+		    el navegador no descargue la franja que el marco esconde. */}
 		<div
-			class="border-hairline placeholder-hatch flex aspect-[4/5] w-full max-w-[480px] items-center justify-center overflow-hidden rounded-xl border"
+			class="border-hairline aspect-[4/5] w-full max-w-[480px] overflow-hidden rounded-xl border"
 		>
-			<span
-				class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]"
-			>
-				foto profesional
-			</span>
+			<Picture
+				src={fotoProfesional}
+				alt={`${site.author} sentado en un sillón con una tableta en las manos`}
+				formats={["avif", "webp"]}
+				fallbackFormat="jpg"
+				layout="constrained"
+				width={480}
+				height={600}
+				fit="cover"
+				class="size-full object-cover"
+			/>
 		</div>
 	</section>
 
