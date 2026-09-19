@@ -1,17 +1,33 @@
 ---
-// Las capturas del hero rotan solas porque MarkiDev vende cuatro cosas distintas
+import { Picture } from "astro:assets";
+import puntoDeVenta from "../assets/hero/punto-de-venta.png";
+import pedidosWhatsapp from "../assets/hero/pedidos-whatsapp.png";
+import sitioWeb from "../assets/hero/sitio-web.png";
+
+// Las capturas del hero rotan solas porque MarkiDev vende varias cosas distintas
 // y una sola imagen subrepresenta el trabajo. Se hace con `@keyframes` y no con
 // JavaScript por la misma decision que sostiene el resto del sitio publico: aqui
 // no entra React ni una libreria de carrusel por una animacion de opacidad.
 //
-// Mientras no existan las capturas cada diapositiva es un hueco rayado con su
-// etiqueta. El dia que existan, el <img> sustituye al <span> de adentro y ni el
-// ciclo ni los tiempos cambian.
+// Falta la de sistemas de gestion: sale del panel de Suudai con datos ficticios.
+// Rotan tres en vez de dejar un hueco rayado en produccion; al llegar se agrega
+// aqui y el ciclo de abajo vuelve a cuatro tiempos.
+//
+// El punto de venta va primero porque es la que queda fija con movimiento
+// reducido, y es la que mas vende.
 const diapositivas = [
-	"Sistemas de gestión",
-	"Puntos de venta",
-	"Pedidos por WhatsApp",
-	"Sitios web",
+	{
+		src: puntoDeVenta,
+		alt: "Punto de venta de Suudai con el catálogo de botellas y el ticket de la venta",
+	},
+	{
+		src: pedidosWhatsapp,
+		alt: "Formulario de pedido de Suudai que envía el pedido por WhatsApp",
+	},
+	{
+		src: sitioWeb,
+		alt: "Sitio web de EnarmDuo, plataforma para preparar el ENARM",
+	},
 ];
 ---
 
@@ -20,11 +36,22 @@ const diapositivas = [
 <div>
 	<div class="grid" aria-label="Capturas de los sistemas que construyo">
 		{
-			diapositivas.map((etiqueta) => (
-				<div class="diapositiva border-hairline placeholder-hatch col-start-1 row-start-1 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border">
-					<span class="border-hairline bg-canvas text-ink-soft rounded-sm border px-3.5 py-2 font-mono text-[13px]">
-						{etiqueta}
-					</span>
+			diapositivas.map(({ src, alt }, indice) => (
+				<div class="diapositiva border-hairline col-start-1 row-start-1 aspect-[4/3] overflow-hidden rounded-xl border">
+					{/* La primera es la imagen mas grande de la primera pantalla: se
+					    pide antes que el resto para no retrasar el LCP. */}
+					<Picture
+						src={src}
+						alt={alt}
+						formats={["avif", "webp"]}
+						fallbackFormat="jpg"
+						layout="constrained"
+						width={640}
+						height={480}
+						class="size-full object-cover"
+						loading={indice === 0 ? "eager" : "lazy"}
+						fetchpriority={indice === 0 ? "high" : "auto"}
+					/>
 				</div>
 			))
 		}
@@ -39,16 +66,16 @@ const diapositivas = [
 </div>
 
 <style>
-	/* Las cuatro diapositivas se apilan en la misma celda de la rejilla en vez de
+	/* Las diapositivas se apilan en la misma celda de la rejilla en vez de
 	   con `position: absolute`, asi el contenedor conserva la altura de una sola
 	   y no hay que fijarsela a mano. */
 
-	/* Cuatro diapositivas de 4s dan un ciclo de 16s. El fundido ocupa el 3% del
+	/* Tres diapositivas de 4s dan un ciclo de 12s. El fundido ocupa el 4% del
 	   ciclo (~0.5s) y las transiciones se cruzan: la que sale y la que entra
 	   comparten esos 0.5s, asi que nunca hay un instante en blanco. */
 	.diapositiva {
 		opacity: 0;
-		animation: rotar-captura 16s infinite;
+		animation: rotar-captura 12s infinite;
 	}
 
 	.diapositiva:nth-child(2) {
@@ -59,21 +86,17 @@ const diapositivas = [
 		animation-delay: 8s;
 	}
 
-	.diapositiva:nth-child(4) {
-		animation-delay: 12s;
-	}
-
 	@keyframes rotar-captura {
 		0% {
 			opacity: 0;
 		}
-		3% {
+		4% {
 			opacity: 1;
 		}
-		25% {
+		33.3% {
 			opacity: 1;
 		}
-		28% {
+		37.5% {
 			opacity: 0;
 		}
 		100% {
@@ -83,7 +106,7 @@ const diapositivas = [
 
 	/* El punto sigue el mismo ciclo que la diapositiva que le toca. */
 	.punto {
-		animation: encender-punto 16s infinite;
+		animation: encender-punto 12s infinite;
 	}
 
 	.punto:nth-child(2) {
@@ -94,18 +117,14 @@ const diapositivas = [
 		animation-delay: 8s;
 	}
 
-	.punto:nth-child(4) {
-		animation-delay: 12s;
-	}
-
 	@keyframes encender-punto {
 		0%,
-		28%,
+		37.5%,
 		100% {
 			background-color: var(--color-hairline);
 		}
-		3%,
-		25% {
+		4%,
+		33.3% {
 			background-color: var(--color-warm);
 		}
 	}
