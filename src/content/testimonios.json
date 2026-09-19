@@ -1,0 +1,24 @@
+[
+  {
+    "id": "lizbeth-ballesteros",
+    "order": 1,
+    "name": "Lizbeth Ballesteros",
+    "company": "Suudai",
+    "quote": "Mi negocio se convirtió en una verdadera empresa cuando por fin pude tener acceso a una vista completa de cómo funcionaba y qué estaba pasando en tiempo real en una sola pantalla, sin comandos raros, sin mil pasos, todo sencillo, claro y en palabras que yo entiendo, pero sobre todo que entiende mi negocio.",
+    "work": "suudai"
+  },
+  {
+    "id": "joel-ortega",
+    "order": 2,
+    "name": "Joel Ortega",
+    "company": "Arena y Mar",
+    "quote": "Mis clientes suelen ser nacionales y extranjeros, así que cuando Marco me hizo un sistema en inglés/español resolvió la mitad del trabajo, y sobre todo es que me lo montó en WhatsApp, algo que yo sí sé usar, y nada de sistemas difíciles o que me exijan estar sentado en una oficina atado a una pantalla."
+  },
+  {
+    "id": "roberto-balderas",
+    "order": 3,
+    "name": "Roberto Balderas",
+    "company": "EnarmDuo",
+    "quote": "La app era un proyecto que temíamos ya nunca vería la luz debido a la falta de profesionalismo del desarrollador original, pero tuvimos mucho apoyo de parte de Marco, quien tomó el proyecto, lo mejoró y nos ayudó a lanzarlo y arrancar el negocio."
+  }
+]

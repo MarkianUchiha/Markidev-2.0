@@ -22,6 +22,27 @@ export async function getPublishedWork(): Promise<CollectionEntry<"work">[]> {
   });
 }
 
+// El enlace al caso sale solo si el caso esta publicado: `reference` garantiza
+// que existe, pero no que haya salido de borrador.
+export async function getTestimonials() {
+  const [testimonials, work] = await Promise.all([
+    getCollection("testimonials"),
+    getPublishedWork(),
+  ]);
+  const publishedIds = new Set(work.map((item) => item.id));
+  return testimonials
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(({ data }) => ({
+      name: data.name,
+      company: data.company,
+      quote: data.quote,
+      href:
+        data.work && publishedIds.has(data.work.id)
+          ? `/trabajos/${data.work.id}/`
+          : undefined,
+    }));
+}
+
 // Fecha larga en español para las entradas del blog. `timeZone` fija el dia:
 // sin ella una fecha sin hora se interpreta en UTC y puede mostrarse un dia antes.
 export function formatDate(date: Date): string {
@@ -36,7 +57,10 @@ export function formatDate(date: Date): string {
 // Resuelve que entradas del menu se muestran. Las que dependen de una coleccion
 // aparecen cuando esa coleccion ya tiene algo publicado.
 export async function getVisibleNavigation() {
-  const [posts, work] = await Promise.all([getPublishedPosts(), getPublishedWork()]);
+  const [posts, work] = await Promise.all([
+    getPublishedPosts(),
+    getPublishedWork(),
+  ]);
   const counts = { blog: posts.length, work: work.length };
 
   return navigation.filter((item) =>
