@@ -61,7 +61,7 @@ const diapositivas = [
 	    no lo sabria de otro modo. No se pueden pulsar, asi que no son controles y
 	    por eso no entran en el arbol de accesibilidad. */}
 	<ul class="mt-4 flex justify-center gap-2" aria-hidden="true">
-		{diapositivas.map(() => <li class="punto bg-hairline size-1.5 rounded-full" />)}
+		{diapositivas.map(() => <li class="punto size-1.5 rounded-full" />)}
 	</ul>
 </div>
 
@@ -104,8 +104,11 @@ const diapositivas = [
 		}
 	}
 
-	/* El punto sigue el mismo ciclo que la diapositiva que le toca. */
+	/* El punto sigue el mismo ciclo que la diapositiva que le toca. Se
+	   distingue por forma, relleno contra contorno, y no por tono: en oscuro
+	   `hairline` y `warm` son el mismo naranja y un cambio de color no se veria. */
 	.punto {
+		border: 1px solid var(--color-warm);
 		animation: encender-punto 12s infinite;
 	}
 
@@ -121,7 +124,7 @@ const diapositivas = [
 		0%,
 		37.5%,
 		100% {
-			background-color: var(--color-hairline);
+			background-color: transparent;
 		}
 		4%,
 		33.3% {
