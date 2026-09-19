@@ -45,17 +45,23 @@ const testimonios = await getTestimonials();
 								aria-label={`${indice + 1} de ${testimonios.length}`}
 								data-slide
 							>
-								<figure>
+								{/* En escritorio, quién lo dice ocupa su propia columna: un
+								    testimonio convence por su fuente, y «Ver el proyecto» es la
+								    única acción de la sección. Como pie de una línea, ambos
+								    quedaban en lo más chico de la página. En celular se apilan. */}
+								<figure class="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-16">
 									<blockquote class="font-quote text-quote leading-quote text-ink-strong max-w-[48ch] italic">
 										<p>{testimonio.quote}</p>
 									</blockquote>
-									<figcaption class="text-body mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-										<span class="text-ink font-semibold">{testimonio.name}</span>
-										<span class="text-ink-soft">{testimonio.company}</span>
+									<figcaption class="lg:border-hairline mt-8 flex flex-col items-start lg:mt-0 lg:justify-center lg:border-l lg:pl-10">
+										<span class="font-display text-ink-strong text-title font-bold">
+											{testimonio.name}
+										</span>
+										<span class="text-body text-ink-soft mt-1">{testimonio.company}</span>
 										{testimonio.href && (
 											<a
 												href={testimonio.href}
-												class="text-brand text-body-sm font-semibold underline underline-offset-2 hover:no-underline"
+												class="border-border text-ink hover:border-ink-soft text-body mt-6 rounded-md border px-6 py-3.5 font-semibold transition-colors"
 											>
 												Ver el proyecto
 											</a>
