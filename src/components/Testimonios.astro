@@ -1,0 +1,260 @@
+---
+import { getTestimonials } from "../lib/content";
+
+// Un testimonio a la vez y a todo lo ancho: la seccion es la voz de otro, y
+// tres citas lado a lado se leen como un listado en vez de como prueba.
+//
+// La base es `scroll-snap`: deslizar funciona sin JavaScript y los tres textos
+// van completos en el HTML del servidor, legibles para buscadores y asistentes
+// de IA. El script solo suma botones, puntos y rotacion; sin el queda una
+// franja deslizable y los controles siguen ocultos, sin botones muertos.
+//
+// La estructura sigue el patron de carrusel de WAI-ARIA APG.
+const testimonios = await getTestimonials();
+---
+
+{
+	testimonios.length > 0 && (
+		<section id="testimonios" class="border-hairline bg-surface-sunken border-y">
+			<div class="mx-auto max-w-[1180px] px-8 py-24">
+				<div class="mb-12 max-w-[560px]">
+					<p class="text-eyebrow tracking-eyebrow text-brand font-semibold uppercase">
+						Testimonios
+					</p>
+					<h2 class="font-display text-ink-strong text-section leading-section tracking-section mt-3 font-bold">
+						En palabras de quienes ya trabajan conmigo
+					</h2>
+				</div>
+
+				<div
+					class="carrusel"
+					role="region"
+					aria-roledescription="carrusel"
+					aria-label="Testimonios de clientes"
+					data-carrusel
+				>
+					{/* El espacio entre slides no se ve nunca: existe porque la itálica se sale
+					    un poco de su caja por la izquierda, y sin él el arranque del
+					    siguiente testimonio asoma en el borde derecho. */}
+					<ul class="pista flex snap-x snap-mandatory gap-16 overflow-x-auto" aria-live="polite" data-pista>
+						{testimonios.map((testimonio, indice) => (
+							<li
+								class="w-full shrink-0 snap-start"
+								role="group"
+								aria-roledescription="testimonio"
+								aria-label={`${indice + 1} de ${testimonios.length}`}
+								data-slide
+							>
+								<figure>
+									<blockquote class="font-quote text-quote leading-quote text-ink-strong max-w-[48ch] italic">
+										<p>{testimonio.quote}</p>
+									</blockquote>
+									<figcaption class="text-body mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+										<span class="text-ink font-semibold">{testimonio.name}</span>
+										<span class="text-ink-soft">{testimonio.company}</span>
+										{testimonio.href && (
+											<a
+												href={testimonio.href}
+												class="text-brand text-body-sm font-semibold underline underline-offset-2 hover:no-underline"
+											>
+												Ver el proyecto
+											</a>
+										)}
+									</figcaption>
+								</figure>
+							</li>
+						))}
+					</ul>
+
+					<div class="mt-10 flex items-center justify-between gap-4" hidden data-controles>
+						<div class="flex">
+							{testimonios.map((testimonio, indice) => (
+								<button
+									type="button"
+									class="punto grid size-11 place-items-center"
+									aria-label={`Testimonio ${indice + 1}: ${testimonio.name}`}
+									data-ir={indice}
+								>
+									<span class="marca size-2.5 rounded-full" />
+								</button>
+							))}
+						</div>
+
+						<div class="flex gap-2">
+							<button type="button" class="control" aria-label="Pausar rotación" data-pausa>
+								<span data-icono-pausa>
+									<svg class="size-4" viewBox="0 0 16 16" aria-hidden="true">
+										<rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor" />
+										<rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor" />
+									</svg>
+								</span>
+								<span hidden data-icono-seguir>
+									<svg class="size-4" viewBox="0 0 16 16" aria-hidden="true">
+										<path d="M4 2.5v11a.5.5 0 0 0 .77.42l8.5-5.5a.5.5 0 0 0 0-.84l-8.5-5.5A.5.5 0 0 0 4 2.5Z" fill="currentColor" />
+									</svg>
+								</span>
+							</button>
+							<button type="button" class="control" aria-label="Testimonio anterior" data-anterior>
+								<svg class="size-4" viewBox="0 0 16 16" aria-hidden="true">
+									<path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</button>
+							<button type="button" class="control" aria-label="Testimonio siguiente" data-siguiente>
+								<svg class="size-4" viewBox="0 0 16 16" aria-hidden="true">
+									<path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	)
+}
+
+<style>
+	/* La barra de desplazamiento solo se esconde cuando hay botones que la
+	   sustituyan; sin JavaScript es la unica forma de avanzar con el mouse. */
+	.carrusel.con-js .pista {
+		scrollbar-width: none;
+	}
+
+	.carrusel.con-js .pista::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Mismo trato que el boton secundario del sitio, a 44px por lado: es el
+	   minimo tactil. */
+	.control {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		color: var(--color-ink);
+		transition: border-color 150ms;
+	}
+
+	.control:hover {
+		border-color: var(--color-ink-soft);
+	}
+
+	/* El punto activo se distingue por forma, no solo por color: relleno contra
+	   contorno. En oscuro `hairline` y `warm` son el mismo naranja, y un cambio
+	   de tono no se veria; ademas el color no puede ser lo unico que informa. */
+	.marca {
+		border: 1.5px solid var(--color-warm);
+	}
+
+	.punto[aria-current="true"] .marca {
+		background-color: var(--color-warm);
+	}
+</style>
+
+<script>
+	// Mas lento que el hero: una cita de 60 palabras lleva 15-20 s de lectura, y
+	// la pausa por mouse y foco cubre a quien se queda leyendo.
+	const INTERVALO_MS = 10_000;
+
+	function iniciar(raiz: HTMLElement) {
+		const pista = raiz.querySelector<HTMLElement>("[data-pista]");
+		const controles = raiz.querySelector<HTMLElement>("[data-controles]");
+		const botonPausa = raiz.querySelector<HTMLButtonElement>("[data-pausa]");
+		const iconoPausa = raiz.querySelector<HTMLElement>("[data-icono-pausa]");
+		const iconoSeguir = raiz.querySelector<HTMLElement>("[data-icono-seguir]");
+		const slides = [...raiz.querySelectorAll<HTMLElement>("[data-slide]")];
+		const puntos = [...raiz.querySelectorAll<HTMLButtonElement>("[data-ir]")];
+		if (!pista || !controles || !botonPausa || !iconoPausa || !iconoSeguir) return;
+		if (slides.length < 2) return;
+
+		const esMovimientoReducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		let actual = 0;
+		let estaPausado = false;
+		let estaEncima = false;
+		let tieneFoco = false;
+		let temporizador: number | undefined;
+
+		raiz.classList.add("con-js");
+		controles.hidden = false;
+		// Con movimiento reducido nada rota, asi que no hay nada que pausar.
+		botonPausa.hidden = esMovimientoReducido;
+
+		const puedeRotar = () =>
+			!esMovimientoReducido && !estaPausado && !estaEncima && !tieneFoco && !document.hidden;
+
+		const irA = (indice: number) => {
+			const destino = (indice + slides.length) % slides.length;
+			pista.scrollTo({
+				left: slides[destino].offsetLeft - slides[0].offsetLeft,
+				behavior: esMovimientoReducido ? "auto" : "smooth",
+			});
+		};
+
+		// Reprogramar en cada cambio es lo que hace que usar flechas o puntos
+		// reinicie la cuenta en vez de saltar al poco de haber elegido uno.
+		const programar = () => {
+			window.clearTimeout(temporizador);
+			// Un lector de pantalla no debe anunciar cada vuelta automatica; solo
+			// los cambios que pidio la persona.
+			pista.setAttribute("aria-live", puedeRotar() ? "off" : "polite");
+			if (!puedeRotar()) return;
+			temporizador = window.setTimeout(() => irA(actual + 1), INTERVALO_MS);
+		};
+
+		const marcarActual = (indice: number) => {
+			actual = indice;
+			puntos.forEach((punto, i) => punto.setAttribute("aria-current", String(i === actual)));
+			// Los que no se ven salen del orden de tabulacion: si no, el foco
+			// saltaria a un «Ver el proyecto» fuera de la pantalla.
+			slides.forEach((slide, i) => (slide.inert = i !== actual));
+			programar();
+		};
+
+		// El activo lo decide lo que se ve, no un contador: asi coinciden el
+		// deslizar con el dedo, las flechas y la rotacion.
+		const observador = new IntersectionObserver(
+			(entradas) => {
+				for (const entrada of entradas) {
+					if (entrada.isIntersecting) marcarActual(slides.indexOf(entrada.target as HTMLElement));
+				}
+			},
+			{ root: pista, threshold: 0.6 },
+		);
+		slides.forEach((slide) => observador.observe(slide));
+
+		puntos.forEach((punto) => punto.addEventListener("click", () => irA(Number(punto.dataset.ir))));
+		raiz.querySelector("[data-anterior]")?.addEventListener("click", () => irA(actual - 1));
+		raiz.querySelector("[data-siguiente]")?.addEventListener("click", () => irA(actual + 1));
+
+		botonPausa.addEventListener("click", () => {
+			estaPausado = !estaPausado;
+			botonPausa.setAttribute("aria-label", estaPausado ? "Reanudar rotación" : "Pausar rotación");
+			iconoPausa.hidden = estaPausado;
+			iconoSeguir.hidden = !estaPausado;
+			programar();
+		});
+
+		raiz.addEventListener("pointerenter", () => {
+			estaEncima = true;
+			programar();
+		});
+		raiz.addEventListener("pointerleave", () => {
+			estaEncima = false;
+			programar();
+		});
+		raiz.addEventListener("focusin", () => {
+			tieneFoco = true;
+			programar();
+		});
+		raiz.addEventListener("focusout", (evento) => {
+			tieneFoco = raiz.contains(evento.relatedTarget as Node | null);
+			programar();
+		});
+		document.addEventListener("visibilitychange", programar);
+
+		marcarActual(0);
+	}
+
+	document.querySelectorAll<HTMLElement>("[data-carrusel]").forEach(iniciar);
+</script>

@@ -127,6 +127,11 @@
   --text-eyebrow: 13px;
   --tracking-eyebrow: 0.06em;
   --text-micro: 12px;
+  /* La cita de un testimonio es la pieza protagonista de su seccion: crece con
+     la pantalla, de 22px a 400px de ancho hasta 32px a 1180. Con un tamaño fijo,
+     o se ve chica en escritorio o un parrafo de 60 palabras no cabe en celular. */
+  --text-quote: clamp(22px, 16.9px + 1.28vw, 32px);
+  --leading-quote: 1.35;
 
   --radius-sm: 6px;
   --radius-md: 8px;
