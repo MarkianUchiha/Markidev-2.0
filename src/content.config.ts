@@ -45,6 +45,18 @@ const work = defineCollection({
       // captura sin `alt`. Es opcional porque un caso puede salir antes que su
       // captura; mientras tanto la tarjeta dibuja el hueco.
       cover: z.object({ src: image(), alt: z.string() }).optional(),
+      // El video vive en public/ porque Astro no procesa video ni el loader
+      // puede importarlo; el patron evita rutas que apunten fuera de /videos/.
+      // El poster si pasa por el build. `caption` es tambien la descripcion
+      // accesible.
+      video: z
+        .object({
+          mp4: z.string().regex(/^\/videos\/.+\.mp4$/),
+          webm: z.string().regex(/^\/videos\/.+\.webm$/),
+          poster: image(),
+          caption: z.string(),
+        })
+        .optional(),
       draft: z.boolean().default(false),
     }),
 });

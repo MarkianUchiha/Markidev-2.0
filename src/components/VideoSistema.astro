@@ -1,0 +1,87 @@
+---
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+
+// Un video corto del sistema en uso. Lo comparten la portada y la pagina de
+// cada caso, y la regla de cuando se reproduce tiene que ser la misma en las dos.
+interface Props {
+	mp4: string;
+	webm: string;
+	poster: ImageMetadata;
+	caption: string;
+}
+
+const { mp4, webm, poster, caption } = Astro.props;
+
+// El poster es lo primero que se ve y lo unico que ve quien no reproduce: sale
+// en WebP a su tamaño real en vez del PNG de la captura.
+const posterOptimizado = await getImage({ src: poster, format: "webp" });
+---
+
+<figure>
+	{/* Sin `autoplay` en el HTML: el script decide si reproduce, porque con
+	    movimiento reducido no debe arrancar solo y el atributo no sabe de
+	    preferencias. Sin JavaScript queda el poster con los controles nativos,
+	    que ademas dan la pausa que pide WCAG 2.2.2. `width` y `height` reservan
+	    el hueco para que la pagina no salte al cargar. */}
+	<video
+		class="border-hairline h-auto w-full rounded-lg border"
+		muted
+		loop
+		playsinline
+		controls
+		preload="metadata"
+		width={poster.width}
+		height={poster.height}
+		poster={posterOptimizado.src}
+		aria-label={caption}
+		data-video-sistema
+	>
+		{/* WebM primero: pesa menos y casi todos lo leen; MP4 queda para Safari
+		    antiguo. */}
+		<source src={webm} type="video/webm" />
+		<source src={mp4} type="video/mp4" />
+	</video>
+	<figcaption class="text-body-sm text-ink-soft mt-3">{caption}</figcaption>
+</figure>
+
+<script>
+	// Solo se reproduce mientras al menos la mitad esta a la vista: un video en
+	// bucle fuera de pantalla gasta bateria y datos sin que nadie lo vea.
+	const esMovimientoReducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+	if (!esMovimientoReducido) {
+		// Quien pauso con los controles no quiere que el video vuelva a arrancar
+		// al desplazarse de regreso. Las pausas del propio script se marcan para
+		// no confundirlas con las suyas.
+		const pausadosPorPersona = new WeakSet<HTMLVideoElement>();
+		const pausandoPorScript = new WeakSet<HTMLVideoElement>();
+
+		const observador = new IntersectionObserver(
+			(entradas) => {
+				for (const entrada of entradas) {
+					const video = entrada.target as HTMLVideoElement;
+					if (entrada.isIntersecting) {
+						if (pausadosPorPersona.has(video)) continue;
+						// `play()` rechaza si el navegador bloquea la reproduccion; en ese
+						// caso quedan el poster y los controles, que es un estado valido.
+						video.play().catch(() => {});
+					} else if (!video.paused) {
+						pausandoPorScript.add(video);
+						video.pause();
+					}
+				}
+			},
+			{ threshold: 0.5 },
+		);
+
+		document.querySelectorAll<HTMLVideoElement>("[data-video-sistema]").forEach((video) => {
+			video.addEventListener("pause", () => {
+				if (pausandoPorScript.delete(video)) return;
+				pausadosPorPersona.add(video);
+			});
+			video.addEventListener("play", () => pausadosPorPersona.delete(video));
+			observador.observe(video);
+		});
+	}
+</script>

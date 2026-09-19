@@ -15,6 +15,11 @@ featured: true
 cover:
   src: "../../assets/trabajos/suudai.png"
   alt: "Portada del sitio de Suudai con un garrafón de agua y el botón para hacer un pedido"
+video:
+  mp4: "/videos/suudai-sistema.mp4"
+  webm: "/videos/suudai-sistema.webm"
+  poster: "../../assets/trabajos/suudai-sistema-poster.png"
+  caption: "Del punto de venta al corte del día en el sistema de Suudai, con datos de prueba."
 ---
 
 ## Como operaban antes
