@@ -15,7 +15,11 @@ export default defineConfig({
   // entrar sin la barra final y las señales de enlace se parten en dos URLs.
   trailingSlash: "always",
 
-  adapter: cloudflare(),
+  // Por defecto el adaptador transforma imagenes en runtime con Cloudflare
+  // Images, que se cobra por transformacion. Las paginas con imagenes se
+  // prerenderizan, asi que basta con generarlas una vez en el build y servirlas
+  // como archivos estaticos.
+  adapter: cloudflare({ imageService: "compile" }),
 
   // Astro baja los archivos durante el build y los sirve desde el propio
   // dominio: ni una peticion a un tercero, ni la IP del visitante viajando a
