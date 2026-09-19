@@ -12,6 +12,9 @@ services:
 year: 2025
 url: "https://www.suudai.com"
 featured: true
+cover:
+  src: "../../assets/trabajos/suudai.png"
+  alt: "Portada del sitio de Suudai con un garrafón de agua y el botón para hacer un pedido"
 ---
 
 ## Como operaban antes

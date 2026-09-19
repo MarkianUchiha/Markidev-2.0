@@ -27,7 +27,7 @@ const blog = defineCollection({
 // deberia poder publicarse.
 const work = defineCollection({
   loader: glob({ base: "./src/content/work", pattern: "**/*.md" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string().max(70),
     description: z.string().min(70).max(160),
     client: z.string(),
@@ -40,6 +40,10 @@ const work = defineCollection({
     // Controla el orden en la portada, donde el criterio es que caso vende
     // mejor, no cual es mas reciente.
     featured: z.boolean().default(false),
+    // Imagen y texto alternativo van juntos para que no pueda publicarse una
+    // captura sin `alt`. Es opcional porque un caso puede salir antes que su
+    // captura; mientras tanto la tarjeta dibuja el hueco.
+    cover: z.object({ src: image(), alt: z.string() }).optional(),
     draft: z.boolean().default(false),
   }),
 });

@@ -1,4 +1,5 @@
 ---
+import { Picture } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import { site } from "../data/site";
 import { getPublishedWork } from "../lib/content";
@@ -182,11 +183,25 @@ const pasos = [
 					{destacados.map((item) => (
 						<li class="border-hairline bg-surface overflow-hidden rounded-lg border">
 							<article>
-								<div class="placeholder-hatch flex aspect-[16/10] items-center justify-center">
-									<span class="border-hairline bg-canvas text-ink-soft rounded-sm border px-2.5 py-1 font-mono text-[11.5px]">
-										captura de {item.data.client}
-									</span>
-								</div>
+								{item.data.cover ? (
+									<Picture
+										src={item.data.cover.src}
+										alt={item.data.cover.alt}
+										formats={["avif", "webp"]}
+										fallbackFormat="jpg"
+										layout="constrained"
+										width={640}
+										height={400}
+										fit="cover"
+										class="aspect-[16/10] w-full object-cover"
+									/>
+								) : (
+									<div class="placeholder-hatch flex aspect-[16/10] items-center justify-center">
+										<span class="border-hairline bg-canvas text-ink-soft rounded-sm border px-2.5 py-1 font-mono text-[11.5px]">
+											captura de {item.data.client}
+										</span>
+									</div>
+								)}
 								<div class="px-5 pt-5 pb-6">
 									<p class="text-micro text-brand font-semibold tracking-[0.04em] uppercase">
 										{item.data.client}
