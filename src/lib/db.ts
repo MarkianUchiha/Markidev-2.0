@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import type { CanalId, EtapaId } from "./pipeline";
+import { esquemaBlog, type DatosBlog } from "./frontmatter";
 
 // El binding se lee dentro de cada funcion, nunca al cargar el modulo: fuera de
 // una peticion `env` no existe todavia y tocarlo arriba rompe el build.
@@ -174,4 +175,191 @@ export async function moverLead(
 
   await db().batch(sentencias);
   return true;
+}
+
+// ---------------------------------------------------------------------------
+// Contenido
+// ---------------------------------------------------------------------------
+
+// Lo que devuelve SQLite. `datos` es el frontmatter en JSON y `publicado` un
+// entero, porque D1 no tiene ni objetos ni booleanos.
+interface PostFila {
+  id: string;
+  coleccion: Coleccion;
+  datos: string;
+  cuerpo: string;
+  html: string;
+  publicado: number;
+  fecha: string;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+export type Coleccion = "blog";
+
+export interface Post {
+  id: string;
+  datos: DatosBlog;
+  cuerpo: string;
+  html: string;
+  publicado: boolean;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+// El frontmatter se valido al guardarlo, asi que aqui solo puede fallar si el
+// esquema cambio despues. En ese caso el post se descarta del listado en vez de
+// tumbar la pagina entera: un articulo desaparecido se nota y se arregla; un
+// blog que responde 500 se lleva por delante tambien a los que estan bien.
+function aPost(fila: PostFila): Post | null {
+  const resultado = esquemaBlog.safeParse(JSON.parse(fila.datos));
+  if (!resultado.success) {
+    console.error(
+      `El post ${fila.id} no cumple el esquema actual y se omitio:`,
+      resultado.error.issues,
+    );
+    return null;
+  }
+  return {
+    id: fila.id,
+    datos: resultado.data,
+    cuerpo: fila.cuerpo,
+    html: fila.html,
+    publicado: fila.publicado === 1,
+    creado_en: fila.creado_en,
+    actualizado_en: fila.actualizado_en,
+  };
+}
+
+/**
+ * Los posts de una coleccion, del mas reciente al mas viejo. `soloPublicados`
+ * es lo que pide el sitio publico; el panel los quiere todos.
+ */
+export async function listarPosts(
+  coleccion: Coleccion,
+  { soloPublicados = true } = {},
+): Promise<Post[]> {
+  const { results } = await db()
+    .prepare(
+      `SELECT * FROM posts
+        WHERE coleccion = ?${soloPublicados ? " AND publicado = 1" : ""}
+        ORDER BY fecha DESC`,
+    )
+    .bind(coleccion)
+    .all<PostFila>();
+  return results.map(aPost).filter((post): post is Post => post !== null);
+}
+
+export async function obtenerPost(
+  id: string,
+  { soloPublicado = true } = {},
+): Promise<Post | null> {
+  const fila = await db()
+    .prepare(
+      `SELECT * FROM posts WHERE id = ?${soloPublicado ? " AND publicado = 1" : ""}`,
+    )
+    .bind(id)
+    .first<PostFila>();
+  return fila ? aPost(fila) : null;
+}
+
+export interface PostAGuardar {
+  id: string;
+  coleccion: Coleccion;
+  datos: DatosBlog;
+  cuerpo: string;
+  html: string;
+}
+
+/**
+ * Alta o reemplazo. Si el post ya existia, su version anterior se copia a
+ * `post_revisiones` en la misma transaccion: es el historial que en un flujo de
+ * archivos daba git, y guardarlo aparte permitiria perderlo si algo falla en
+ * medio.
+ *
+ * El estado de publicado NO se toca al reeditar. Subir una correccion no deberia
+ * publicar un borrador sin querer.
+ */
+export async function guardarPost(
+  post: PostAGuardar,
+  autor: string,
+): Promise<{ creado: boolean }> {
+  const previo = await db()
+    .prepare("SELECT * FROM posts WHERE id = ?")
+    .bind(post.id)
+    .first<PostFila>();
+
+  const ahora = new Date().toISOString();
+  const datos = JSON.stringify(post.datos);
+  // El frontmatter manda la fecha de orden. Se saca a su propia columna porque
+  // ordenar por un campo dentro del JSON obligaria a leer todas las filas.
+  const fecha = post.datos.pubDate.toISOString();
+
+  if (!previo) {
+    // El borrador del frontmatter decide el estado inicial: un .md con
+    // `draft: true` entra sin publicar.
+    await db()
+      .prepare(
+        `INSERT INTO posts (id, coleccion, datos, cuerpo, html, publicado, fecha, creado_en, actualizado_en)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      )
+      .bind(
+        post.id,
+        post.coleccion,
+        datos,
+        post.cuerpo,
+        post.html,
+        post.datos.draft ? 0 : 1,
+        fecha,
+        ahora,
+        ahora,
+      )
+      .run();
+    return { creado: true };
+  }
+
+  await db().batch([
+    db()
+      .prepare(
+        `INSERT INTO post_revisiones (id, post_id, datos, cuerpo, autor, creado_en)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+      )
+      .bind(
+        crypto.randomUUID(),
+        post.id,
+        previo.datos,
+        previo.cuerpo,
+        autor,
+        ahora,
+      ),
+    db()
+      .prepare(
+        `UPDATE posts SET datos = ?, cuerpo = ?, html = ?, fecha = ?, actualizado_en = ?
+          WHERE id = ?`,
+      )
+      .bind(datos, post.cuerpo, post.html, fecha, ahora, post.id),
+  ]);
+
+  return { creado: false };
+}
+
+/** Devuelve el estado nuevo, o null si el post no existe. */
+export async function alternarPublicado(id: string): Promise<boolean | null> {
+  const fila = await db()
+    .prepare(
+      `UPDATE posts SET publicado = 1 - publicado, actualizado_en = ?
+        WHERE id = ? RETURNING publicado`,
+    )
+    .bind(new Date().toISOString(), id)
+    .first<{ publicado: number }>();
+  return fila ? fila.publicado === 1 : null;
+}
+
+export async function borrarPost(id: string): Promise<boolean> {
+  // Las revisiones caen solas por la clave foranea con ON DELETE CASCADE.
+  const { meta } = await db()
+    .prepare("DELETE FROM posts WHERE id = ?")
+    .bind(id)
+    .run();
+  return meta.changes > 0;
 }

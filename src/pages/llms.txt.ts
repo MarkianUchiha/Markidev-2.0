@@ -16,7 +16,10 @@ import { site } from "../data/site";
 
 const SITIO = "https://markidev.com";
 
-export const prerender = true;
+// Dejo de prerenderizarlo el dia que el blog se mudo a D1: compilarlo exigiria
+// binding de base en el build, y ademas volveria a quedarse viejo —que es
+// exactamente lo que este archivo existe para evitar.
+export const prerender = false;
 
 export const GET: APIRoute = async () => {
   const posts = await getPublishedPosts();

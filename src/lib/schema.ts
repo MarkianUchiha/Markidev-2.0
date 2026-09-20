@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import { site, socialLinks } from "../data/site";
+import type { EntradaBlog } from "./frontmatter";
 
 // Datos estructurados. No los lee ningun visitante: los leen Google y los
 // asistentes que responden citando fuentes, y de ahi sale la ficha con la que
@@ -103,7 +104,7 @@ export function paginaDePerfil() {
  * lo pide y omitirlo vale menos que repetir la de publicacion, que ademas es
  * cierta.
  */
-export function articulo(post: CollectionEntry<"blog">) {
+export function articulo(post: EntradaBlog) {
   const url = `${SITIO}/blog/${post.id}/`;
   return {
     "@type": "BlogPosting",

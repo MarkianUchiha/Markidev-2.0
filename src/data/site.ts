@@ -50,9 +50,13 @@ export const socialLinks = [
 // existe la primera entrada publicada; las demas llevan `available` a mano.
 // Enlazar una seccion vacia es peor que no enlazarla: el cliente que entra a
 // verificar encuentra el hueco.
+// `collection` esconde la entrada hasta que esa coleccion tiene algo publicado.
+// El blog ya no puede usarlo: su contenido vive en D1 y el menu aparece en
+// paginas que se compilan sin acceso a la base. Contar posts aqui obligaria a
+// que el build entero dependiera de D1 para poder pintar la barra.
 export const navigation = [
   { label: "Trabajos", href: "/trabajos/", collection: "work" },
-  { label: "Blog", href: "/blog/", collection: "blog" },
+  { label: "Blog", href: "/blog/", available: true },
   { label: "Sobre mí", href: "/sobre-mi/", available: true },
   { label: "Contacto", href: "/contacto/", available: true },
 ] as const;

@@ -2,25 +2,11 @@ import { defineCollection, reference } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-// Los articulos nacen de preguntas que los clientes hacen de verdad, asi que
-// `question` guarda esa pregunta tal cual se formula. El titulo puede diferir
-// para que funcione como encabezado, pero la pregunta literal es la que se
-// reutiliza en el marcado FAQ que leen los buscadores y los asistentes de IA.
-const blog = defineCollection({
-  loader: glob({ base: "./src/content/blog", pattern: "**/*.md" }),
-  schema: z.object({
-    title: z.string().max(70),
-    // Se convierte en la meta description; fuera de este rango Google la recorta
-    // o la sustituye por texto suyo.
-    description: z.string().min(70).max(160),
-    question: z.string().optional(),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    // Permite dejar borradores en el repositorio sin que lleguen al sitio.
-    draft: z.boolean().default(false),
-    tags: z.array(z.string()).default([]),
-  }),
-});
+// El blog ya no es una coleccion de archivos: vive en D1 y se administra desde
+// `/panel/contenido/`. Su esquema —el mismo, campo por campo— se mudo a
+// `src/lib/frontmatter.ts`, que es donde ahora se valida cada `.md` que alguien
+// sube. Aqui no queda nada suyo a proposito: dos definiciones del mismo
+// frontmatter acabarian diciendo cosas distintas.
 
 // Cada caso necesita decir que se hizo y que cambio para el cliente. `result`
 // es obligatorio a proposito: un caso sin resultado no convence a nadie y no
@@ -76,4 +62,4 @@ const testimonials = defineCollection({
   }),
 });
 
-export const collections = { blog, work, testimonials };
+export const collections = { work, testimonials };

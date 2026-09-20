@@ -1,16 +1,30 @@
 ---
-import { render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import { getPublishedPosts, formatDate } from "../../lib/content";
+import { getPostHtml, formatDate } from "../../lib/content";
 import { articulo, migas } from "../../lib/schema";
 
-export async function getStaticPaths() {
-	const posts = await getPublishedPosts();
-	return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+// Sin `getStaticPaths`: las rutas ya no se conocen al compilar porque los
+// articulos viven en D1 y aparecen o desaparecen desde el panel.
+export const prerender = false;
+
+const { slug } = Astro.params;
+const resultado = slug ? await getPostHtml(slug) : null;
+
+// Un articulo despublicado tiene que comportarse como uno que nunca existio. Si
+// respondiera 200 con la pagina vacia, seguiria indexado y enlazado.
+if (!resultado) {
+	return new Response("Articulo no encontrado.", {
+		status: 404,
+		headers: { "Content-Type": "text/plain; charset=utf-8" },
+	});
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { entrada: post, html } = resultado;
+
+Astro.response.headers.set(
+	"Cache-Control",
+	"public, s-maxage=60, stale-while-revalidate=600",
+);
 ---
 
 <Layout
@@ -39,9 +53,9 @@ const { Content } = await render(post);
 			</time>
 		</header>
 
-		<div class="prose-markidev mt-12">
-			<Content />
-		</div>
+		{/* `set:html` con HTML que ya paso por rehype-sanitize al guardarse. Es el
+		    unico lugar del sitio donde entra HTML que no escribio este repositorio. */}
+		<div class="prose-markidev mt-12" set:html={html} />
 
 		{
 			post.data.tags.length > 0 && (

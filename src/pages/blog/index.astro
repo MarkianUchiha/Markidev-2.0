@@ -3,7 +3,20 @@ import Layout from "../../layouts/Layout.astro";
 import { getPublishedPosts, formatDate } from "../../lib/content";
 import { migas } from "../../lib/schema";
 
+// El blog se arma en cada peticion porque su contenido vive en D1: publicar u
+// ocultar desde el panel se ve sin recompilar. Lo demas del sitio se sigue
+// prerenderizando.
+export const prerender = false;
+
 const posts = await getPublishedPosts();
+
+// El borde absorbe las visitas y D1 se toca una vez por minuto en el peor caso.
+// `stale-while-revalidate` evita que la primera visita despues de que expira
+// pague la consulta: se le sirve la copia vieja mientras se refresca por detras.
+Astro.response.headers.set(
+	"Cache-Control",
+	"public, s-maxage=60, stale-while-revalidate=600",
+);
 ---
 
 <Layout

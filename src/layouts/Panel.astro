@@ -9,6 +9,14 @@ interface Props {
 
 const { titulo, usuario } = Astro.props;
 
+// La seccion activa se marca con `aria-current`, que ademas de anunciarlo a un
+// lector de pantalla es de donde sale el estilo: una sola fuente de verdad.
+const ruta = Astro.url.pathname;
+const secciones = [
+	{ etiqueta: "Prospectos", href: "/panel/" },
+	{ etiqueta: "Contenido", href: "/panel/contenido/" },
+];
+
 // `tema-oscuro` en el body deja el panel en Negro Mate siempre, no solo cuando
 // el sistema pide oscuro: es una herramienta interna y su fondo es parte de su
 // identidad, no una preferencia del visitante.
@@ -45,6 +53,24 @@ const { titulo, usuario } = Astro.props;
 				    dice con que cuenta se esta escribiendo en el historial. */}
 				<span class="text-body-sm text-ink-soft">{usuario}</span>
 			</div>
+
+			<nav aria-label="Secciones del panel" class="mx-auto max-w-[1400px] px-6">
+				<ul class="flex gap-6">
+					{
+						secciones.map(({ etiqueta, href }) => (
+							<li>
+								<a
+									href={href}
+									aria-current={ruta === href ? "page" : undefined}
+									class="text-body-sm text-ink-soft hover:text-ink aria-[current=page]:text-ink-strong aria-[current=page]:border-warm -mb-px block border-b-2 border-transparent py-3 font-semibold transition-colors"
+								>
+									{etiqueta}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
 		</header>
 
 		<main class="mx-auto max-w-[1400px] px-6 py-10">

@@ -8,6 +8,8 @@
 User-agent: *
 Content-Signal: search=yes,ai-train=no,use=reference
 Allow: /
+# El panel es interno y ya responde con noindex; esto ahorra el rastreo.
+Disallow: /panel/
 
 # Entrenamiento de modelos. No citan, no enlazan, no traen trafico.
 # Revisar cuando el sitio tenga volumen suficiente para que aparecer en el
@@ -37,4 +39,8 @@ Disallow: /
 User-agent: Amazonbot
 Disallow: /
 
+# Son dos y no uno: el del build cubre el sitio, y el del blog se arma en cada
+# peticion porque sus articulos viven en base de datos. Sin esta segunda linea
+# el blog deja de existir para un buscador.
 Sitemap: https://markidev.com/sitemap-index.xml
+Sitemap: https://markidev.com/sitemap-blog.xml

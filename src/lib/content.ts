@@ -1,15 +1,37 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import { navigation } from "../data/site";
+import { listarPosts, obtenerPost, type Post } from "./db";
+import type { EntradaBlog } from "./frontmatter";
+
+export type { EntradaBlog };
 
 // Filtrar borradores en un solo lugar evita que una pagina nueva los publique
 // por olvido. Se filtran siempre, tambien en desarrollo, para que lo que se ve
 // al construir sea lo mismo que se publica.
 
-export async function getPublishedPosts(): Promise<CollectionEntry<"blog">[]> {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return posts.sort(
-    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
-  );
+// El blog vive en D1 y los trabajos en archivos, asi que esta capa devuelve las
+// dos cosas con la misma forma —`{ id, data }`— y quien las consume no tiene
+// que saber de donde salieron. Es lo que permite que `blog/index.astro` y
+// `llms.txt.ts` sigan igual que cuando el blog era una coleccion.
+const aEntrada = (post: Post): EntradaBlog => ({
+  id: post.id,
+  data: post.datos,
+});
+
+// Ya vienen ordenados por fecha descendente y filtrados por publicado desde la
+// consulta: ordenar en SQL evita traer los borradores para descartarlos aqui.
+export async function getPublishedPosts(): Promise<EntradaBlog[]> {
+  const posts = await listarPosts("blog");
+  return posts.map(aEntrada);
+}
+
+// El HTML ya viene convertido y saneado desde que se guardo, asi que la pagina
+// del articulo solo tiene que pintarlo.
+export async function getPostHtml(
+  id: string,
+): Promise<{ entrada: EntradaBlog; html: string } | null> {
+  const post = await obtenerPost(id);
+  return post ? { entrada: aEntrada(post), html: post.html } : null;
 }
 
 export async function getPublishedWork(): Promise<CollectionEntry<"work">[]> {
@@ -56,12 +78,14 @@ export function formatDate(date: Date): string {
 
 // Resuelve que entradas del menu se muestran. Las que dependen de una coleccion
 // aparecen cuando esa coleccion ya tiene algo publicado.
+//
+// El blog quedo fuera de esa cuenta al mudarse a D1: el menu se pinta tambien en
+// las paginas que se prerenderizan, y esas se compilan sin binding. Su entrada
+// se declara disponible en `site.ts`, y si algun dia no queda ningun articulo
+// publicado, el indice del blog lo dice en pantalla en vez de desaparecer.
 export async function getVisibleNavigation() {
-  const [posts, work] = await Promise.all([
-    getPublishedPosts(),
-    getPublishedWork(),
-  ]);
-  const counts = { blog: posts.length, work: work.length };
+  const work = await getPublishedWork();
+  const counts = { work: work.length };
 
   return navigation.filter((item) =>
     "collection" in item ? counts[item.collection] > 0 : item.available,
