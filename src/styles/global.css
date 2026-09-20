@@ -184,40 +184,29 @@
   --oscuro-logo-punto: #85ff00;
 }
 
-/* Caso 1: el visitante tiene su sistema en oscuro. Sin boton y sin una sola
-   linea de JavaScript.
-   Caso 2: el panel, que va en Negro Mate siempre, sin importar el sistema.
+/* El sitio se ve oscuro. No es lo que diga el sistema operativo: MarkiDev es
+   oscura igual que es morada, y el visitante que prefiera claro lo pide desde el
+   menu. Los tokens claros de arriba quedan de base y vuelven a mandar solos en
+   cuanto el documento lleva `data-tema="claro"`.
 
-   Ninguna plantilla cambia en ninguno de los dos: todas usan nombres semanticos
-   y no colores sueltos. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --color-canvas: var(--oscuro-canvas);
-    --color-surface: var(--oscuro-surface);
-    --color-surface-sunken: var(--oscuro-sunken);
-    --color-dark: var(--oscuro-bloque);
-    --color-ink-strong: var(--oscuro-ink-strong);
-    --color-ink: var(--oscuro-ink);
-    --color-ink-subtle: var(--oscuro-ink-subtle);
-    --color-ink-muted: var(--oscuro-ink-muted);
-    --color-ink-soft: var(--oscuro-ink-soft);
-    --color-hairline: var(--oscuro-hairline);
-    --color-border: var(--oscuro-border);
-    --color-brand: var(--oscuro-brand);
-    --color-brand-deep: var(--oscuro-brand-deep);
-    --color-brand-soft: var(--oscuro-brand-soft);
-    --color-action-soft: var(--oscuro-action-soft);
-    --color-warm-soft: var(--oscuro-warm-soft);
-    --color-warm-deep: var(--oscuro-warm-deep);
-    --color-btn-dark: var(--oscuro-btn);
-    --color-btn-dark-hover: var(--oscuro-btn-hover);
-    --color-logo-placa: var(--oscuro-logo-placa);
-    --color-logo-trazo: var(--oscuro-logo-trazo);
-    --color-logo-punto: var(--oscuro-logo-punto);
-  }
+   Que el oscuro sea la base y no la excepcion es lo que permite que la pagina
+   salga bien SIN JavaScript. El script del <head> solo marca el caso contrario,
+   que es el raro. Al reves —base clara y JS que pinta oscuro— toda visita
+   normal empezaria en blanco y corregiria a la vista.
+
+   Los dos casos que van oscuros comparten bloque, porque son la misma lista y
+   copiada acabaria divergiendo:
+     1. la pagina, salvo que se haya elegido claro;
+     2. el panel, que va en Negro Mate siempre, con `.tema-oscuro` en su body.
+
+   `:root:not([...])` pesa (0,2,0) contra el (0,1,0) que genera @theme, asi que
+   gana sin recurrir a !important. Ninguna plantilla cambia: todas usan nombres
+   semanticos y no colores sueltos. */
+:root {
+  color-scheme: light;
 }
 
+:root:not([data-tema="claro"]),
 .tema-oscuro {
   color-scheme: dark;
   --color-canvas: var(--oscuro-canvas);

@@ -122,30 +122,74 @@ const year = new Date().getFullYear();
 			</p>
 		</div>
 
-		<ul class="flex items-center gap-4">
-			{
-				socialLinks.map((red) => (
-					<li>
-						<a
-							href={red.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							aria-label={red.name}
-							class="border-warm text-on-action hover:bg-warm hover:text-action flex size-11 items-center justify-center rounded-full border transition-colors"
-						>
-							<svg
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								class="size-5"
-								aria-hidden="true"
+		{/* El cambio de tema vive aqui dentro y no en la barra: la barra son dos
+		    piezas —el nombre y MENU— y meterle una tercera le quita el filo.
+
+		    Viste como los iconos de redes, no como los tokens de pagina, porque el
+		    menu es morado en los dos modos: si usara `--color-ink` se volveria
+		    invisible al alternar. Por eso tampoco cambia de aspecto al pulsarlo,
+		    solo de etiqueta.
+
+		    Al llenarse de naranja su texto pasa a negro mate (`on-warm`, 8.75) y no
+		    a morado como en los iconos de al lado: ahi el par morado/naranja viste
+		    un grafico, que se conforma con 3:1, pero aqui hay texto de 14px y ese
+		    par da 3.50. */}
+		<div class="flex flex-wrap items-center gap-4">
+			<button
+				id="cambiar-tema"
+				type="button"
+				class="border-warm text-on-action hover:bg-warm hover:text-on-warm text-body-sm flex h-11 cursor-pointer items-center gap-2 rounded-full border px-5 font-semibold transition-colors"
+			>
+				<span class="etiqueta-a-claro flex items-center gap-2">
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						class="size-5"
+						aria-hidden="true"
+					>
+						<circle cx="12" cy="12" r="4.5"></circle>
+						<path
+							d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4l1.4-1.4M18 6l1.4-1.4"
+						></path>
+					</svg>
+					Ver en claro
+				</span>
+				<span class="etiqueta-a-oscuro flex items-center gap-2">
+					<svg viewBox="0 0 24 24" fill="currentColor" class="size-5" aria-hidden="true">
+						<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+					</svg>
+					Ver en oscuro
+				</span>
+			</button>
+
+			<ul class="flex items-center gap-4">
+				{
+					socialLinks.map((red) => (
+						<li>
+							<a
+								href={red.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label={red.name}
+								class="border-warm text-on-action hover:bg-warm hover:text-action flex size-11 items-center justify-center rounded-full border transition-colors"
 							>
-								<path d={red.icon} />
-							</svg>
-						</a>
-					</li>
-				))
-			}
-		</ul>
+								<svg
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									class="size-5"
+									aria-hidden="true"
+								>
+									<path d={red.icon} />
+								</svg>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
 	</div>
 
 	<p
@@ -181,6 +225,18 @@ const year = new Date().getFullYear();
 	body:has(#abrir-menu[aria-expanded="true"]) {
 		overflow: hidden;
 	}
+
+	/* Mismo truco que el boton Menu/Cerrar, pero mirando al <html>: la etiqueta
+	   ofrece el modo CONTRARIO al que se esta viendo, y la decide el CSS. Si la
+	   escribiera el script, quien llega en claro veria un instante la etiqueta
+	   equivocada mientras el JavaScript del menu baja.
+
+	   Va aqui y no en el <style> de arriba porque Astro le pega el atributo de
+	   scope a los selectores del componente, y <html> no es parte de el. */
+	html:not([data-tema="claro"]) .etiqueta-a-oscuro,
+	html[data-tema="claro"] .etiqueta-a-claro {
+		display: none;
+	}
 </style>
 
 <script is:inline>
@@ -201,6 +257,24 @@ const year = new Date().getFullYear();
 		}
 
 		boton.addEventListener("click", () => alternar(!abierto()));
+
+		// El tema se guarda con los dos valores escritos, aunque "oscuro" y "no
+		// hay nada" pinten igual hoy: la diferencia entre "nunca elegi" y "elegi
+		// oscuro" es la que permitiria volver a seguir al sistema mas adelante.
+		document.getElementById("cambiar-tema")?.addEventListener("click", () => {
+			const raiz = document.documentElement;
+			const quiereClaro = raiz.dataset.tema !== "claro";
+
+			if (quiereClaro) raiz.dataset.tema = "claro";
+			else delete raiz.dataset.tema;
+
+			try {
+				localStorage.setItem("tema", quiereClaro ? "claro" : "oscuro");
+			} catch {
+				// Sin almacenamiento el cambio vale para esta pagina y ya. Preferible
+				// a que el boton no haga nada.
+			}
+		});
 
 		document.addEventListener("keydown", (evento) => {
 			if (evento.key === "Escape" && abierto()) alternar(false);

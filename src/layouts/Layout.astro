@@ -34,6 +34,30 @@ const previa = new URL("/og-markidev.png", Astro.site);
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		{/* El orden importa: `dark` primero porque es como abre el sitio. Con esto
+		    el navegador pinta de oscuro su propio cromo —barras de scroll, campos,
+		    el fondo antes de la primera hoja de estilos— en vez de dar un
+		    destello blanco. */}
+		<meta name="color-scheme" content="dark light" />
+
+		{/* Lo unico bloqueante que hay aqui, y tiene que serlo: corre antes del
+		    primer pintado, cuando todavia no hay nada en pantalla que corregir.
+		    Al final del <body> el visitante veria la pagina oscura cambiar a
+		    clara delante de sus ojos en cada carga.
+
+		    Solo marca el caso raro. El oscuro no necesita JavaScript: es la base
+		    del CSS, asi que si este script no corre —o falla— la pagina sigue
+		    saliendo como debe. */}
+		<script is:inline>
+			try {
+				if (localStorage.getItem("tema") === "claro")
+					document.documentElement.dataset.tema = "claro";
+			} catch {
+				// En incognito con cookies bloqueadas, leer localStorage lanza.
+			}
+		</script>
+
 		<title>{titulo}</title>
 		<meta name="description" content={descripcion} />
 		<link rel="canonical" href={canonica} />
