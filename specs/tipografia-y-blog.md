@@ -47,6 +47,11 @@ Dirección elegida el 2026-09-21 entre cinco alternativas comparadas en pantalla
   orden de 8 KB.
 - Los cinco títulos de la lista de arriba pasan a Poppins, con `font-display`
   y `font-titular`.
+- **Ampliado el 2026-09-21, ya aprobada la spec:** los títulos chicos de tarjeta
+  (`text-title`) también pasan a Poppins 600. Son los `h3` de servicios,
+  proyectos y proceso en la portada, los de `/sobre-mi/`, los títulos de la
+  lista de `/trabajos/` y los `h2` del panel de contenido. Sin esto, la regla
+  «h1–h3 van en Poppins» seguía rota en nueve sitios.
 - Open Sans y Crimson Pro siguen en su mismo papel y con los mismos pesos.
 
 ### Entradas del blog (M-215)
@@ -70,7 +75,7 @@ Cada entrada del índice es una tarjeta:
 - La paleta, los tokens de color y el contraste medido.
 - Las familias: no entra ninguna fuente nueva.
 - La lista de trabajos (`/trabajos/`) conserva su maqueta; solo corrige la
-  fuente del título.
+  fuente de sus títulos.
 
 ## Criterios de aceptación
 
@@ -78,7 +83,7 @@ Cada entrada del índice es una tarjeta:
    mide 40px. En 1280px mide 60px.
 2. Ningún titular (h1–h3, números del proceso, menú) se sirve en peso 700,
    salvo el logotipo.
-3. Los títulos de blog, artículo y trabajos se sirven en Poppins.
+3. Ningún h1–h3 del sitio ni del panel se sirve en Open Sans.
 4. En el índice del blog, un toque en cualquier punto de la tarjeta abre el
    artículo. Con Tab, cada entrada recibe un solo foco y el contorno se ve en la
    tarjeta.
