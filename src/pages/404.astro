@@ -1,0 +1,103 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site } from "../data/site";
+
+// Bajo demanda, no estatica, y no por gusto: los articulos del blog llegan aqui
+// con `Astro.rewrite("/404")` cuando el slug no existe, y no se puede reescribir
+// hacia una pagina que se horneo en el build —el servidor no la tiene entre sus
+// rutas y revienta con un 500—. Prerenderizarla obligaria a mantener dos
+// paginas de 404 distintas, que es peor que despertar al Worker.
+export const prerender = false;
+
+// A donde mandar a quien se perdio. No es el menu entero: son las tres cosas
+// que alguien puede estar buscando cuando teclea mal una direccion de este
+// sitio, en el orden en que se buscan.
+const salidas = [
+	{
+		href: "/trabajos/",
+		titulo: "Trabajos",
+		descripcion: "Los sistemas que ya operan en negocios reales.",
+	},
+	{
+		href: "/blog/",
+		titulo: "Blog",
+		descripcion: "Las preguntas que me hacen antes de contratar, respondidas.",
+	},
+	{
+		href: "/contacto/",
+		titulo: "Contacto",
+		descripcion: "Cuéntame qué se te complica y te respondo yo mismo.",
+	},
+];
+---
+
+<Layout
+	titulo="Esta página no existe — MarkiDev"
+	descripcion="La dirección que buscas no está en markidev.com. Desde aquí puedes ir a los trabajos, al blog o escribirme directamente."
+>
+	<section class="mx-auto max-w-[1180px] px-8 py-24">
+		<div class="grid items-center gap-16 lg:grid-cols-2">
+			<div>
+				{/* El numero va de antetitulo y no de titular: quien llega aqui no
+				    necesita que le griten un codigo, necesita saber que hacer. El dato
+				    tecnico queda, en pequeño, para quien lo busque. */}
+				<p
+					class="text-eyebrow tracking-eyebrow text-warm-deep mb-4 font-semibold uppercase"
+				>
+					Error 404
+				</p>
+
+				<h1
+					class="font-display text-ink-strong text-section leading-section tracking-section mb-5 font-bold"
+				>
+					Esta página no existe
+				</h1>
+
+				<p class="text-lead leading-lead text-ink-muted mb-10 max-w-[520px]">
+					La dirección que abriste no lleva a ningún lado. Puede que el enlace
+					estuviera mal escrito, o que algo que vivía aquí se haya movido.
+				</p>
+
+				<ul class="border-hairline flex flex-col border-t">
+					{
+						salidas.map(({ href, titulo, descripcion }) => (
+							<li class="border-hairline border-b">
+								<a
+									href={href}
+									class="group hover:bg-surface-sunken -mx-4 flex flex-col gap-1 rounded-md px-4 py-5 transition-colors"
+								>
+									<span class="font-display text-ink-strong text-title group-hover:text-brand font-bold transition-colors">
+										{titulo}
+									</span>
+									<span class="text-body-sm text-ink-soft">{descripcion}</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+
+				<p class="text-body-sm text-ink-soft mt-8">
+					Si llegaste desde un enlace mío que ya no sirve,{" "}
+					<a
+						href={site.whatsapp.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="text-brand font-semibold underline underline-offset-4"
+					>
+						avísame por WhatsApp
+					</a>{" "}
+					y lo arreglo.
+				</p>
+			</div>
+
+			{/* Hueco rayado mientras llega la ilustracion: 1200x900 con fondo
+			    transparente, para que sirva igual en claro y en oscuro. El aspecto se
+			    reserva ya, de modo que al llegar la imagen la pagina no salte. */}
+			<div
+				class="placeholder-hatch border-hairline aspect-[4/3] w-full rounded-lg border"
+				role="presentation"
+			>
+			</div>
+		</div>
+	</section>
+</Layout>

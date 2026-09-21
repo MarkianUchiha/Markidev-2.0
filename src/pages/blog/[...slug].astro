@@ -12,11 +12,13 @@ const resultado = slug ? await getPostHtml(slug) : null;
 
 // Un articulo despublicado tiene que comportarse como uno que nunca existio. Si
 // respondiera 200 con la pagina vacia, seguiria indexado y enlazado.
+//
+// `rewrite` y no una Response suelta: asi quien se equivoca de direccion cae en
+// la misma pagina de 404 que el resto del sitio, con su menu y sus salidas, en
+// vez de en una linea de texto plano. La URL no cambia, que es lo que distingue
+// esto de una redireccion.
 if (!resultado) {
-	return new Response("Articulo no encontrado.", {
-		status: 404,
-		headers: { "Content-Type": "text/plain; charset=utf-8" },
-	});
+	return Astro.rewrite("/404");
 }
 
 const { entrada: post, html } = resultado;
