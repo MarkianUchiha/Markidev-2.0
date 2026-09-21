@@ -30,15 +30,15 @@ export default defineConfig({
   // diferencia de Questrial —la mas parecida en proporciones— si tiene un bold
   // de verdad, que es lo que exigen los titulares.
   //
-  // De Poppins solo se usa el 700 (logo, titulares y los numeros del proceso);
-  // pedir 500 y 600 seria peso muerto. De Crimson Pro solo la cursiva, que es la
+  // De Poppins, el 600 titula y el 700 queda solo para el logotipo, que es la
+  // marca y no cambia con la escala (M-216); pedir 500 seria peso muerto. De Crimson Pro solo la cursiva, que es la
   // unica forma en que aparece: las citas (`blockquote`) de los articulos.
   fonts: [
     {
       name: "Poppins",
       cssVariable: "--font-poppins",
       provider: fontProviders.fontsource(),
-      weights: [700],
+      weights: [600, 700],
       styles: ["normal"],
       subsets: ["latin"],
     },

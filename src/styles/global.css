@@ -103,7 +103,7 @@
   --color-logo-punto: #ff9900;
 
   /* Tres familias con papeles que no se cruzan:
-       Poppins 700    titula
+       Poppins 600    titula (el 700 queda solo para el logotipo)
        Open Sans      se lee
        Crimson Pro    cita
      Mezclarlas al reves rompe el contraste que sostiene el diseno. */
@@ -111,17 +111,27 @@
   --font-body: var(--font-open-sans);
   --font-quote: var(--font-crimson-pro);
 
-  --text-hero: 52px;
-  --leading-hero: 1.05;
-  --tracking-hero: -0.02em;
-  --text-section: 34px;
-  --leading-section: 1.15;
-  --tracking-section: -0.01em;
+  /* El peso de titular vive aqui y no como `font-bold` en cada plantilla: el 700
+     en bloque apretado se leia rigido (M-216), y bajarlo de nuevo debe ser una
+     linea, no treinta. */
+  --font-weight-titular: 600;
+
+  /* Fluido por la misma razon que --text-quote: 60px fijos no dejan caber
+     «Digitalizo» en un telefono de 390px. 40px a 400 de ancho, 60px a 1180. */
+  --text-hero: clamp(40px, 29.74px + 2.564vw, 60px);
+  --leading-hero: 1.08;
+  --tracking-hero: -0.035em;
+  --text-section: 38px;
+  /* Titulo de la tarjeta del indice del blog: entre section y title, porque una
+     lista de tarjetas a 38px se come la pantalla y a 17px no se lee como titular. */
+  --text-card: 30px;
+  --leading-section: 1.1;
+  --tracking-section: -0.025em;
   --text-lead: 18px;
   --leading-lead: 1.6;
   --text-title: 17px;
-  --text-body: 15px;
-  --leading-body: 1.6;
+  --text-body: 16px;
+  --leading-body: 1.65;
   --text-body-sm: 14px;
   --leading-body-sm: 1.55;
   --text-eyebrow: 13px;
@@ -264,7 +274,7 @@
   margin-top: 2em;
   font-family: var(--font-display);
   font-size: var(--text-section);
-  font-weight: 700;
+  font-weight: var(--font-weight-titular);
   line-height: var(--leading-section);
   letter-spacing: var(--tracking-section);
   color: var(--color-ink-strong);
@@ -274,7 +284,7 @@
   margin-top: 1.6em;
   font-family: var(--font-display);
   font-size: var(--text-title);
-  font-weight: 700;
+  font-weight: var(--font-weight-titular);
   color: var(--color-ink-strong);
 }
 

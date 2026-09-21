@@ -44,7 +44,7 @@ Astro.response.headers.set(
 	{/* En los articulos manda la capa editorial: ancho de lectura, no de galeria. */}
 	<article class="py-24 mx-auto max-w-[65ch] px-6">
 		<header>
-			<h1 class="text-section leading-section font-semibold">{post.data.title}</h1>
+			<h1 class="font-display text-ink-strong text-section leading-section tracking-section font-titular">{post.data.title}</h1>
 			<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft mt-6 block">
 				{formatDate(post.data.pubDate)}
 				{

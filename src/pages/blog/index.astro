@@ -25,7 +25,7 @@ Astro.response.headers.set(
 	schema={[migas([{ nombre: "Inicio", url: "/" }, { nombre: "Blog", url: "/blog/" }])]}
 >
 	<section class="py-24 mx-auto max-w-[1200px] px-6">
-		<h1 class="text-section leading-section font-semibold">Blog</h1>
+		<h1 class="font-display text-ink-strong text-section leading-section tracking-section font-titular">Blog</h1>
 		<p class="text-lead text-ink-subtle mt-6 max-w-[65ch]">
 			Las preguntas que me hacen los clientes antes de contratar, respondidas a fondo.
 		</p>
@@ -36,19 +36,43 @@ Astro.response.headers.set(
 			) : (
 				<ul class="mt-12 gap-8 flex flex-col">
 					{posts.map((post) => (
-						<li class="border-hairline border-b pb-8 last:border-b-0">
-							<article>
-								<h2 class="text-section leading-section tracking-section font-semibold">
-									<a href={`/blog/${post.id}/`} class="hover:text-brand transition-colors">
+						<li>
+							{/* Toda la tarjeta se toca, pero hay un solo enlace: el del titulo, estirado
+							    con un ::after sobre la tarjeta. Envolver la tarjeta en <a> haria que un
+							    lector de pantalla leyera titulo, descripcion y fecha como nombre del
+							    enlace. Por lo mismo «Leer articulo» va oculto: repetiria el destino. */}
+							<article class="group border-border bg-surface relative flex flex-col gap-3.5 rounded-lg border p-8 has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink-strong">
+								<h2 class="font-display text-ink-strong text-card leading-section tracking-section font-titular">
+									<a
+										href={`/blog/${post.id}/`}
+										class="after:absolute after:inset-0 after:rounded-lg focus-visible:outline-none"
+									>
 										{post.data.title}
 									</a>
 								</h2>
-								<p class="text-body text-ink-subtle mt-3 max-w-[65ch]">
+								<p class="text-body leading-body text-ink-subtle max-w-[65ch]">
 									{post.data.description}
 								</p>
-								<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft mt-3 block">
-									{formatDate(post.data.pubDate)}
-								</time>
+								<div class="mt-1.5 flex flex-wrap items-center justify-between gap-3">
+									<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft">
+										{formatDate(post.data.pubDate)}
+									</time>
+									<span class="text-brand text-body-sm flex items-center gap-2 font-semibold" aria-hidden="true">
+										Leer artículo
+										<svg
+											class="size-[18px] transition-transform motion-safe:group-hover:translate-x-1"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2.2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										>
+											<path d="M5 12h14" />
+											<path d="M13 6l6 6-6 6" />
+										</svg>
+									</span>
+								</div>
 							</article>
 						</li>
 					))}
