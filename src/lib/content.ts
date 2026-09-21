@@ -57,6 +57,10 @@ export async function getTestimonials() {
     .map(({ data }) => ({
       name: data.name,
       company: data.company,
+      // El cargo ya nombra la empresa ("Al frente de Suudai"), asi que la
+      // tarjeta enseña uno u otro, nunca los dos: repetir el nombre del negocio
+      // dos renglones seguidos se lee como un error.
+      role: data.role,
       quote: data.quote,
       href:
         data.work && publishedIds.has(data.work.id)

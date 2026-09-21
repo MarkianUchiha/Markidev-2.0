@@ -57,7 +57,9 @@ const testimonios = await getTestimonials();
 										<span class="font-display text-ink-strong text-title font-bold">
 											{testimonio.name}
 										</span>
-										<span class="text-body text-ink-soft mt-1">{testimonio.company}</span>
+										<span class="text-body text-ink-soft mt-1">
+											{testimonio.role ?? testimonio.company}
+										</span>
 										{testimonio.href && (
 											<a
 												href={testimonio.href}

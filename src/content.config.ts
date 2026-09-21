@@ -57,6 +57,10 @@ const testimonials = defineCollection({
     order: z.number().int(),
     name: z.string(),
     company: z.string(),
+    // Quien habla decide si lo que dice pesa. "Al frente de" en vez de
+    // "Dueño"/"Dueña" no es un rodeo: dice lo mismo —manda en su negocio— sin
+    // obligar a marcar el genero de tres personas reales.
+    role: z.string().optional(),
     quote: z.string(),
     work: reference("work").optional(),
   }),
