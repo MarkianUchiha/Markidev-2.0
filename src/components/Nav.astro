@@ -109,11 +109,15 @@ const year = new Date().getFullYear();
 		class="mx-auto mt-10 flex w-full max-w-[1180px] flex-1 flex-col justify-end gap-8 sm:flex-row sm:items-end sm:justify-between"
 	>
 		<div>
+			{/* Al pasar a naranja el texto tiene que dejar de ser morado: ese par da
+			    3.50 y esto es texto de 15px, que necesita 4.5. Con negro mate son
+			    8.75. En reposo no hay problema: verde de fondo con morado encima son
+			    5.83. */}
 			<a
 				href={site.whatsapp.url}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="bg-on-action text-action hover:bg-warm text-body rounded-md inline-block px-7 py-4 font-semibold transition-colors"
+				class="bg-on-action text-action hover:bg-warm hover:text-on-warm text-body rounded-md inline-block px-7 py-4 font-semibold transition-colors"
 			>
 				Quiero conocerte
 			</a>
