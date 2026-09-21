@@ -38,15 +38,6 @@ const salidas = [
 	<section class="mx-auto max-w-[1180px] px-8 py-24">
 		<div class="grid items-center gap-16 lg:grid-cols-2">
 			<div>
-				{/* El numero va de antetitulo y no de titular: quien llega aqui no
-				    necesita que le griten un codigo, necesita saber que hacer. El dato
-				    tecnico queda, en pequeño, para quien lo busque. */}
-				<p
-					class="text-eyebrow tracking-eyebrow text-warm-deep mb-4 font-semibold uppercase"
-				>
-					Error 404
-				</p>
-
 				<h1
 					class="font-display text-ink-strong text-section leading-section tracking-section mb-5 font-bold"
 				>
@@ -90,13 +81,47 @@ const salidas = [
 				</p>
 			</div>
 
-			{/* Hueco rayado mientras llega la ilustracion: 1200x900 con fondo
-			    transparente, para que sirva igual en claro y en oscuro. El aspecto se
-			    reserva ya, de modo que al llegar la imagen la pagina no salte. */}
-			<div
-				class="placeholder-hatch border-hairline aspect-[4/3] w-full rounded-lg border"
-				role="presentation"
-			>
+			{/* El numero va aqui y no de antetitulo a la izquierda: dos «404» en la
+			    misma pantalla, uno diminuto y otro enorme, se leen como un descuido.
+			    Este es el texto de verdad, no una decoracion con `aria-hidden`, asi
+			    que quien navega con lector de pantalla tambien oye el codigo.
+
+			    La imagen entra entera, en el 16:9 en que llego. Recortarla al 4:3 que
+			    habia previsto dejaria fuera a los personajes de las orillas, que es
+			    justo donde esta la gracia. */}
+			<div class="border-hairline relative overflow-hidden rounded-lg border">
+				{/* Las imagenes de `src/assets/` las procesa Astro, pero solo en las
+				    paginas que se prerenderizan. Esta se sirve bajo demanda, asi que
+				    ahi la tuberia emite URLs a `/_image`, y con `imageService:
+				    "compile"` ese endpoint no transforma nada: devuelve el original
+				    entero, con un srcset que promete un avif y entrega un jpeg de
+				    188 KB. Por eso sale de `public/` ya convertida —una vez, no en cada
+				    visita— y con las medidas escritas, para que la pagina no salte
+				    mientras carga. */}
+				<picture>
+					<source srcset="/imagenes/404-discusion-civica.avif" type="image/avif" />
+					<img
+						src="/imagenes/404-discusion-civica.webp"
+						alt="Un grupo de personajes de dibujos animados discute en plena calle bajo un letrero de «discusión cívica», con las líneas de sus conversaciones completamente enredadas sobre sus cabezas"
+						width="1200"
+						height="670"
+						decoding="async"
+						class="block w-full"
+					/>
+				</picture>
+
+				{/* El velo no es un efecto: la imagen es clara y con mucho detalle en el
+				    centro, y sin el, el numero se pierde entre las nubes de dialogo.
+
+				    Y el color es `on-warm`, no `ink-strong`, porque este numero vive
+				    sobre la imagen, que es clara en los dos modos: necesita un negro que
+				    NO se invierta con el tema. `ink-strong` se volveria blanco en oscuro
+				    y desapareceria. */}
+				<p
+					class="font-display text-on-warm absolute inset-0 flex items-center justify-center bg-white/45 text-[clamp(96px,14vw,180px)] leading-none font-bold tracking-[-0.04em]"
+				>
+					404
+				</p>
 			</div>
 		</div>
 	</section>
