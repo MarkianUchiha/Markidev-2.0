@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import type { CanalId, EtapaId } from "./pipeline";
 import { esquemaBlog, type DatosBlog } from "./frontmatter";
+import { intercambioDeOrden, type Enlace, type EnlaceNuevo } from "./enlaces";
 
 // El binding se lee dentro de cada funcion, nunca al cargar el modulo: fuera de
 // una peticion `env` no existe todavia y tocarlo arriba rompe el build.
@@ -359,6 +360,144 @@ export async function borrarPost(id: string): Promise<boolean> {
   // Las revisiones caen solas por la clave foranea con ON DELETE CASCADE.
   const { meta } = await db()
     .prepare("DELETE FROM posts WHERE id = ?")
+    .bind(id)
+    .run();
+  return meta.changes > 0;
+}
+
+// ---------------------------------------------------------------------------
+// Enlaces de la pagina de redes. Las reglas (que URL pasa, cuando vence, como se
+// reordena) viven en `enlaces.ts`; aqui solo se lee y se escribe.
+
+interface EnlaceFila {
+  id: string;
+  titulo: string;
+  url: string;
+  descripcion: string | null;
+  visible: number;
+  vence_en: string | null;
+  orden: number;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+function aEnlace(fila: EnlaceFila): Enlace {
+  return {
+    id: fila.id,
+    titulo: fila.titulo,
+    url: fila.url,
+    descripcion: fila.descripcion,
+    visible: fila.visible === 1,
+    vence_en: fila.vence_en,
+    orden: fila.orden,
+  };
+}
+
+/**
+ * Todos, en su orden. El sitio publico filtra con `enlacesVisibles`, que tambien
+ * descarta los vencidos: son pocas filas y asi la regla del vencimiento vive en
+ * un solo lugar, con sus tests, en vez de repetirse en SQL.
+ */
+export async function listarEnlaces(): Promise<Enlace[]> {
+  const { results } = await db()
+    .prepare("SELECT * FROM enlaces ORDER BY orden")
+    .all<EnlaceFila>();
+  return results.map(aEnlace);
+}
+
+export async function obtenerEnlace(id: string): Promise<Enlace | null> {
+  const fila = await db()
+    .prepare("SELECT * FROM enlaces WHERE id = ?")
+    .bind(id)
+    .first<EnlaceFila>();
+  return fila ? aEnlace(fila) : null;
+}
+
+/** Entra visible y al final de la lista: lo nuevo no desplaza lo que ya estaba. */
+export async function crearEnlace(enlace: EnlaceNuevo): Promise<string> {
+  const id = crypto.randomUUID();
+  const ahora = new Date().toISOString();
+  // El MAX va dentro del INSERT para que dos altas simultaneas no lean el mismo
+  // orden entre la consulta y la escritura.
+  await db()
+    .prepare(
+      `INSERT INTO enlaces (id, titulo, url, descripcion, visible, vence_en, orden, creado_en, actualizado_en)
+       VALUES (?, ?, ?, ?, 1, ?, (SELECT COALESCE(MAX(orden), 0) + 1 FROM enlaces), ?, ?)`,
+    )
+    .bind(
+      id,
+      enlace.titulo,
+      enlace.url,
+      enlace.descripcion,
+      enlace.vence_en,
+      ahora,
+      ahora,
+    )
+    .run();
+  return id;
+}
+
+/** Edita el contenido sin tocar si se ve ni su lugar en la lista. */
+export async function actualizarEnlace(
+  id: string,
+  enlace: EnlaceNuevo,
+): Promise<boolean> {
+  const { meta } = await db()
+    .prepare(
+      `UPDATE enlaces SET titulo = ?, url = ?, descripcion = ?, vence_en = ?, actualizado_en = ?
+        WHERE id = ?`,
+    )
+    .bind(
+      enlace.titulo,
+      enlace.url,
+      enlace.descripcion,
+      enlace.vence_en,
+      new Date().toISOString(),
+      id,
+    )
+    .run();
+  return meta.changes > 0;
+}
+
+/** Devuelve el estado nuevo, o null si el enlace no existe. */
+export async function alternarVisible(id: string): Promise<boolean | null> {
+  const fila = await db()
+    .prepare(
+      `UPDATE enlaces SET visible = 1 - visible, actualizado_en = ?
+        WHERE id = ? RETURNING visible`,
+    )
+    .bind(new Date().toISOString(), id)
+    .first<{ visible: number }>();
+  return fila ? fila.visible === 1 : null;
+}
+
+/**
+ * Las dos filas del intercambio se escriben en un `batch`, que D1 corre como una
+ * transaccion: si una fallara, la lista no se queda con dos enlaces en el mismo
+ * lugar. Devuelve false cuando no hay vecino con quien cambiar.
+ */
+export async function moverEnlace(
+  id: string,
+  direccion: "subir" | "bajar",
+): Promise<boolean> {
+  const cambios = intercambioDeOrden(await listarEnlaces(), id, direccion);
+  if (!cambios) return false;
+  const ahora = new Date().toISOString();
+  await db().batch(
+    cambios.map(({ id: fila, orden }) =>
+      db()
+        .prepare(
+          "UPDATE enlaces SET orden = ?, actualizado_en = ? WHERE id = ?",
+        )
+        .bind(orden, ahora, fila),
+    ),
+  );
+  return true;
+}
+
+export async function borrarEnlace(id: string): Promise<boolean> {
+  const { meta } = await db()
+    .prepare("DELETE FROM enlaces WHERE id = ?")
     .bind(id)
     .run();
   return meta.changes > 0;
