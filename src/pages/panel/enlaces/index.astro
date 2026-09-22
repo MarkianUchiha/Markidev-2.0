@@ -1,0 +1,163 @@
+---
+import Panel from "../../../layouts/Panel.astro";
+import FormularioEnlace from "../../../components/panel/FormularioEnlace.astro";
+import { listarEnlaces } from "../../../lib/db";
+import { diaDeVencimiento, estadoEnlace, type EstadoEnlace } from "../../../lib/enlaces";
+import { formatDate } from "../../../lib/content";
+
+export const prerender = false;
+
+const usuario = Astro.locals.usuario;
+if (!usuario) return new Response("No autorizado.", { status: 401 });
+
+const ahora = new Date();
+const enlaces = (await listarEnlaces()).map((enlace) => ({
+	...enlace,
+	estado: estadoEnlace(enlace, ahora),
+}));
+
+const parametros = Astro.url.searchParams;
+const error = parametros.get("error");
+const aviso = parametros.get("aviso");
+// Si la alta fallo, la API regresa lo capturado para no perderlo.
+const capturado = {
+	titulo: parametros.get("titulo") ?? undefined,
+	url: parametros.get("url") ?? undefined,
+	descripcion: parametros.get("descripcion") ?? undefined,
+	vence: parametros.get("vence") ?? undefined,
+};
+
+const ETIQUETA_ESTADO: Record<EstadoEnlace, string> = {
+	visible: "Visible",
+	oculto: "Oculto",
+	vencido: "Vencido",
+};
+
+// El dia se formatea desde la fecha capturada y en UTC, para que salga el mismo
+// dia que se escribio y no el anterior por el cambio de huso.
+function venceTexto(venceEn: string): string {
+	return formatDate(new Date(`${diaDeVencimiento(venceEn)}T00:00:00Z`));
+}
+
+const boton =
+	"text-body-sm border-border text-ink hover:bg-surface-sunken rounded-md border px-3 py-1.5 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40";
+---
+
+<Panel titulo="Enlaces" usuario={usuario.email}>
+	<div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+		<div>
+			<h1 class="font-display text-ink-strong text-section leading-section font-titular">
+				Enlaces
+			</h1>
+			<p class="text-body-sm text-ink-soft mt-1 max-w-[60ch]">
+				Lo que se ve en la página de enlaces de las redes. Los cambios salen en
+				menos de un minuto.
+			</p>
+		</div>
+		<a class={boton} href="/enlaces/" target="_blank" rel="noopener">Ver la página pública</a>
+	</div>
+
+	{
+		error && (
+			<p class="border-border text-ink text-body mb-6 rounded-md border px-5 py-4" role="alert">
+				{error}
+			</p>
+		)
+	}
+
+	{
+		aviso && (
+			<p class="border-hairline text-ink text-body mb-6 rounded-md border px-5 py-4" role="status">
+				{aviso}
+			</p>
+		)
+	}
+
+	<section class="border-hairline bg-surface mb-10 rounded-lg border p-6">
+		<h2 class="font-display text-title text-ink-strong font-titular mb-5">Agregar un enlace</h2>
+		<FormularioEnlace action="/api/panel/enlaces/" valores={capturado} textoBoton="Agregar" />
+	</section>
+
+	{
+		enlaces.length === 0 ? (
+			<p class="text-body text-ink-soft">
+				Todavía no hay enlaces. Agrega el primero con el formulario de arriba.
+			</p>
+		) : (
+			<ol class="flex flex-col gap-4">
+				{enlaces.map((enlace, i) => (
+					<li class="border-hairline bg-surface rounded-lg border p-5">
+						<div class="flex flex-wrap items-start justify-between gap-4">
+							<div class="min-w-[240px] flex-1">
+								<h2 class="font-display text-title text-ink-strong font-titular">{enlace.titulo}</h2>
+								<p class="text-body-sm text-ink-soft mt-1 break-all">{enlace.url}</p>
+								{enlace.descripcion && (
+									<p class="text-body-sm text-ink-muted mt-1">{enlace.descripcion}</p>
+								)}
+								<p class="text-body-sm text-ink-soft mt-2">
+									{/* El estado va en palabras, no solo en color, igual que en
+									    contenido. */}
+									<strong class="text-ink font-semibold">{ETIQUETA_ESTADO[enlace.estado]}</strong>
+									{enlace.vence_en && (
+										<>
+											{" "}·{" "}
+											{enlace.estado === "vencido" ? "venció el" : "vence el"}{" "}
+											{venceTexto(enlace.vence_en)}
+										</>
+									)}
+								</p>
+							</div>
+
+							<div class="flex flex-wrap items-center gap-2">
+								{/* Subir y bajar son formularios aparte: sin JavaScript, cada uno
+								    manda su propia accion. En los extremos se desactivan en vez de
+								    desaparecer, para que los botones no cambien de lugar. */}
+								<form method="POST" action={`/api/panel/enlaces/${enlace.id}/`}>
+									<input type="hidden" name="accion" value="subir" />
+									<button type="submit" class={boton} disabled={i === 0} aria-label={`Subir «${enlace.titulo}»`}>
+										↑
+									</button>
+								</form>
+								<form method="POST" action={`/api/panel/enlaces/${enlace.id}/`}>
+									<input type="hidden" name="accion" value="bajar" />
+									<button
+										type="submit"
+										class={boton}
+										disabled={i === enlaces.length - 1}
+										aria-label={`Bajar «${enlace.titulo}»`}
+									>
+										↓
+									</button>
+								</form>
+								<form method="POST" action={`/api/panel/enlaces/${enlace.id}/`}>
+									<input type="hidden" name="accion" value="visible" />
+									<button type="submit" class={boton}>
+										{enlace.visible ? "Ocultar" : "Mostrar"}
+									</button>
+								</form>
+								<a class={boton} href={`/panel/enlaces/${enlace.id}/`}>
+									Editar
+								</a>
+							</div>
+						</div>
+
+						{/* Igual que en contenido: pliegue en vez de `confirm()`, porque el
+						    panel no carga JavaScript. */}
+						<details class="mt-4">
+							<summary class="text-body-sm text-ink-soft cursor-pointer">Borrar</summary>
+							<div class="mt-3 flex flex-wrap items-center gap-3">
+								<p class="text-body-sm text-ink-muted">
+									No se puede deshacer. Si solo quieres quitarlo un tiempo, ocúltalo.
+								</p>
+								<form method="POST" action={`/api/panel/enlaces/${enlace.id}/`}>
+									<input type="hidden" name="accion" value="borrar" />
+									<button type="submit" class={boton}>Borrar definitivamente</button>
+								</form>
+							</div>
+						</details>
+					</li>
+				))}
+			</ol>
+		)
+	}
+</Panel>

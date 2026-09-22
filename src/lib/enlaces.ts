@@ -76,6 +76,12 @@ export function venceAlFinalDelDia(fecha: string): string {
   return new Date(finDelDiaUtc).toISOString();
 }
 
+/** El dia que se capturo, para volver a mostrarlo en el formulario de edicion. */
+export function diaDeVencimiento(venceEn: string): string {
+  const enMexico = new Date(new Date(venceEn).getTime() - DESFASE_CDMX_HORAS * 3_600_000);
+  return enMexico.toISOString().slice(0, 10);
+}
+
 function esFechaReal(fecha: string): boolean {
   const [anio, mes, dia] = fecha.split("-").map(Number);
   const d = new Date(Date.UTC(anio, mes - 1, dia));

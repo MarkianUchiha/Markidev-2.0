@@ -1,0 +1,60 @@
+---
+import Panel from "../../../layouts/Panel.astro";
+import FormularioEnlace from "../../../components/panel/FormularioEnlace.astro";
+import { obtenerEnlace } from "../../../lib/db";
+import { diaDeVencimiento } from "../../../lib/enlaces";
+
+export const prerender = false;
+
+const usuario = Astro.locals.usuario;
+if (!usuario) return new Response("No autorizado.", { status: 401 });
+
+const enlace = Astro.params.id ? await obtenerEnlace(Astro.params.id) : null;
+if (!enlace) return Astro.redirect("/panel/enlaces/?error=Ese+enlace+ya+no+existe.", 303);
+
+const parametros = Astro.url.searchParams;
+const error = parametros.get("error");
+// Tras un error se muestra lo que se intento guardar, no lo que habia: si no, la
+// correccion se perderia y habria que volver a escribirla.
+const valores = error
+	? {
+			titulo: parametros.get("titulo") ?? undefined,
+			url: parametros.get("url") ?? undefined,
+			descripcion: parametros.get("descripcion") ?? undefined,
+			vence: parametros.get("vence") ?? undefined,
+		}
+	: {
+			titulo: enlace.titulo,
+			url: enlace.url,
+			descripcion: enlace.descripcion ?? undefined,
+			vence: enlace.vence_en ? diaDeVencimiento(enlace.vence_en) : undefined,
+		};
+---
+
+<Panel titulo={`Editar «${enlace.titulo}»`} usuario={usuario.email}>
+	<p class="mb-4">
+		<a class="text-body-sm text-ink-soft hover:text-ink transition-colors" href="/panel/enlaces/">
+			← Enlaces
+		</a>
+	</p>
+	<h1 class="font-display text-ink-strong text-section leading-section font-titular mb-8">
+		Editar enlace
+	</h1>
+
+	{
+		error && (
+			<p class="border-border text-ink text-body mb-6 rounded-md border px-5 py-4" role="alert">
+				{error}
+			</p>
+		)
+	}
+
+	<section class="border-hairline bg-surface rounded-lg border p-6">
+		<FormularioEnlace
+			action={`/api/panel/enlaces/${enlace.id}/`}
+			valores={valores}
+			editar
+			textoBoton="Guardar"
+		/>
+	</section>
+</Panel>

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  diaDeVencimiento,
   enlacesVisibles,
   esExterno,
   estadoEnlace,
@@ -194,5 +195,17 @@ describe("intercambioDeOrden", () => {
       { id: "c", orden: 4 },
       { id: "b", orden: 9 },
     ]);
+  });
+});
+
+describe("diaDeVencimiento", () => {
+  it("devuelve el día que se capturó, no el día UTC del instante guardado", () => {
+    expect(diaDeVencimiento("2026-10-02T05:59:59.999Z")).toBe("2026-10-01");
+  });
+
+  it("es el inverso de venceAlFinalDelDia", () => {
+    for (const dia of ["2026-01-01", "2026-02-28", "2028-02-29", "2026-12-31"]) {
+      expect(diaDeVencimiento(venceAlFinalDelDia(dia))).toBe(dia);
+    }
   });
 });

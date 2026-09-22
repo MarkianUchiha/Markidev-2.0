@@ -1,0 +1,93 @@
+---
+import { DESCRIPCION_MAX, TITULO_MAX, type DatosFormulario } from "../../lib/enlaces";
+
+interface Props {
+	action: string;
+	valores?: DatosFormulario;
+	/** Con id se edita: el formulario manda `accion=editar` a la ruta del enlace. */
+	editar?: boolean;
+	textoBoton: string;
+}
+
+const { action, valores = {}, editar = false, textoBoton } = Astro.props;
+
+const campo =
+	"border-border bg-surface text-ink text-body-sm focus:border-ink-soft w-full rounded-md border px-3 py-2 focus:outline-none";
+const etiqueta = "text-body-sm text-ink-strong mb-1.5 block font-semibold";
+const ayuda = "text-body-sm text-ink-soft mt-1";
+---
+
+{/* `required`, `maxlength` y `pattern` solo ayudan a llenar el formulario: la
+    regla que manda es la del servidor, en `src/lib/enlaces.ts`. */}
+<form method="POST" action={action} class="grid max-w-[720px] gap-5">
+	{editar && <input type="hidden" name="accion" value="editar" />}
+
+	<div>
+		<label for="titulo" class={etiqueta}>Título</label>
+		<input
+			id="titulo"
+			class={campo}
+			type="text"
+			name="titulo"
+			maxlength={TITULO_MAX}
+			required
+			value={valores.titulo}
+		/>
+	</div>
+
+	<div>
+		<label for="url" class={etiqueta}>URL</label>
+		{/* `type="text"` y no `url`: el campo url del navegador rechaza las rutas
+		    internas como /blog/, que aqui son validas. */}
+		<input
+			id="url"
+			class={campo}
+			type="text"
+			name="url"
+			inputmode="url"
+			required
+			aria-describedby="url-ayuda"
+			value={valores.url}
+		/>
+		<p id="url-ayuda" class={ayuda}>
+			Una dirección completa (<code>https://…</code>) o una página del sitio con
+			barra final (<code>/blog/mi-articulo/</code>).
+		</p>
+	</div>
+
+	<div>
+		<label for="descripcion" class={etiqueta}>Descripción (opcional)</label>
+		<input
+			id="descripcion"
+			class={campo}
+			type="text"
+			name="descripcion"
+			maxlength={DESCRIPCION_MAX}
+			value={valores.descripcion}
+		/>
+	</div>
+
+	<div class="max-w-[260px]">
+		<label for="vence" class={etiqueta}>Vence (opcional)</label>
+		<input
+			id="vence"
+			class={campo}
+			type="date"
+			name="vence"
+			aria-describedby="vence-ayuda"
+			value={valores.vence}
+		/>
+		<p id="vence-ayuda" class={ayuda}>
+			Se ve hasta el final de ese día, hora de México, y luego se oculta solo.
+		</p>
+	</div>
+
+	<div>
+		<button
+			type="submit"
+			class="bg-action text-on-action hover:bg-action-hover text-body-sm rounded-md px-5 py-2.5 font-semibold transition-colors"
+		>
+			{textoBoton}
+		</button>
+	</div>
+</form>
