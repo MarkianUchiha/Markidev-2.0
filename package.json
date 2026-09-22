@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "check": "astro check && astro build",
     "astro": "astro",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.0",
@@ -48,6 +49,7 @@
     "@astrojs/check": "^0.9.10",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "5.0.1"
   }
 }
