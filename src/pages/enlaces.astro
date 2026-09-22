@@ -25,11 +25,20 @@ const [destacado, ...resto] = enlaces;
 const enlaceBase =
 	"focus-visible:ring-brand-solid flex items-center justify-between gap-4 rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none";
 
-/** Externo abre aparte; interno se queda en la pestaña, que es la misma casa. */
+/**
+ * Todo abre en pestaña nueva, tambien lo interno. Esta pagina se visita casi
+ * siempre desde el navegador que Instagram y TikTok traen dentro: ahi, navegar
+ * en la misma pestaña deja al visitante encerrado en esa ventana, sin barra de
+ * direcciones y con «atras» como unica salida. Abriendo aparte, el sistema
+ * suele mandarlo al navegador de verdad y el sitio queda donde se puede volver.
+ *
+ * Lo interno lleva `noopener` pero no `noreferrer`: el `Referer` entre paginas
+ * propias es lo que permite saber que la visita vino de aqui.
+ */
 function destino(url: string) {
 	return esExterno(url)
 		? { target: "_blank", rel: "noopener noreferrer" }
-		: {};
+		: { target: "_blank", rel: "noopener" };
 }
 ---
 

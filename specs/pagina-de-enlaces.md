@@ -67,8 +67,12 @@ la misma protección que los del blog.
 - Muestra los visibles y no vencidos, en su orden.
 - **Sin enlaces que mostrar**, queda el logo, el nombre y las redes. No aparece
   ningún mensaje de «no hay enlaces».
-- Los enlaces externos abren en pestaña nueva con `rel="noopener noreferrer"`,
-  y los internos en la misma.
+- **Todos los enlaces abren en pestaña nueva, también los internos.** Corregido
+  el 2026-09-22: la versión anterior dejaba los internos en la misma pestaña, y
+  eso encierra al visitante en el navegador que Instagram y TikTok traen dentro,
+  sin barra de direcciones y con «atrás» como única salida. Los externos llevan
+  `rel="noopener noreferrer"`; los internos solo `noopener`, porque el `Referer`
+  entre páginas propias es lo que permite saber que la visita vino de aquí.
 - **`noindex` y fuera del sitemap.** Es una página de paso y cambia cada semana:
   indexada, Google guardaría enlaces que ya no existen.
 - Sigue el tema del sitio: oscuro de entrada, y claro si el visitante ya lo
