@@ -68,9 +68,12 @@ export default defineConfig({
   // las islas se declaran pagina por pagina, no globalmente.
   integrations: [
     sitemap({
-      // El panel es privado. Aunque se renderiza bajo demanda y no deberia
-      // llegar al sitemap, el filtro lo garantiza sin depender de ese detalle.
-      filter: (pagina) => !pagina.includes("/panel"),
+      // El panel es privado, y la pagina de enlaces cambia cada semana: si se
+      // indexara, Google guardaria enlaces que ya no existen. Ninguna de las dos
+      // se prerenderiza, asi que hoy no llegarian aqui de todos modos; el filtro
+      // lo garantiza sin depender de ese detalle.
+      filter: (pagina) =>
+        !pagina.includes("/panel") && !pagina.includes("/enlaces"),
     }),
     react(),
   ],

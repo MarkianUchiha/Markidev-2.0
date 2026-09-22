@@ -1,0 +1,157 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { site, socialLinks } from "../data/site";
+import { listarEnlaces } from "../lib/db";
+import { enlacesVisibles, esExterno } from "../lib/enlaces";
+
+export const prerender = false;
+
+// Un minuto de borde: lo que se cambia en el panel se ve en publico enseguida,
+// y mientras tanto el borde responde sin tocar D1. `stale-while-revalidate`
+// sirve la copia vieja diez minutos mas mientras refresca por detras, asi que
+// una visita nunca espera a la base.
+Astro.response.headers.set(
+	"Cache-Control",
+	"public, s-maxage=60, stale-while-revalidate=600",
+);
+
+const enlaces = enlacesVisibles(await listarEnlaces(), new Date());
+
+// El primero manda: es «lo de esta semana», la razon de ser de la pagina. Se
+// pinta con el boton de accion —morado con verde encima, el unico par que se ve
+// igual en claro y en oscuro— y el resto quedan abajo como lista.
+const [destacado, ...resto] = enlaces;
+
+const enlaceBase =
+	"focus-visible:ring-brand-solid flex items-center justify-between gap-4 rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none";
+
+/** Externo abre aparte; interno se queda en la pestaña, que es la misma casa. */
+function destino(url: string) {
+	return esExterno(url)
+		? { target: "_blank", rel: "noopener noreferrer" }
+		: {};
+}
+---
+
+<Layout
+	titulo={`Enlaces · ${site.name}`}
+	descripcion="Lo que se está moviendo esta semana en MarkiDev."
+	sinNavegacion
+	noindex
+>
+	{/* `justify-center` con `py` en vez de alto fijo: con pocos enlaces la
+	    columna queda centrada, y cuando son muchos crece y se desplaza normal. */}
+	<div class="mx-auto flex min-h-dvh max-w-[480px] flex-col justify-center px-5 py-10">
+		<header class="mb-8 flex flex-col items-center gap-3">
+			{/* El mismo isotipo del menu y por la misma razon: inline sigue al modo
+			    oscuro sin duplicar el archivo, y esta pagina se renderiza bajo
+			    demanda, donde Astro no procesa las imagenes de `src/assets/`. */}
+			<svg viewBox="0 0 200 200" class="size-14 shrink-0" aria-hidden="true" focusable="false">
+				<rect x="10" y="10" width="180" height="180" rx="40" class="fill-logo-placa" />
+				<path
+					d="M80,58 L128,100 L80,142"
+					fill="none"
+					stroke-width="18"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="stroke-logo-trazo"
+				/>
+				<circle cx="152" cy="52" r="14" class="fill-logo-punto" />
+			</svg>
+			{/* `text-card` (30px) y no `text-title`: a 17px el nombre se pierde debajo
+			    de un isotipo de 56. Es el escalon que ya existe entre section y
+			    title, no un tamaño nuevo. */}
+			<h1 class="font-display text-ink-strong text-card font-bold tracking-[-0.01em]">
+				{site.name}
+			</h1>
+		</header>
+
+		{/* Sin enlaces no se avisa nada: quedan el logo, el nombre y las redes, que
+		    es una pagina digna por si sola. Un «no hay enlaces» solo delata un
+		    hueco al visitante que llego desde la biografia. */}
+		{
+			destacado && (
+				<nav aria-label="Enlaces destacados" class="flex flex-col gap-3">
+					<a
+						href={destacado.url}
+						{...destino(destacado.url)}
+						class={`${enlaceBase} bg-action text-on-action hover:bg-action-hover min-h-[120px] px-6 py-5`}
+					>
+						<span class="flex flex-col gap-1">
+							<span class="font-display text-body font-titular">{destacado.titulo}</span>
+							{destacado.descripcion && (
+								<span class="text-body-sm opacity-90">{destacado.descripcion}</span>
+							)}
+						</span>
+						<span aria-hidden="true" class="text-body shrink-0">
+							→
+						</span>
+					</a>
+
+					{resto.map((enlace) => (
+						<a
+							href={enlace.url}
+							{...destino(enlace.url)}
+							class={`${enlaceBase} border-hairline bg-surface text-ink-strong hover:bg-surface-sunken min-h-[56px] border px-5 py-3`}
+						>
+							<span class="flex flex-col gap-0.5">
+								<span class="font-display text-body-sm font-titular">{enlace.titulo}</span>
+								{enlace.descripcion && (
+									<span class="text-body-sm text-ink-soft">{enlace.descripcion}</span>
+								)}
+							</span>
+							<span aria-hidden="true" class="text-ink-soft text-body-sm shrink-0">
+								→
+							</span>
+						</a>
+					))}
+				</nav>
+			)
+		}
+
+		<nav aria-label="Redes sociales" class="mt-8">
+			<ul class="flex items-center justify-center gap-1">
+				{
+					socialLinks.map((red) => (
+						<li>
+							<a
+								href={red.url}
+								target="_blank"
+								rel="noopener noreferrer me"
+								aria-label={red.name}
+								class="text-ink-soft hover:text-ink focus-visible:ring-brand-solid flex size-11 items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:outline-none"
+							>
+								<svg viewBox="0 0 24 24" fill="currentColor" class="size-5" aria-hidden="true">
+									<path d={red.icon} />
+								</svg>
+							</a>
+						</li>
+					))
+				}
+				{/* La web va al final y no en `socialLinks` porque no es una red: es el
+				    sitio que contiene a esta pagina. Dibujada y no con un `path` de
+				    marca, que es lo que guarda esa lista. */}
+				<li>
+					<a
+						href="/"
+						aria-label="Sitio de MarkiDev"
+						class="text-ink-soft hover:text-ink focus-visible:ring-brand-solid flex size-11 items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:outline-none"
+					>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							class="size-5"
+							aria-hidden="true"
+						>
+							<circle cx="12" cy="12" r="9" />
+							<ellipse cx="12" cy="12" rx="4.2" ry="9" />
+							<path d="M3 12h18" stroke-linecap="round" />
+						</svg>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</Layout>

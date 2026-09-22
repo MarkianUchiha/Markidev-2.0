@@ -1,7 +1,7 @@
 # Página de enlaces para redes
 
-Estado: **aprobada** el 2026-09-21, salvo el diseño de cada enlace, que sigue
-pendiente (ver _Pendiente de diseño_).
+Estado: **aprobada** el 2026-09-21. El diseño del enlace, que quedó pendiente
+entonces, se decidió el 2026-09-22 (ver _Diseño del enlace_).
 Issue: [M-214](https://linear.app/markidev/issue/M-214).
 
 ## Qué es
@@ -19,9 +19,8 @@ menú del sitio. Si un enlace lleva meses sin moverse, probablemente sobra aquí
 
 1. **Logo**: la placa del logotipo.
 2. **«MarkiDev»**, en Poppins 700.
-3. **Los enlaces**, en el orden que se definió en el panel. **El diseño de cada
-   enlace está pendiente**: se decide comparando opciones en pantalla antes de
-   construir la vista pública (ver _Pendiente de diseño_).
+3. **Los enlaces**, en el orden que se definió en el panel: el primero destacado
+   y el resto en botones (ver _Diseño del enlace_).
 4. **Iconos de redes**, en este orden de prioridad: TikTok, X, Instagram, GitHub
    y Web (la portada de `markidev.com`). Es el mismo orden que el menú y el pie
    (`socialLinks` de `site.ts`). Facebook no va, ni aquí ni en ningún lado del
@@ -77,22 +76,40 @@ la misma protección que los del blog.
 
 ## Decisiones
 
-| Tema         | Decisión                                | Por qué                                                                                                                                                           |
-| ------------ | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dirección    | `/enlaces/`                             | Las rutas del sitio van en español. Sin la barra final, producción ya responde 301 a la versión con barra, así que `markidev.com/enlaces` sirve para la biografía |
-| Dónde viven  | Tabla `enlaces` en D1, migración `0003` | Tienen que cambiar sin desplegar                                                                                                                                  |
-| Contar clics | Fuera de esta versión                   | No se pidió. Si se quiere, se agrega después con una ruta intermedia que cuente y redirija, sin tocar la tabla                                                    |
-| Redes y web | Las de `socialLinks` en `site.ts`, más la web | Cambian poco y el panel no las necesita. Una sola lista mantiene el mismo orden en el menú, el pie y esta página |
+| Tema         | Decisión                                      | Por qué                                                                                                                                                           |
+| ------------ | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dirección    | `/enlaces/`                                   | Las rutas del sitio van en español. Sin la barra final, producción ya responde 301 a la versión con barra, así que `markidev.com/enlaces` sirve para la biografía |
+| Dónde viven  | Tabla `enlaces` en D1, migración `0003`       | Tienen que cambiar sin desplegar                                                                                                                                  |
+| Contar clics | Fuera de esta versión                         | No se pidió. Si se quiere, se agrega después con una ruta intermedia que cuente y redirija, sin tocar la tabla                                                    |
+| Redes y web  | Las de `socialLinks` en `site.ts`, más la web | Cambian poco y el panel no las necesita. Una sola lista mantiene el mismo orden en el menú, el pie y esta página                                                  |
 
-## Pendiente de diseño
+## Diseño del enlace
 
-Antes de construir la vista pública se comparan en pantalla, como se hizo con la
-tipografía, dos o tres formas del enlace: botón de ancho completo, tarjeta con
-descripción, y un enlace destacado arriba del resto. El panel no depende de esa
-decisión y puede avanzar en paralelo.
+Decidido el 2026-09-22 entre las tres formas que se plantearon: botón de ancho
+completo, tarjeta con descripción, y destacado arriba del resto. **Gana el
+destacado**, porque le da jerarquía a «lo de esta semana», que es la razón de ser
+de la página.
+
+- **El primero de la lista** se pinta con el botón de acción —morado con texto
+  verde—, 120px de alto. Ese par se ve igual en claro y en oscuro, así que el
+  destacado no cambia con el tema.
+- **Los demás**, botones de 56px con contorno naranja sobre la superficie.
+- **La descripción** sale debajo del título, solo en los enlaces que la tienen.
+  Un enlace con descripción mide 70px en vez de 56.
+- **El nombre** va en `text-card` (30px) y no en `text-title`: a 17px se pierde
+  debajo de un isotipo de 56.
 
 Todo sale de tokens que ya existen. Mínimo **56px** de alto por enlace, por
 encima de los 44 de área táctil.
+
+**Que la lista se desplace no es un defecto.** Decisión del 2026-09-22: lo que
+queda abajo del pliegue sirve para medir intención —quien baja a buscar un enlace
+lo quería de verdad—, así que el diseño no se aprieta para que quepa todo. Lo que
+sí se exige es que el logo, el nombre y el destacado se vean sin desplazarse: si
+el primer enlace no entra, la página no cumple su trabajo.
+
+Para calibrar: con este espaciado, cinco enlaces —uno con descripción— suman
+706px en un viewport de 390×664.
 
 ## Pendiente de datos
 
@@ -109,8 +126,9 @@ encima de los 44 de área táctil.
    título vacío o de más de 80 caracteres, aunque la petición no venga del
    formulario.
 4. Subir y bajar cambia el orden en la página pública.
-5. En 390×664, que es lo visible dentro del navegador de Instagram, con cinco
-   enlaces se ven el logo y los enlaces sin desplazarse.
+5. En 390×664, que es lo visible dentro del navegador de Instagram, se ven sin
+   desplazarse el logo, el nombre y el enlace destacado. Que el resto de la
+   lista quede abajo es correcto (ver _Diseño del enlace_).
 6. Cada enlace mide al menos 56px de alto y se recorre con Tab con el foco
    visible.
 7. `/enlaces/` lleva `noindex`, no aparece en el sitemap y no carga el menú ni

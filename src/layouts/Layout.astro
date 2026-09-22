@@ -10,9 +10,19 @@ interface Props {
 	descripcion: string;
 	/** Entidades propias de la pagina: el articulo, el caso, las migas. */
 	schema?: object[];
+	/** Sin menu ni pie. Lo usa la pagina de enlaces, que es una pantalla sola. */
+	sinNavegacion?: boolean;
+	/** Fuera del indice de Google. Va con el filtro del sitemap, no en su lugar. */
+	noindex?: boolean;
 }
 
-const { titulo, descripcion, schema = [] } = Astro.props;
+const {
+	titulo,
+	descripcion,
+	schema = [],
+	sinNavegacion = false,
+	noindex = false,
+} = Astro.props;
 
 // El negocio y la persona van en TODAS las paginas, con el mismo `@id`. No es
 // repetir por repetir: un rastreador no garantiza haber visto la portada antes
@@ -60,6 +70,9 @@ const previa = new URL("/og-markidev.png", Astro.site);
 
 		<title>{titulo}</title>
 		<meta name="description" content={descripcion} />
+		{/* `follow` y no `nofollow`: la pagina no se indexa, pero los enlaces que
+		    apuntan al propio sitio si valen. */}
+		{noindex && <meta name="robots" content="noindex, follow" />}
 		<link rel="canonical" href={canonica} />
 		<meta property="og:title" content={titulo} />
 		<meta property="og:description" content={descripcion} />
@@ -98,21 +111,27 @@ const previa = new URL("/og-markidev.png", Astro.site);
 	</head>
 	<body class="bg-canvas text-ink font-body flex min-h-screen flex-col text-pretty antialiased">
 		{/* El salto al contenido es lo primero que encuentra quien navega con
-		    teclado; sin el hay que recorrer toda la navegacion en cada pagina. */}
-		<a
-			href="#contenido"
-			class="bg-canvas text-ink focus:ring-brand-solid sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-4 focus:rounded-md focus:px-6 focus:py-3 focus:ring-2"
-		>
-			Saltar al contenido
-		</a>
+		    teclado; sin el hay que recorrer toda la navegacion en cada pagina.
+		    Sin menu no hay nada que saltar: el primer Tab ya cae en el contenido,
+		    y un salto que no ahorra nada solo estorba. */}
+		{
+			!sinNavegacion && (
+				<a
+					href="#contenido"
+					class="bg-canvas text-ink focus:ring-brand-solid sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-4 focus:rounded-md focus:px-6 focus:py-3 focus:ring-2"
+				>
+					Saltar al contenido
+				</a>
+			)
+		}
 
-		<Nav />
+		{!sinNavegacion && <Nav />}
 
 		{/* flex-1 empuja el pie al fondo cuando la pagina tiene poco contenido. */}
 		<main id="contenido" class="flex-1">
 			<slot />
 		</main>
 
-		<Pie />
+		{!sinNavegacion && <Pie />}
 	</body>
 </html>
