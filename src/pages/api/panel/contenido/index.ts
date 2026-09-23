@@ -1,23 +1,10 @@
-import { z } from "astro/zod";
 import type { APIRoute } from "astro";
 import { guardarPost } from "../../../../lib/db";
 import { leerMarkdown, aHtml } from "../../../../lib/frontmatter";
 import { redirigir } from "../../../../lib/redireccion";
+import { esquemaSlug } from "../../../../lib/articulo";
 
 export const prerender = false;
-
-// El slug es la URL del articulo, asi que se restringe a lo que puede vivir en
-// una: minusculas, numeros y guiones. Se toma del nombre del archivo, que es
-// como funcionaba cuando el blog eran archivos en el repositorio.
-const esquemaSlug = z
-  .string()
-  .trim()
-  .min(3)
-  .max(80)
-  .regex(
-    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    "El nombre del archivo solo puede llevar minúsculas, números y guiones.",
-  );
 
 /**
  * Sube un `.md`. Si ya existe uno con ese slug lo reemplaza y guarda la version
