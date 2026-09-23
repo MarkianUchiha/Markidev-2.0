@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import type { CanalId, EtapaId } from "./pipeline";
 import { esquemaBlog, type DatosBlog } from "./frontmatter";
+import { describirCambios, type Edicion } from "./articulo";
 import { intercambioDeOrden, type Enlace, type EnlaceNuevo } from "./enlaces";
 
 // El binding se lee dentro de cada funcion, nunca al cargar el modulo: fuera de
@@ -363,6 +364,145 @@ export async function borrarPost(id: string): Promise<boolean> {
     .bind(id)
     .run();
   return meta.changes > 0;
+}
+
+export type ResultadoEdicion =
+  { ok: true; cambios: string } | { ok: false; error: string };
+
+/**
+ * Cambia titulo, descripcion y URL desde el panel, en una sola transaccion: si
+ * fueran dos, un fallo a medias dejaria el titulo cambiado y la URL no. La
+ * version anterior queda en `post_revisiones`, igual que al subir un archivo.
+ *
+ * `cambios` es el texto del aviso; vacio si no cambio nada, y entonces no se
+ * escribe nada ni se crea una revision que no aporta.
+ */
+export async function editarPost(
+  id: string,
+  edicion: Edicion,
+  autor: string,
+): Promise<ResultadoEdicion> {
+  const previo = await db()
+    .prepare("SELECT * FROM posts WHERE id = ?")
+    .bind(id)
+    .first<PostFila>();
+  if (!previo) return { ok: false, error: "Ese artículo ya no existe." };
+
+  // Se edita el JSON tal cual en vez de pasarlo por el esquema: asi el resto del
+  // frontmatter (fechas incluidas) sale byte a byte como estaba.
+  const datosPrevios = JSON.parse(previo.datos) as Record<string, unknown>;
+  const cambios = describirCambios(
+    {
+      title: String(datosPrevios.title),
+      description: String(datosPrevios.description),
+      slug: id,
+    },
+    edicion,
+  );
+  if (!cambios) return { ok: true, cambios };
+
+  const nuevo = edicion.slug;
+  const renombra = nuevo !== id;
+  if (renombra) {
+    const ocupada = await urlOcupada(nuevo, id);
+    if (ocupada) return { ok: false, error: ocupada };
+  }
+
+  const ahora = new Date().toISOString();
+  const datos = JSON.stringify({
+    ...datosPrevios,
+    title: edicion.title,
+    description: edicion.description,
+  });
+
+  const revision = db()
+    .prepare(
+      `INSERT INTO post_revisiones (id, post_id, datos, cuerpo, autor, creado_en)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      crypto.randomUUID(),
+      nuevo,
+      previo.datos,
+      previo.cuerpo,
+      autor,
+      ahora,
+    );
+
+  if (!renombra) {
+    await db().batch([
+      revision,
+      db()
+        .prepare("UPDATE posts SET datos = ?, actualizado_en = ? WHERE id = ?")
+        .bind(datos, ahora, id),
+    ]);
+    return { ok: true, cambios };
+  }
+
+  // El id es la clave primaria y `post_revisiones` la referencia sin
+  // ON UPDATE CASCADE, asi que un UPDATE del id falla. Se crea la fila nueva, se
+  // mudan a ella las revisiones y las redirecciones, y solo entonces se borra la
+  // vieja: al reves, el ON DELETE CASCADE se las llevaria. `batch` es una
+  // transaccion, asi que o pasa todo o nada.
+  await db().batch([
+    db()
+      .prepare(
+        `INSERT INTO posts (id, coleccion, datos, cuerpo, html, publicado, fecha, creado_en, actualizado_en)
+         SELECT ?, coleccion, ?, cuerpo, html, publicado, fecha, creado_en, ?
+           FROM posts WHERE id = ?`,
+      )
+      .bind(nuevo, datos, ahora, id),
+    db()
+      .prepare("UPDATE post_revisiones SET post_id = ? WHERE post_id = ?")
+      .bind(nuevo, id),
+    // Reapuntar todo lo que llevaba a la URL vieja es lo que evita cadenas:
+    // A→B seguido de B→C deja A→C, no A→B→C.
+    db()
+      .prepare("UPDATE post_redirecciones SET hacia = ? WHERE hacia = ?")
+      .bind(nuevo, id),
+    // Volver a una URL anterior: deja de ser origen de redireccion, porque una
+    // URL no puede ser articulo y redireccion a la vez.
+    db().prepare("DELETE FROM post_redirecciones WHERE desde = ?").bind(nuevo),
+    db().prepare("DELETE FROM posts WHERE id = ?").bind(id),
+    db()
+      .prepare(
+        "INSERT INTO post_redirecciones (desde, hacia, creado_en) VALUES (?, ?, ?)",
+      )
+      .bind(id, nuevo, ahora),
+    revision,
+  ]);
+  return { ok: true, cambios };
+}
+
+/**
+ * Por que no se puede usar `slug` como URL nueva del articulo `propio`, o null
+ * si esta libre. Una redireccion que ya lleva a `propio` no cuenta: es volver a
+ * una URL anterior del mismo articulo.
+ */
+async function urlOcupada(
+  slug: string,
+  propio: string,
+): Promise<string | null> {
+  const post = await db()
+    .prepare("SELECT id FROM posts WHERE id = ?")
+    .bind(slug)
+    .first<{ id: string }>();
+  if (post) return `La URL /blog/${slug}/ ya es de otro artículo.`;
+
+  const hacia = await buscarRedireccion(slug);
+  if (hacia && hacia !== propio) {
+    return `La URL /blog/${slug}/ ya redirige a /blog/${hacia}/.`;
+  }
+  return null;
+}
+
+/** El slug vivo al que lleva una URL vieja, o null si no es una URL vieja. */
+export async function buscarRedireccion(slug: string): Promise<string | null> {
+  const fila = await db()
+    .prepare("SELECT hacia FROM post_redirecciones WHERE desde = ?")
+    .bind(slug)
+    .first<{ hacia: string }>();
+  return fila?.hacia ?? null;
 }
 
 // ---------------------------------------------------------------------------
