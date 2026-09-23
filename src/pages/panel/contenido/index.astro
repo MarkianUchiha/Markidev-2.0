@@ -51,9 +51,11 @@ const boton =
 	>
 		<h2 class="font-display text-title text-ink-strong font-titular">Subir un artículo</h2>
 		<p class="text-body-sm text-ink-muted mt-2 mb-6 max-w-[60ch]">
-			Un archivo <code>.md</code> con su frontmatter entre líneas de
-			<code>---</code>. El nombre del archivo es la dirección del artículo:
-			<code>como-cobrar-un-anticipo.md</code> se publica en
+			{/* Los `{" "}` son la misma trampa del contador de arriba: sin ellos
+			    Astro se come el salto de linea antes de cada `<code>`. */}
+			Un archivo <code>.md</code> con su frontmatter entre líneas de{" "}
+			<code>---</code>. El nombre del archivo es la dirección del artículo:{" "}
+			<code>como-cobrar-un-anticipo.md</code> se publica en{" "}
 			<code>/blog/como-cobrar-un-anticipo/</code>. Si ya existe uno con ese
 			nombre, se reemplaza y la versión anterior se guarda.
 		</p>
