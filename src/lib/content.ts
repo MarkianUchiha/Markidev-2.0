@@ -29,9 +29,15 @@ export async function getPublishedPosts(): Promise<EntradaBlog[]> {
 // del articulo solo tiene que pintarlo.
 export async function getPostHtml(
   id: string,
-): Promise<{ entrada: EntradaBlog; html: string } | null> {
-  const post = await obtenerPost(id);
-  return post ? { entrada: aEntrada(post), html: post.html } : null;
+  // Solo la vista previa del panel lo pone en `false`, y esa ruta esta detras de
+  // Access. El valor por defecto deja fuera los borradores, para que una pagina
+  // nueva no los publique por olvido.
+  { soloPublicado = true } = {},
+): Promise<{ entrada: EntradaBlog; html: string; publicado: boolean } | null> {
+  const post = await obtenerPost(id, { soloPublicado });
+  return post
+    ? { entrada: aEntrada(post), html: post.html, publicado: post.publicado }
+    : null;
 }
 
 export async function getPublishedWork(): Promise<CollectionEntry<"work">[]> {

@@ -1,0 +1,61 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import ArticuloBlog from "../../../components/ArticuloBlog.astro";
+import { getPostHtml } from "../../../lib/content";
+
+export const prerender = false;
+
+const usuario = Astro.locals.usuario;
+if (!usuario) return new Response("No autorizado.", { status: 401 });
+
+// `soloPublicado: false` es la razon de ser de esta pantalla: aqui se ve tambien
+// lo que todavia esta oculto. La ruta publica sigue filtrando como siempre.
+const { slug } = Astro.params;
+const resultado = slug
+	? await getPostHtml(slug, { soloPublicado: false })
+	: null;
+
+if (!resultado) {
+	return Astro.redirect(
+		"/panel/contenido/?error=Ese+artículo+ya+no+existe.",
+		303,
+	);
+}
+
+const { entrada: post, html, publicado } = resultado;
+
+// `no-store` y no el `s-maxage` de la ruta publica: un borrador no puede quedar
+// guardado en el borde ni en el navegador. Es la razon por la que la vista previa
+// vive aqui y no en `/blog/<slug>/` con un parametro
+// (`specs/vista-previa-de-articulos.md`).
+Astro.response.headers.set("Cache-Control", "private, no-store");
+---
+
+{/* Sin `schema`: esta pagina no se indexa ni se comparte, y el JSON-LD de un
+    articulo que quiza no exista en publico solo confundiria a un rastreador que
+    llegara aqui por error. */}
+<Layout titulo={`Vista previa · ${post.data.title}`} descripcion="Vista previa del panel." noindex>
+	<ArticuloBlog post={post} html={html} />
+
+	{/* Abajo y no arriba: el menu del sitio ya ocupa el borde superior con
+	    `sticky top-0`, y dos barras peleando por el mismo sitio es justo lo que
+	    la trampa del `position: fixed` de este proyecto advierte. Fija, porque el
+	    aviso tiene que seguir ahi despues de bajar por el articulo entero: sin el,
+	    esta pantalla es indistinguible del sitio publicado. */}
+	<div
+		class="bg-action text-on-action fixed inset-x-0 bottom-0 z-50 print:hidden"
+		role="status"
+	>
+		<div class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-3 px-8 py-3">
+			<p class="text-body-sm font-semibold">
+				Vista previa · {publicado ? "este artículo está publicado" : "este artículo está oculto"}
+			</p>
+			<a
+				class="text-body-sm border-on-action rounded-md border px-4 py-1.5 font-semibold transition-opacity hover:opacity-80"
+				href="/panel/contenido/"
+			>
+				Volver al panel
+			</a>
+		</div>
+	</div>
+</Layout>

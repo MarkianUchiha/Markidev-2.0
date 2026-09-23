@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getPostHtml, formatDate } from "../../lib/content";
+import ArticuloBlog from "../../components/ArticuloBlog.astro";
+import { getPostHtml } from "../../lib/content";
 import { articulo, migas } from "../../lib/schema";
 
 // Sin `getStaticPaths`: las rutas ya no se conocen al compilar porque los
@@ -41,34 +42,5 @@ Astro.response.headers.set(
 		]),
 	]}
 >
-	{/* En los articulos manda la capa editorial: ancho de lectura, no de galeria. */}
-	<article class="py-24 mx-auto max-w-[65ch] px-6">
-		<header>
-			<h1 class="font-display text-ink-strong text-section leading-section tracking-section font-titular">{post.data.title}</h1>
-			<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft mt-6 block">
-				{formatDate(post.data.pubDate)}
-				{
-					post.data.updatedDate && (
-						<span> · actualizado el {formatDate(post.data.updatedDate)}</span>
-					)
-				}
-			</time>
-		</header>
-
-		{/* `set:html` con HTML que ya paso por rehype-sanitize al guardarse. Es el
-		    unico lugar del sitio donde entra HTML que no escribio este repositorio. */}
-		<div class="prose-markidev mt-12" set:html={html} />
-
-		{
-			post.data.tags.length > 0 && (
-				<footer class="border-hairline mt-12 pt-6 gap-2 flex flex-wrap border-t">
-					{post.data.tags.map((tag) => (
-						<span class="text-body-sm text-ink-soft bg-surface-sunken rounded-pill px-3 py-1">
-							{tag}
-						</span>
-					))}
-				</footer>
-			)
-		}
-	</article>
+	<ArticuloBlog post={post} html={html} />
 </Layout>

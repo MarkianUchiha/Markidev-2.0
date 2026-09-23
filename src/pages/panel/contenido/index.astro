@@ -95,6 +95,13 @@ const boton =
 							</div>
 
 							<div class="flex flex-wrap items-center gap-2">
+								{/* Primero ver y luego publicar: es el orden en que se usan, y deja
+								    la revision a un clic de distancia en vez de obligar a publicar
+								    para mirar. */}
+								<a class={boton} href={`/panel/contenido/${post.id}/`}>
+									Ver
+								</a>
+
 								<a class={boton} href={`/api/panel/contenido/${post.id}/`} download>
 									Bajar .md
 								</a>

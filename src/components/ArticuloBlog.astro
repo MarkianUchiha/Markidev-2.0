@@ -1,0 +1,46 @@
+---
+import { formatDate, type EntradaBlog } from "../lib/content";
+
+interface Props {
+	post: EntradaBlog;
+	html: string;
+}
+
+const { post, html } = Astro.props;
+---
+
+{/* El cuerpo del articulo, compartido entre la ruta publica y la vista previa
+    del panel. Van por el mismo componente a proposito: una previa que se ve
+    distinta de lo publicado no sirve para confirmar nada
+    (`specs/vista-previa-de-articulos.md`). */}
+
+{/* En los articulos manda la capa editorial: ancho de lectura, no de galeria. */}
+<article class="py-24 mx-auto max-w-[65ch] px-6">
+	<header>
+		<h1 class="font-display text-ink-strong text-section leading-section tracking-section font-titular">{post.data.title}</h1>
+		<time datetime={post.data.pubDate.toISOString()} class="text-body-sm text-ink-soft mt-6 block">
+			{formatDate(post.data.pubDate)}
+			{
+				post.data.updatedDate && (
+					<span> · actualizado el {formatDate(post.data.updatedDate)}</span>
+				)
+			}
+		</time>
+	</header>
+
+	{/* `set:html` con HTML que ya paso por rehype-sanitize al guardarse. Es el
+	    unico lugar del sitio donde entra HTML que no escribio este repositorio. */}
+	<div class="prose-markidev mt-12" set:html={html} />
+
+	{
+		post.data.tags.length > 0 && (
+			<footer class="border-hairline mt-12 pt-6 gap-2 flex flex-wrap border-t">
+				{post.data.tags.map((tag) => (
+					<span class="text-body-sm text-ink-soft bg-surface-sunken rounded-pill px-3 py-1">
+						{tag}
+					</span>
+				))}
+			</footer>
+		)
+	}
+</article>
