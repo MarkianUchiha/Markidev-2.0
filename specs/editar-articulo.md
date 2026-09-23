@@ -108,6 +108,15 @@ consulta extra; solo la pagan las URL que de otro modo darían 404.
 La redirección apunta a `/blog/<slug nuevo>/` con barra final. Si el destino
 está oculto, el destino responde 404, que es lo correcto.
 
+El 301 lleva `Cache-Control: public, max-age=300, s-maxage=60`. Sin `max-age`,
+el navegador guarda un 301 indefinidamente, y volver a una URL anterior
+(A → B → A) dejaría en bucle a quien visitó A en medio. Con cinco minutos, el
+peor caso se cura solo.
+
+Si la consulta falla (por ejemplo, porque la migración no se aplicó antes del
+deploy), la página responde 404 y registra el error, en vez de dar 500 en cada
+URL inexistente del blog.
+
 ### El cambio de clave primaria
 
 `post_revisiones.post_id` apunta a `posts.id` **sin `ON UPDATE CASCADE`**

@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import ArticuloBlog from "../../components/ArticuloBlog.astro";
 import { getPostHtml } from "../../lib/content";
+import { buscarRedireccion } from "../../lib/db";
 import { articulo, migas } from "../../lib/schema";
 
 // Sin `getStaticPaths`: las rutas ya no se conocen al compilar porque los
@@ -19,7 +20,34 @@ const resultado = slug ? await getPostHtml(slug) : null;
 // vez de en una linea de texto plano. La URL no cambia, que es lo que distingue
 // esto de una redireccion.
 if (!resultado) {
+	// Solo aqui se busca la redireccion: la lectura normal no paga la consulta, la
+	// pagan las URL que de otro modo darian 404 (`specs/editar-articulo.md`).
+	const destino = slug ? await redireccionSinRomper(slug) : null;
+	if (destino) {
+		// Un 301 sin `max-age` se queda en el navegador para siempre. Si el
+		// articulo vuelve luego a esta URL, quien la visito antes quedaria en un
+		// bucle A→B→A; con cinco minutos el peor caso se cura solo. Response a mano
+		// porque `Astro.redirect` ignora las cabeceras de `Astro.response`.
+		return new Response(null, {
+			status: 301,
+			headers: {
+				Location: `/blog/${destino}/`,
+				"Cache-Control": "public, max-age=300, s-maxage=60",
+			},
+		});
+	}
 	return Astro.rewrite("/404");
+}
+
+// Si la tabla no existe —la migracion 0004 no se aplico antes del deploy— se
+// degrada a 404 en vez de tumbar con 500 cada URL inexistente del blog.
+async function redireccionSinRomper(slug: string): Promise<string | null> {
+	try {
+		return await buscarRedireccion(slug);
+	} catch (error) {
+		console.error("No se pudo consultar post_redirecciones:", error);
+		return null;
+	}
 }
 
 const { entrada: post, html } = resultado;
