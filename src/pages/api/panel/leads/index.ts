@@ -6,11 +6,25 @@ import { redirigir } from "../../../../lib/redireccion";
 
 export const prerender = false;
 
+// Cada regla lleva su mensaje porque el primero que falla es lo que se enseña
+// en el panel; sin él, Zod responde con su texto por defecto, en inglés.
 const esquema = z.object({
-  nombre: z.string().trim().min(2).max(120),
-  contacto: z.string().trim().max(160).optional(),
-  canal: z.enum(CANAL_IDS),
-  mensaje: z.string().trim().max(4000).optional(),
+  nombre: z
+    .string({ message: "Falta el nombre." })
+    .trim()
+    .min(2, "El nombre necesita al menos 2 caracteres.")
+    .max(120, "El nombre pasa de 120 caracteres."),
+  contacto: z
+    .string()
+    .trim()
+    .max(160, "El contacto pasa de 160 caracteres.")
+    .optional(),
+  canal: z.enum(CANAL_IDS, { message: "Elige un canal de la lista." }),
+  mensaje: z
+    .string()
+    .trim()
+    .max(4000, "El mensaje pasa de 4000 caracteres.")
+    .optional(),
   // Llega como texto desde el formulario y puede venir vacio.
   valor_estimado: z
     .string()
