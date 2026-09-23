@@ -1,0 +1,130 @@
+---
+import Panel from "../../../../layouts/Panel.astro";
+import Mensaje from "../../../../components/panel/Mensaje.astro";
+import { obtenerPost } from "../../../../lib/db";
+
+export const prerender = false;
+
+const usuario = Astro.locals.usuario;
+if (!usuario) return new Response("No autorizado.", { status: 401 });
+
+// Tambien los ocultos: corregir antes de publicar es el caso mas comun.
+const { slug } = Astro.params;
+const post = slug ? await obtenerPost(slug, { soloPublicado: false }) : null;
+if (!post) {
+	return Astro.redirect(
+		"/panel/contenido/?error=Ese+artículo+ya+no+existe.&rotulo=No+se+abrió",
+		303,
+	);
+}
+
+const parametros = Astro.url.searchParams;
+const error = parametros.get("error");
+// Tras un error se muestra lo que se intento guardar, no lo que habia: si no, la
+// correccion se perderia y habria que volver a escribirla.
+const valores = error
+	? {
+			title: parametros.get("title") ?? "",
+			description: parametros.get("description") ?? "",
+			slug: parametros.get("slug") ?? "",
+		}
+	: { title: post.datos.title, description: post.datos.description, slug: post.id };
+
+const campo =
+	"border-border bg-surface text-ink text-body-sm focus:border-ink-soft w-full rounded-md border px-3 py-2 focus:outline-none";
+const etiqueta = "text-body-sm text-ink-strong mb-1.5 block font-semibold";
+const ayuda = "text-body-sm text-ink-soft mt-1";
+---
+
+<Panel titulo={`Editar «${post.datos.title}»`} usuario={usuario.email}>
+	<p class="mb-4">
+		<a class="text-body-sm text-ink-soft hover:text-ink transition-colors" href="/panel/contenido/">
+			← Contenido
+		</a>
+	</p>
+	<h1 class="font-display text-ink-strong text-section leading-section font-titular mb-8">
+		Editar artículo
+	</h1>
+
+	{error && <Mensaje tipo="error">{error}</Mensaje>}
+
+	<section class="border-hairline bg-surface rounded-lg border p-6">
+		{/* `required`, `minlength`, `maxlength` y `pattern` solo ayudan a llenar el
+		    formulario: la regla que manda es la del servidor, en
+		    `src/lib/articulo.ts`, la misma que valida la subida. */}
+		<form
+			method="POST"
+			action={`/api/panel/contenido/${post.id}/`}
+			class="grid max-w-[720px] gap-5"
+		>
+			<input type="hidden" name="accion" value="editar" />
+
+			<div>
+				<label for="title" class={etiqueta}>Título</label>
+				<input
+					id="title"
+					class={campo}
+					type="text"
+					name="title"
+					maxlength={70}
+					required
+					aria-describedby="title-ayuda"
+					value={valores.title}
+				/>
+				<p id="title-ayuda" class={ayuda}>Hasta 70 caracteres; más, y Google lo recorta.</p>
+			</div>
+
+			<div>
+				<label for="description" class={etiqueta}>Descripción</label>
+				<textarea
+					id="description"
+					class={campo}
+					name="description"
+					rows="3"
+					minlength={70}
+					maxlength={160}
+					required
+					aria-describedby="description-ayuda">{valores.description}</textarea
+				>
+				<p id="description-ayuda" class={ayuda}>
+					De 70 a 160 caracteres. Es la que enseña Google debajo del título.
+				</p>
+			</div>
+
+			<div>
+				<label for="slug" class={etiqueta}>URL</label>
+				<input
+					id="slug"
+					class={campo}
+					type="text"
+					name="slug"
+					minlength={3}
+					maxlength={80}
+					pattern="[a-z0-9]+(-[a-z0-9]+)*"
+					title="Solo minúsculas, números y guiones sueltos."
+					required
+					spellcheck="false"
+					autocapitalize="none"
+					aria-describedby="slug-ayuda"
+					value={valores.slug}
+				/>
+				{/* Avisa antes de guardar, no despues: cambiar la URL es lo unico de
+				    esta pantalla con efecto fuera del sitio. */}
+				<p id="slug-ayuda" class={ayuda}>
+					Minúsculas, números y guiones. Hoy es <code>/blog/{post.id}/</code>. Si la
+					cambias, la vieja lleva a la nueva, así que los enlaces que ya compartiste
+					siguen funcionando.
+				</p>
+			</div>
+
+			<div>
+				<button
+					type="submit"
+					class="bg-action text-on-action hover:bg-action-hover text-body-sm rounded-md px-5 py-2.5 font-semibold transition-colors"
+				>
+					Guardar
+				</button>
+			</div>
+		</form>
+	</section>
+</Panel>

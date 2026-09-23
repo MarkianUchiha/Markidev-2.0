@@ -111,6 +111,14 @@ const boton =
 									Ver
 								</a>
 
+								<a
+									class={boton}
+									href={`/panel/contenido/${post.id}/editar/`}
+									aria-label={`Editar «${post.datos.title}»`}
+								>
+									Editar
+								</a>
+
 								<a class={boton} href={`/api/panel/contenido/${post.id}/`} download>
 									Bajar .md
 								</a>
