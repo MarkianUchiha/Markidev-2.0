@@ -2,6 +2,7 @@ import { z } from "astro/zod";
 import type { APIRoute } from "astro";
 import { guardarPost } from "../../../../lib/db";
 import { leerMarkdown, aHtml } from "../../../../lib/frontmatter";
+import { redirigir } from "../../../../lib/redireccion";
 
 export const prerender = false;
 
@@ -35,20 +36,20 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const archivo = formulario.get("archivo");
 
   if (!(archivo instanceof File) || archivo.size === 0) {
-    return redirigir("Elige un archivo .md.");
+    return noSeSubio("Elige un archivo .md.");
   }
   if (!archivo.name.toLowerCase().endsWith(".md")) {
-    return redirigir("El archivo tiene que ser un .md.");
+    return noSeSubio("El archivo tiene que ser un .md.");
   }
   // Un articulo largo ronda las 20 KB. El tope evita que un archivo equivocado
   // —un video renombrado, por ejemplo— llegue al parser.
   if (archivo.size > 512 * 1024) {
-    return redirigir("El archivo pasa de 512 KB; eso no es un artículo.");
+    return noSeSubio("El archivo pasa de 512 KB; eso no es un artículo.");
   }
 
   const slug = esquemaSlug.safeParse(archivo.name.replace(/\.md$/i, ""));
   if (!slug.success) {
-    return redirigir(
+    return noSeSubio(
       slug.error.issues[0]?.message ?? "Nombre de archivo inválido.",
     );
   }
@@ -59,7 +60,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (error) {
     // El mensaje viene de `leerMarkdown` y dice que campo falla: es lo que la
     // persona que subio el archivo necesita para arreglarlo.
-    return redirigir(
+    return noSeSubio(
       error instanceof Error ? error.message : "El archivo no se pudo leer.",
     );
   }
@@ -75,25 +76,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     locals.usuario.email,
   );
 
-  return redirigir(
-    null,
-    creado ? `Se subió «${datos.title}».` : `Se actualizó «${datos.title}».`,
-  );
+  return redirigir(LISTA, {
+    aviso: creado
+      ? `Se subió «${datos.title}».`
+      : `Se actualizó «${datos.title}».`,
+  });
 };
 
-function redirigir(error: string | null, aviso?: string): Response {
-  const parametros = new URLSearchParams();
-  if (error) {
-    parametros.set("error", error);
-    // Todo error de este endpoint es de la subida, y casi siempre del
-    // frontmatter: «no se guardó» sugeriria un fallo del servidor.
-    parametros.set("rotulo", "No se subió");
-  }
-  if (aviso) parametros.set("aviso", aviso);
-  const consulta = parametros.toString();
+const LISTA = "/panel/contenido/";
 
-  return new Response(null, {
-    status: 303,
-    headers: { Location: `/panel/contenido/${consulta ? `?${consulta}` : ""}` },
-  });
+// Todo error de este endpoint es de la subida, y casi siempre del frontmatter:
+// «no se guardó» sugeriria un fallo del servidor.
+function noSeSubio(error: string): Response {
+  return redirigir(LISTA, { error, rotulo: "No se subió" });
 }

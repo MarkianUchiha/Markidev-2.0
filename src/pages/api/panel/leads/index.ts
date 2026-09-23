@@ -2,6 +2,7 @@ import { z } from "astro/zod";
 import type { APIRoute } from "astro";
 import { crearLead } from "../../../../lib/db";
 import { CANAL_IDS } from "../../../../lib/pipeline";
+import { redirigir } from "../../../../lib/redireccion";
 
 export const prerender = false;
 
@@ -42,7 +43,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   if (!resultado.success) {
     const mensaje = resultado.error.issues[0]?.message ?? "Revisa los datos.";
-    return redirigir(`/panel/?error=${encodeURIComponent(mensaje)}`);
+    return redirigir("/panel/", { error: mensaje });
   }
 
   await crearLead(
@@ -58,7 +59,3 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   return redirigir("/panel/");
 };
-
-function redirigir(destino: string): Response {
-  return new Response(null, { status: 303, headers: { Location: destino } });
-}

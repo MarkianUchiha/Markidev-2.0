@@ -16,30 +16,3 @@ export function datosDelFormulario(formulario: FormData): DatosFormulario {
   return datos;
 }
 
-/**
- * 303 de vuelta a una pantalla del panel. Si hubo error, lo capturado viaja en la
- * consulta para rellenar el formulario; son unos cuantos campos cortos y el panel
- * esta detras de Access, asi que no hay nada que esconder en la URL.
- */
-export function redirigir(
-  destino: string,
-  {
-    error,
-    aviso,
-    datos,
-  }: { error?: string; aviso?: string; datos?: DatosFormulario } = {},
-): Response {
-  const parametros = new URLSearchParams();
-  if (error) parametros.set("error", error);
-  if (aviso) parametros.set("aviso", aviso);
-  if (error && datos) {
-    for (const [campo, valor] of Object.entries(datos)) {
-      if (valor) parametros.set(campo, valor);
-    }
-  }
-  const consulta = parametros.toString();
-  return new Response(null, {
-    status: 303,
-    headers: { Location: `${destino}${consulta ? `?${consulta}` : ""}` },
-  });
-}

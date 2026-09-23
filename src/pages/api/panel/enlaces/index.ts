@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { crearEnlace } from "../../../../lib/db";
-import { datosDelFormulario, redirigir } from "../../../../lib/enlaces-panel";
+import { datosDelFormulario } from "../../../../lib/enlaces-panel";
+import { redirigir } from "../../../../lib/redireccion";
 import { validarEnlace } from "../../../../lib/enlaces";
 
 export const prerender = false;

@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { obtenerPost, alternarPublicado, borrarPost } from "../../../../lib/db";
 import { aMarkdown } from "../../../../lib/frontmatter";
+import { redirigir } from "../../../../lib/redireccion";
 
 export const prerender = false;
 
@@ -41,48 +42,37 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
   }
 
   const id = params.id;
-  if (!id) return redirigir("Falta el artículo.");
+  if (!id) return redirigir(LISTA, { error: "Falta el artículo." });
 
   const accion = (await request.formData()).get("accion");
 
+  // El rotulo lo pone cada accion: la lista recibe errores de subir, publicar y
+  // borrar, y solo aqui se sabe de cual viene cada uno.
   if (accion === "publicado") {
     const estado = await alternarPublicado(id);
     if (estado === null) {
-      return redirigir("Ese artículo ya no existe.", undefined, "No se cambió");
+      return redirigir(LISTA, {
+        error: "Ese artículo ya no existe.",
+        rotulo: "No se cambió",
+      });
     }
-    return redirigir(
-      null,
-      estado ? `«${id}» está publicado.` : `«${id}» quedó oculto.`,
-    );
+    return redirigir(LISTA, {
+      aviso: estado ? `«${id}» está publicado.` : `«${id}» quedó oculto.`,
+    });
   }
 
   if (accion === "borrar") {
     const borrado = await borrarPost(id);
     if (!borrado) {
-      return redirigir("Ese artículo ya no existe.", undefined, "No se borró");
+      return redirigir(LISTA, {
+        error: "Ese artículo ya no existe.",
+        rotulo: "No se borró",
+      });
     }
-    return redirigir(null, `Se borró «${id}» y sus revisiones.`);
+    return redirigir(LISTA, { aviso: `Se borró «${id}» y sus revisiones.` });
   }
 
-  return redirigir("Acción desconocida.");
+  return redirigir(LISTA, { error: "Acción desconocida." });
 };
 
-// `rotulo` lo decide quien conoce la accion: la pagina del panel recibe errores
-// de subir, publicar y borrar, y no sabe de cual viene cada uno. Sin el, cae en
-// el generico de `Mensaje.astro`.
-function redirigir(
-  error: string | null,
-  aviso?: string,
-  rotulo?: string,
-): Response {
-  const parametros = new URLSearchParams();
-  if (error) parametros.set("error", error);
-  if (rotulo) parametros.set("rotulo", rotulo);
-  if (aviso) parametros.set("aviso", aviso);
-  const consulta = parametros.toString();
-
-  return new Response(null, {
-    status: 303,
-    headers: { Location: `/panel/contenido/${consulta ? `?${consulta}` : ""}` },
-  });
-}
+const LISTA = "/panel/contenido/";
