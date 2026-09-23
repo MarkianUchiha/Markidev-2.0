@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro";
-import { guardarPost } from "../../../../lib/db";
+import { buscarRedireccion, guardarPost } from "../../../../lib/db";
 import { leerMarkdown, aHtml } from "../../../../lib/frontmatter";
 import { redirigir } from "../../../../lib/redireccion";
-import { esquemaSlug } from "../../../../lib/articulo";
+import { describirCambios, esquemaSlug } from "../../../../lib/articulo";
 
 export const prerender = false;
 
@@ -41,6 +41,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
+  // Una URL vieja no puede volver a ser articulo: subir la copia antigua con su
+  // nombre original crearia un duplicado justo donde deberia redirigir.
+  const hacia = await buscarRedireccion(slug.data);
+  if (hacia) {
+    return noSeSubio(
+      `Esa URL ahora redirige a «${hacia}». Renombra el archivo a ${hacia}.md.`,
+    );
+  }
+
   let datos, cuerpo;
   try {
     ({ datos, cuerpo } = leerMarkdown(await archivo.text()));
@@ -52,7 +61,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  const { creado } = await guardarPost(
+  const guardado = await guardarPost(
     {
       id: slug.data,
       coleccion: "blog",
@@ -63,10 +72,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
     locals.usuario.email,
   );
 
+  if (guardado.creado) {
+    return redirigir(LISTA, { aviso: `Se subió «${datos.title}».` });
+  }
+  const cambios = describirCambios(guardado.anterior, datos);
   return redirigir(LISTA, {
-    aviso: creado
-      ? `Se subió «${datos.title}».`
-      : `Se actualizó «${datos.title}».`,
+    aviso: `Se actualizó «${datos.title}».${cambios ? ` ${cambios}` : ""}`,
   });
 };
 

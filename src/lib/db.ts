@@ -285,7 +285,12 @@ export interface PostAGuardar {
 export async function guardarPost(
   post: PostAGuardar,
   autor: string,
-): Promise<{ creado: boolean }> {
+): Promise<
+  | { creado: true }
+  // `anterior` es lo que habia, para que el aviso diga que cambio: subir una
+  // copia vieja del .md revierte las correcciones del panel sin hacer ruido.
+  | { creado: false; anterior: { title: string; description: string } }
+> {
   const previo = await db()
     .prepare("SELECT * FROM posts WHERE id = ?")
     .bind(post.id)
@@ -342,7 +347,8 @@ export async function guardarPost(
       .bind(datos, post.cuerpo, post.html, fecha, ahora, post.id),
   ]);
 
-  return { creado: false };
+  const { title, description } = JSON.parse(previo.datos) as DatosBlog;
+  return { creado: false, anterior: { title, description } };
 }
 
 /** Devuelve el estado nuevo, o null si el post no existe. */
