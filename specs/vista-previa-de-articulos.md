@@ -47,7 +47,7 @@ Para que no puedan divergir, el cuerpo del artículo sale de **un solo component
 compartido** entre la ruta pública y esta. Hoy ese markup vive dentro de
 `src/pages/blog/[...slug].astro:45-73` y hay que extraerlo.
 
-Encima del artículo, una franja fija que diga que es una vista previa y en qué
+Debajo del artículo, una franja pegada al borde inferior (`sticky`) que diga que es una vista previa y en qué
 estado está el artículo (oculto o publicado), con la salida de vuelta al panel.
 Sin eso, la pantalla es indistinguible del sitio real y se presta a creer que ya
 está publicado.

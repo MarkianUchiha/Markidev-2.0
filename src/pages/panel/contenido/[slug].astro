@@ -39,11 +39,13 @@ Astro.response.headers.set("Cache-Control", "private, no-store");
 
 	{/* Abajo y no arriba: el menu del sitio ya ocupa el borde superior con
 	    `sticky top-0`, y dos barras peleando por el mismo sitio es justo lo que
-	    la trampa del `position: fixed` de este proyecto advierte. Fija, porque el
+	    la trampa del `position: fixed` de este proyecto advierte. Pegada, porque el
 	    aviso tiene que seguir ahi despues de bajar por el articulo entero: sin el,
-	    esta pantalla es indistinguible del sitio publicado. */}
+	    esta pantalla es indistinguible del sitio publicado. `sticky` y no `fixed`:
+	    al llegar al final ocupa su propio lugar en vez de tapar el pie, sin un
+	    espaciador que tendria que adivinar su altura cuando se parte en dos lineas. */}
 	<div
-		class="bg-action text-on-action fixed inset-x-0 bottom-0 z-50 print:hidden"
+		class="bg-action text-on-action sticky bottom-0 z-50 print:hidden"
 		role="status"
 	>
 		<div class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-3 px-8 py-3">
