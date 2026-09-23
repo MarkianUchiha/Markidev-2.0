@@ -17,7 +17,7 @@ const resultado = slug
 
 if (!resultado) {
 	return Astro.redirect(
-		"/panel/contenido/?error=Ese+artículo+ya+no+existe.",
+		"/panel/contenido/?error=Ese+artículo+ya+no+existe.&rotulo=No+se+abrió",
 		303,
 	);
 }

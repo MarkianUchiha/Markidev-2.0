@@ -47,7 +47,9 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
 
   if (accion === "publicado") {
     const estado = await alternarPublicado(id);
-    if (estado === null) return redirigir("Ese artículo ya no existe.");
+    if (estado === null) {
+      return redirigir("Ese artículo ya no existe.", undefined, "No se cambió");
+    }
     return redirigir(
       null,
       estado ? `«${id}» está publicado.` : `«${id}» quedó oculto.`,
@@ -56,16 +58,26 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
 
   if (accion === "borrar") {
     const borrado = await borrarPost(id);
-    if (!borrado) return redirigir("Ese artículo ya no existe.");
+    if (!borrado) {
+      return redirigir("Ese artículo ya no existe.", undefined, "No se borró");
+    }
     return redirigir(null, `Se borró «${id}» y sus revisiones.`);
   }
 
   return redirigir("Acción desconocida.");
 };
 
-function redirigir(error: string | null, aviso?: string): Response {
+// `rotulo` lo decide quien conoce la accion: la pagina del panel recibe errores
+// de subir, publicar y borrar, y no sabe de cual viene cada uno. Sin el, cae en
+// el generico de `Mensaje.astro`.
+function redirigir(
+  error: string | null,
+  aviso?: string,
+  rotulo?: string,
+): Response {
   const parametros = new URLSearchParams();
   if (error) parametros.set("error", error);
+  if (rotulo) parametros.set("rotulo", rotulo);
   if (aviso) parametros.set("aviso", aviso);
   const consulta = parametros.toString();
 

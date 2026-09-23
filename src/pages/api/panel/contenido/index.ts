@@ -83,7 +83,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 function redirigir(error: string | null, aviso?: string): Response {
   const parametros = new URLSearchParams();
-  if (error) parametros.set("error", error);
+  if (error) {
+    parametros.set("error", error);
+    // Todo error de este endpoint es de la subida, y casi siempre del
+    // frontmatter: «no se guardó» sugeriria un fallo del servidor.
+    parametros.set("rotulo", "No se subió");
+  }
   if (aviso) parametros.set("aviso", aviso);
   const consulta = parametros.toString();
 
