@@ -1,5 +1,6 @@
 ---
 import Panel from "../../../layouts/Panel.astro";
+import Mensaje from "../../../components/panel/Mensaje.astro";
 import { listarPosts } from "../../../lib/db";
 import { formatDate } from "../../../lib/content";
 
@@ -35,21 +36,11 @@ const boton =
 		</p>
 	</div>
 
-	{
-		error && (
-			<p class="border-border text-ink text-body mb-6 rounded-md border px-5 py-4" role="alert">
-				{error}
-			</p>
-		)
-	}
+	{/* El error de aqui suele venir del frontmatter, que no es «no se guardó»
+	    sino «no se pudo leer el archivo». */}
+	{error && <Mensaje tipo="error" etiqueta="No se subió">{error}</Mensaje>}
 
-	{
-		aviso && (
-			<p class="border-hairline text-ink text-body mb-6 rounded-md border px-5 py-4" role="status">
-				{aviso}
-			</p>
-		)
-	}
+	{aviso && <Mensaje tipo="exito">{aviso}</Mensaje>}
 
 	<form
 		method="POST"

@@ -1,0 +1,60 @@
+---
+interface Props {
+	tipo: "exito" | "error";
+	/** Sustituye el rotulo por defecto cuando «No se guardó» no describe el fallo. */
+	etiqueta?: string;
+}
+
+const { tipo, etiqueta } = Astro.props;
+
+const esError = tipo === "error";
+
+// El rotulo es lo que se lee de un vistazo; el texto del mensaje explica. Los dos
+// hacen falta: «Error» a secas no dice si se perdio el trabajo.
+const rotulo = etiqueta ?? (esError ? "No se guardó" : "Listo");
+
+// `alert` interrumpe al lector de pantalla; `status` espera a que termine la
+// frase en curso. Un fallo se anuncia ya, una confirmacion puede esperar.
+const rol = esError ? "alert" : "status";
+---
+
+{/* Lo que distingue un mensaje del otro es la forma y la palabra, no el color:
+    la paleta son cuatro colores con rol fijo y ninguno significa «bien» o «mal»
+    (decision del 2026-09-22, M-235). Asi ademas se distinguen sin ver el tono. */}
+<p
+	class="border-hairline text-ink text-body mb-6 flex items-start gap-3 rounded-md border px-5 py-4"
+	role={rol}
+>
+	<svg
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2.2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		class="mt-0.5 size-5 shrink-0"
+		aria-hidden="true"
+	>
+		{
+			esError ? (
+				<>
+					<circle cx="12" cy="12" r="9" stroke-width="1.8" />
+					<path d="M12 7.5v5.5" />
+					<path d="M12 16.5h.01" />
+				</>
+			) : (
+				<>
+					<circle cx="12" cy="12" r="9" stroke-width="1.8" />
+					<path d="M8 12.2l2.8 2.8L16 9.8" />
+				</>
+			)
+		}
+	</svg>
+
+	<span>
+		<strong class="text-eyebrow tracking-eyebrow text-ink-strong block font-semibold uppercase">
+			{rotulo}
+		</strong>
+		<slot />
+	</span>
+</p>

@@ -1,6 +1,7 @@
 ---
 import Panel from "../../../layouts/Panel.astro";
 import FormularioEnlace from "../../../components/panel/FormularioEnlace.astro";
+import Mensaje from "../../../components/panel/Mensaje.astro";
 import { obtenerEnlace } from "../../../lib/db";
 import { diaDeVencimiento } from "../../../lib/enlaces";
 
@@ -41,13 +42,7 @@ const valores = error
 		Editar enlace
 	</h1>
 
-	{
-		error && (
-			<p class="border-border text-ink text-body mb-6 rounded-md border px-5 py-4" role="alert">
-				{error}
-			</p>
-		)
-	}
+	{error && <Mensaje tipo="error">{error}</Mensaje>}
 
 	<section class="border-hairline bg-surface rounded-lg border p-6">
 		<FormularioEnlace
