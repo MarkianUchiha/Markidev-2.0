@@ -139,10 +139,12 @@ function destino(url: string) {
 				}
 				{/* La web va al final y no en `socialLinks` porque no es una red: es el
 				    sitio que contiene a esta pagina. Dibujada y no con un `path` de
-				    marca, que es lo que guarda esa lista. */}
+				    marca, que es lo que guarda esa lista. Abre aparte como los demas: es
+				    el mismo caso de salir del navegador que la red trae por dentro. */}
 				<li>
 					<a
 						href="/"
+						{...destino("/")}
 						aria-label="Sitio de MarkiDev"
 						class="text-ink-soft hover:text-ink focus-visible:ring-brand-solid flex size-11 items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:outline-none"
 					>
