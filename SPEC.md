@@ -56,8 +56,10 @@ tema es oscuro por defecto; el botón alterna a claro y lo recuerda en
 Los artículos se suben como `.md` desde el panel y viven en D1
 ([Decisiones 004](Decisiones.md#004)). La URL sale del nombre del archivo. Una
 URL que cambió redirige con 301 a la nueva ([014](Decisiones.md#014)). Las
-imágenes se guardan con su ancho y alto ([015](Decisiones.md#015)). Un
-artículo oculto responde como si no existiera.
+imágenes se guardan con su ancho y alto ([015](Decisiones.md#015)). Si el
+frontmatter trae `question` y el título no dice lo mismo, la pregunta se pinta
+como primer encabezado del cuerpo ([017](Decisiones.md#017)). Un artículo oculto
+responde como si no existiera.
 
 ## Panel
 
@@ -144,13 +146,13 @@ describe algo que no existe. Hay que comprobarlo en el panel de Cloudflare.
 
 ## Incoherencias abiertas
 
-1. **El campo `question` del frontmatter** se valida, se guarda y viaja en
-   «Bajar .md», pero ninguna página lo usa. Falta decidir si se le da uso (por
-   ejemplo en el JSON-LD) o se quita.
-2. **El canal «Agenda» se llama `calcom` por dentro**
-   (`src/lib/pipeline.ts:84`, `migrations/0001_leads.sql:12`), pero la agenda
-   del sitio es de Google Calendar (`src/data/site.ts:17-21`). Solo es el
-   nombre interno; cambiarlo exige una migración por el `CHECK` de la tabla.
+1. ~~El campo `question` del frontmatter no se usa~~ **Resuelto el
+   2026-09-23**: se pinta cuando el título no es la misma pregunta
+   ([017](Decisiones.md#017)).
+2. **El canal «Agenda» se llama `calcom` por dentro**, aunque la agenda es de
+   Google Calendar. **Se queda así a propósito**: renombrarlo obliga a
+   reconstruir `leads` por su `CHECK`. Lo explica un comentario en
+   `src/lib/pipeline.ts`.
 3. ~~El error del formulario lleva una tilde sin codificar en la cabecera
    `Location`~~ **Resuelto el 2026-09-23**: los tres errores de
    `src/pages/api/contacto.ts` pasan por `conError()`, que codifica el texto.

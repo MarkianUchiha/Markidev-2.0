@@ -1,5 +1,6 @@
 ---
 import { formatDate, type EntradaBlog } from "../lib/content";
+import { preguntaVisible } from "../lib/articulo";
 
 interface Props {
 	post: EntradaBlog;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const { post, html } = Astro.props;
+const pregunta = preguntaVisible(post.data.title, post.data.question);
 ---
 
 {/* El cuerpo del articulo, compartido entre la ruta publica y la vista previa
@@ -28,9 +30,18 @@ const { post, html } = Astro.props;
 		</time>
 	</header>
 
-	{/* `set:html` con HTML que ya paso por rehype-sanitize al guardarse. Es el
-	    unico lugar del sitio donde entra HTML que no escribio este repositorio. */}
-	<div class="prose-markidev mt-12" set:html={html} />
+	<div class="prose-markidev mt-12">
+		{/* La pregunta del frontmatter, cuando el titulo no lo es: un encabezado
+		    en forma de pregunta que el primer parrafo responde es lo que se cita.
+		    `mt-0!` porque es el primer elemento y el `2em` de los h2 del cuerpo
+		    se sumaria al `mt-12` del contenedor. */}
+		{pregunta && <h2 class="mt-0!">{pregunta}</h2>}
+
+		{/* `set:html` con HTML que ya paso por rehype-sanitize al guardarse. Es
+		    el unico lugar del sitio donde entra HTML que no escribio este
+		    repositorio. */}
+		<Fragment set:html={html} />
+	</div>
 
 	{
 		post.data.tags.length > 0 && (

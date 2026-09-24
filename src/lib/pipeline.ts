@@ -81,6 +81,10 @@ export const CANALES = [
   { id: "formulario", nombre: "Formulario" },
   { id: "whatsapp", nombre: "WhatsApp" },
   { id: "correo", nombre: "Correo" },
+  // La agenda es la pagina de reservas de Google Calendar (`src/data/site.ts`),
+  // no Cal.com. El id se quedo con el nombre viejo porque esta en el CHECK de
+  // `leads.canal`, y cambiarlo obliga a reconstruir la tabla con una migracion
+  // sobre prospectos reales. Nadie lo ve: en pantalla sale «Agenda».
   { id: "calcom", nombre: "Agenda" },
   { id: "referido", nombre: "Referido" },
 ] as const;

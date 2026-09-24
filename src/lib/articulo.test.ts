@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { describirCambios, esquemaSlug, validarEdicion } from "./articulo";
+import {
+  describirCambios,
+  esquemaSlug,
+  preguntaVisible,
+  validarEdicion,
+} from "./articulo";
 
 const DESCRIPCION =
   "Una descripción de prueba que tiene justo lo necesario para pasar los setenta.";
@@ -135,5 +140,29 @@ describe("describirCambios", () => {
         { title: "B", description: "D" },
       ),
     ).toBe("Cambió el título: «A» → «B».");
+  });
+});
+
+describe("preguntaVisible", () => {
+  it("pinta la pregunta cuando el titulo no lo es", () => {
+    expect(
+      preguntaVisible("Cómo cobrar un anticipo", "¿Cuánto anticipo pedir en un proyecto?"),
+    ).toBe("¿Cuánto anticipo pedir en un proyecto?");
+  });
+
+  it("no la repite si dice lo mismo que el titulo, con o sin signos ni mayusculas", () => {
+    const titulo = "¿Por qué mi página no aparece en Google?";
+    expect(preguntaVisible(titulo, titulo)).toBeNull();
+    expect(preguntaVisible(titulo, "por que mi página no aparece en google")).toBeNull();
+    expect(preguntaVisible(titulo, "  ¿Por qué mi página no aparece en Google?  ")).toBeNull();
+  });
+
+  it("nada que pintar sin pregunta o con una vacia", () => {
+    expect(preguntaVisible("Un titulo", undefined)).toBeNull();
+    expect(preguntaVisible("Un titulo", "   ")).toBeNull();
+  });
+
+  it("devuelve la pregunta sin espacios de sobra", () => {
+    expect(preguntaVisible("Un titulo", "  ¿Algo?  ")).toBe("¿Algo?");
   });
 });

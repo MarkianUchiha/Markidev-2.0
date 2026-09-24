@@ -82,3 +82,28 @@ export function describirCambios(
   }
   return cambios.join(" ");
 }
+
+// Solo las letras y los numeros, sin acentos ni mayusculas: para comparar dos
+// frases sin que un «¿», una tilde o un espacio las hagan distintas.
+const esencia = (texto: string) =>
+  texto
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]/gu, "");
+
+/**
+ * La pregunta del frontmatter que se pinta como encabezado del articulo, o null
+ * si no hay que pintar nada. Sirve cuando el titulo no es una pregunta: un
+ * encabezado en forma de pregunta, respondido en el primer parrafo, es lo que
+ * los buscadores y los asistentes con IA citan. Si dice lo mismo que el titulo,
+ * no se repite.
+ */
+export function preguntaVisible(
+  titulo: string,
+  pregunta: string | undefined,
+): string | null {
+  const limpia = pregunta?.trim();
+  if (!limpia) return null;
+  return esencia(limpia) === esencia(titulo) ? null : limpia;
+}

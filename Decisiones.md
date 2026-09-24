@@ -29,6 +29,7 @@ comentarios del código que las explican; cada una cita su fuente.
 | [014](#014) | Una URL vieja de artículo redirige con 301                        | 2026-09-23 | Aceptada |
 | [015](#015) | Las imágenes del blog se miden al subir                           | 2026-09-23 | Aceptada |
 | [016](#016) | La descripción de un artículo pide al menos 70 caracteres         | 2026-09-23 | Aceptada |
+| [017](#017) | La pregunta del frontmatter se pinta si el título no lo es | 2026-09-23 | Aceptada |
 
 ---
 
@@ -272,3 +273,23 @@ sustituirla por un trozo de la página que no eligió nadie.
 **Consecuencias.** Se puede bajar sin romper nada si llega a estorbar.
 
 **Fuente.** Decisión del dueño del 2026-09-23; `src/lib/frontmatter.ts`.
+
+## <a id="017"></a>017 · La pregunta del frontmatter se pinta si el título no lo es
+
+**Decisión.** Si un artículo trae `question` en el frontmatter y no dice lo
+mismo que el título (sin contar signos, tildes ni mayúsculas), se pinta como
+primer encabezado `h2` del cuerpo, en la página pública y en la vista previa.
+Si coincide con el título, no se repite.
+
+**Por qué.** Un encabezado en forma de pregunta, respondido en el primer
+párrafo, es lo que los buscadores y los asistentes con IA extraen y citan. Solo
+cuenta si está **visible**: un dato que no se pinta es invisible para ellos. Los
+datos estructurados de FAQ no son alternativa: Google dejó de mostrarlos para
+sitios que no son de gobierno ni de salud en agosto de 2023, y del todo el 7 de
+mayo de 2026.
+
+**Consecuencias.** Quien escribe tiene que responder la pregunta en el primer
+párrafo; si no, el encabezado promete algo que el texto no da.
+
+**Fuente.** Decisión del dueño del 2026-09-23 («no estorba y parece útil si el
+título no es pregunta»); `src/lib/articulo.ts`, `src/components/ArticuloBlog.astro`.
