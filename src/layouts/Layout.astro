@@ -96,13 +96,14 @@ const previa = new URL("/og-markidev.png", Astro.site);
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 		{/* `set:html` y no interpolacion normal: Astro escaparia las comillas del
-		    JSON y el bloque llegaria roto. El contenido no viene de fuera —sale de
-		    lib/schema.ts y del frontmatter del repositorio—, asi que no hay texto
-		    ajeno que pueda colarse aqui. */}
+		    JSON y el bloque llegaria roto. Aqui SI entra texto ajeno —el titulo y
+		    la descripcion de los articulos que se suben al panel—, y lo que impide
+		    que un `</script>` se salga del bloque es que `grafo()` convierte todo
+		    `<` en `<` (lib/schema.ts). Ese escape no se quita. */}
 		<script type="application/ld+json" is:inline set:html={datosEstructurados} />
 
-		{/* Se precarga solo la cara con la que abre la pagina: el titular en Space
-		    Grotesk y el cuerpo en IBM Plex regular. Las demas caras bajan cuando
+		{/* Se precarga solo la cara con la que abre la pagina: el titular en
+		    Poppins y el cuerpo en Open Sans regular. Las demas caras bajan cuando
 		    aparecen, y las cursivas solo si un articulo las usa. */}
 		<Font cssVariable="--font-poppins" preload={[{ weight: 600 }, { weight: 700 }]} />
 		<Font cssVariable="--font-open-sans" preload={[{ weight: 400, style: "normal" }]} />
