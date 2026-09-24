@@ -88,3 +88,39 @@ describe("explicarErrorYaml", () => {
     );
   });
 });
+
+// Casos de M-260: salian en español, pero con la causa o la linea equivocadas.
+describe("explicarErrorYaml · casos raros (M-260)", () => {
+  it.each(["@", "`", "%"])(
+    "un valor que empieza con «%s» no se confunde con «: » dentro del texto",
+    (signo) => {
+      expect(explicar(`title: T\ndescription: ${signo}algo de texto`)).toBe(
+        `La línea 3 (\`description\`) empieza con «${signo}», que en YAML tiene otro uso. Pon el texto entre comillas: description: "…".`,
+      );
+    },
+  );
+
+  it("con todo el frontmatter igual de sangrado, culpa al fallo real y no a la sangria", () => {
+    expect(explicar('  title: T\n  description: "abc')).toBe(
+      "La línea 3 (`description`) abre comillas y no las cierra.",
+    );
+  });
+
+  it("encuentra la comilla sin cerrar dentro de un elemento de tags", () => {
+    expect(explicar('title: T\ntags:\n  - "a\ndescription: D')).toBe(
+      "La línea 4 abre comillas y no las cierra.",
+    );
+  });
+
+  it("una comilla escapada no cuenta como cierre", () => {
+    expect(explicar('title: "a \\" b\ndescription: D')).toBe(
+      "La línea 2 (`title`) abre comillas y no las cierra.",
+    );
+  });
+
+  it("nombra el campo repetido aunque vaya entre comillas", () => {
+    expect(explicar('"title": a\n"title": b')).toBe(
+      "El campo `title` aparece dos veces (línea 3). Deja solo uno.",
+    );
+  });
+});
