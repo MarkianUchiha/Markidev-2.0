@@ -20,6 +20,7 @@ import langSql from "@shikijs/langs/sql";
 import langTs from "@shikijs/langs/typescript";
 import rehypeStringify from "rehype-stringify";
 import { explicarErrorYaml } from "./yaml-legible";
+import { medirImagenes, type NodoHtml } from "./medir-imagenes";
 
 // Lo que antes hacia Astro al leer `src/content/blog/*.md` hay que hacerlo aqui
 // a mano, porque el markdown ya no llega del repositorio sino de un archivo que
@@ -199,6 +200,9 @@ async function armarProcesador() {
       .use(rehypeRaw)
       .use(rehypeSlug)
       .use(rehypeSanitize, SANEADO)
+      // Despues del saneado: solo se miden las imagenes que sobrevivieron, y el
+      // `width`/`height` lo pone este codigo, no el autor.
+      .use(rehypeMedirImagenes)
       .use(rehypeShikiFromHighlighter, resaltador, {
         theme: "github-dark",
         // `default` es para los bloques que no declaran lenguaje y `fallback`
@@ -212,10 +216,45 @@ async function armarProcesador() {
   );
 }
 
-export async function aHtml(markdown: string): Promise<string> {
+interface OpcionesDeHtml {
+  /** Contra que se resuelven las imagenes con ruta relativa (`/imagen.jpg`). */
+  origen: string;
+  /** Solo para los tests: sustituye a `fetch`. */
+  pedir?: typeof fetch;
+}
+
+// El procesador se arma una vez y se reutiliza, asi que lo propio de cada
+// subida no puede ir en las opciones del plugin: viaja en `file.data`, que es el
+// canal de unified para datos de un archivo concreto.
+function rehypeMedirImagenes() {
+  return async (
+    arbol: NodoHtml,
+    archivo: { data: Record<string, unknown> },
+  ) => {
+    const { origen, pedir } = archivo.data as unknown as OpcionesDeHtml;
+    archivo.data.sinMedir = await medirImagenes(arbol, { origen, pedir });
+  };
+}
+
+/**
+ * El HTML del articulo, con las imagenes ya medidas. `sinMedir` son las URL de
+ * las que no se pudo sacar ancho y alto, para avisar a quien lo subio.
+ */
+export async function aHtml(
+  markdown: string,
+  opciones: OpcionesDeHtml,
+): Promise<{ html: string; sinMedir: string[] }> {
   procesador ??= armarProcesador();
-  const archivo = await (await procesador).process(markdown);
-  return String(archivo);
+  const archivo = await (
+    await procesador
+  ).process({
+    value: markdown,
+    data: { ...opciones },
+  });
+  return {
+    html: String(archivo),
+    sinMedir: (archivo.data.sinMedir as string[] | undefined) ?? [],
+  };
 }
 
 /**

@@ -3,6 +3,7 @@ import { buscarRedireccion, guardarPost } from "../../../../lib/db";
 import { leerMarkdown, aHtml } from "../../../../lib/frontmatter";
 import { redirigir } from "../../../../lib/redireccion";
 import { describirCambios, esquemaSlug } from "../../../../lib/articulo";
+import { describirSinMedir } from "../../../../lib/medir-imagenes";
 
 export const prerender = false;
 
@@ -61,24 +62,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
+  // El origen de la peticion y no una constante: asi las rutas relativas de las
+  // imagenes se resuelven contra el mismo sitio en `astro dev` y en produccion.
+  const { html, sinMedir } = await aHtml(cuerpo, {
+    origen: new URL(request.url).origin,
+  });
   const guardado = await guardarPost(
-    {
-      id: slug.data,
-      coleccion: "blog",
-      datos,
-      cuerpo,
-      html: await aHtml(cuerpo),
-    },
+    { id: slug.data, coleccion: "blog", datos, cuerpo, html },
     locals.usuario.email,
   );
 
-  if (guardado.creado) {
-    return redirigir(LISTA, { aviso: `Se subió «${datos.title}».` });
-  }
-  const cambios = describirCambios(guardado.anterior, datos);
-  return redirigir(LISTA, {
-    aviso: `Se actualizó «${datos.title}».${cambios ? ` ${cambios}` : ""}`,
-  });
+  const partes = guardado.creado
+    ? [`Se subió «${datos.title}».`]
+    : [
+        `Se actualizó «${datos.title}».`,
+        describirCambios(guardado.anterior, datos),
+      ];
+  partes.push(describirSinMedir(sinMedir));
+  return redirigir(LISTA, { aviso: partes.filter(Boolean).join(" ") });
 };
 
 const LISTA = "/panel/contenido/";

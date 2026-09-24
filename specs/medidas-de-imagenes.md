@@ -79,6 +79,10 @@ URL:
 Sin nombrar el motivo técnico: el arreglo es el mismo en todos los casos
 (revisar que la URL abra, o poner `width` y `height` a mano).
 
+Se nombran **como mucho 5** URLs y el resto se cuenta («… y 3 más»): el aviso
+viaja en la URL de la redirección, y veinte URLs largas la inflarían sin
+ayudar a quien lo lee.
+
 ## Seguridad
 
 El Worker pide URLs que escribió el autor. El riesgo es bajo: la subida está
