@@ -151,9 +151,7 @@ describe algo que no existe. Hay que comprobarlo en el panel de Cloudflare.
    (`src/lib/pipeline.ts:84`, `migrations/0001_leads.sql:12`), pero la agenda
    del sitio es de Google Calendar (`src/data/site.ts:17-21`). Solo es el
    nombre interno; cambiarlo exige una migración por el `CHECK` de la tabla.
-3. **El error del formulario lleva una tilde sin codificar en la cabecera
-   `Location`** (`src/pages/api/contacto.ts:70`, «Escríbeme»). Es el mismo fallo
-   que se corrigió en el panel el 2026-09-23. Chrome lo tolera, pero una
-   cabecera HTTP no admite caracteres fuera de ASCII, y está justo en el camino
-   de fallo más delicado: cuando el mensaje no se pudo guardar.
+3. ~~El error del formulario lleva una tilde sin codificar en la cabecera
+   `Location`~~ **Resuelto el 2026-09-23**: los tres errores de
+   `src/pages/api/contacto.ts` pasan por `conError()`, que codifica el texto.
 4. **La analítica del aviso de privacidad**, ver [datos personales](#datos-personales).

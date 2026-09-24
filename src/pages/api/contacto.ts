@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (!resultado.success) {
     const primero = resultado.error.issues[0]?.message ?? "Revisa los datos.";
-    return redirigir(`/contacto/?error=${encodeURIComponent(primero)}`);
+    return conError(primero);
   }
 
   const humano = await validarTurnstile(
@@ -46,9 +46,7 @@ export const POST: APIRoute = async ({ request }) => {
     request,
   );
   if (!humano) {
-    return redirigir(
-      "/contacto/?error=No%20se%20pudo%20verificar%20que%20eres%20una%20persona.",
-    );
+    return conError("No se pudo verificar que eres una persona.");
   }
 
   // El orden importa y no es negociable: primero se guarda, despues se avisa. Si
@@ -66,9 +64,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   } catch (error) {
     console.error("No se pudo guardar el lead", error);
-    return redirigir(
-      "/contacto/?error=No%20se%20pudo%20guardar%20tu%20mensaje.%20Escríbeme%20por%20WhatsApp.",
-    );
+    return conError("No se pudo guardar tu mensaje. Escríbeme por WhatsApp.");
   }
 
   // Si el aviso falla no se le dice nada a quien escribio: su mensaje ya esta a
@@ -81,6 +77,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   return redirigir("/contacto/?enviado=1");
 };
+
+// Todos los errores pasan por aqui para que el texto vaya siempre codificado:
+// escrito a mano, «Escríbeme» salia con la tilde en crudo en la cabecera
+// `Location`, que no admite caracteres fuera de ASCII. Justo en el aviso de que
+// el mensaje no se guardo.
+function conError(mensaje: string): Response {
+  return redirigir(`/contacto/?error=${encodeURIComponent(mensaje)}`);
+}
 
 function redirigir(destino: string): Response {
   // 303 obliga al navegador a pasar a GET. Con 302 algunos reenvian el POST al
