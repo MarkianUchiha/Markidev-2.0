@@ -19,6 +19,7 @@ import langJs from "@shikijs/langs/javascript";
 import langSql from "@shikijs/langs/sql";
 import langTs from "@shikijs/langs/typescript";
 import rehypeStringify from "rehype-stringify";
+import { explicarErrorYaml } from "./yaml-legible";
 
 // Lo que antes hacia Astro al leer `src/content/blog/*.md` hay que hacerlo aqui
 // a mano, porque el markdown ya no llega del repositorio sino de un archivo que
@@ -29,9 +30,8 @@ import rehypeStringify from "rehype-stringify";
 // `schema.ts` que genera el JSON-LD, y dos nombres a una letra de distancia se
 // confunden al importar.
 
-// Copiado tal cual de `src/content.config.ts`, que dejara de definir el blog
-// cuando el contenido termine de mudarse. Mientras las dos definiciones
-// coexistan tienen que decir lo mismo.
+// La unica definicion del frontmatter del blog: `src/content.config.ts` ya no
+// tiene la suya desde que el contenido se mudo a D1.
 // Los mensajes van escritos y en español porque ya no los lee quien compila:
 // los lee, en pantalla, quien acaba de subir un archivo que no paso. Tienen que
 // decir que campo falla y como se arregla, no solo que algo esta mal.
@@ -41,8 +41,10 @@ export const esquemaBlog = z.object({
     // Un titulo vacio (o solo espacios, ya recortado) es un titulo que falta.
     .min(1, "Falta el título.")
     .max(70, "El título pasa de 70 caracteres; Google lo va a recortar."),
-  // Se convierte en la meta description; fuera de este rango Google la recorta
-  // o la sustituye por texto suyo.
+  // Se convierte en la meta description. El maximo si es de Google: corta por
+  // ancho, hacia los 155-160 caracteres. El minimo NO es regla de Google, es
+  // criterio del proyecto (2026-09-23): una descripcion corta desperdicia el
+  // espacio del resultado y Google tiende a sustituirla por texto de la pagina.
   description: z
     .string({ message: "Falta la descripción." })
     .min(70, "La descripción necesita al menos 70 caracteres.")
@@ -105,9 +107,7 @@ export function leerMarkdown(texto: string): MarkdownLeido {
   try {
     crudo = load(coincidencia[1]);
   } catch (error) {
-    throw new Error(
-      `El frontmatter no es YAML valido: ${error instanceof Error ? error.message : error}`,
-    );
+    throw new Error(explicarErrorYaml(coincidencia[1], error));
   }
 
   const resultado = esquemaBlog.safeParse(crudo);
