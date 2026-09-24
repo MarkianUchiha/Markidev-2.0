@@ -43,7 +43,14 @@ Por cada `<img>` que no traiga ya `width` y `height`:
 5. Escribir `width` y `height` en el `<img>`.
 
 Si el autor ya escribió `width` y `height` en un `<img>` de HTML crudo, **se
-respetan** y esa imagen no se pide.
+respetan** y esa imagen no se pide. Si escribió **solo uno**, es el tamaño que
+eligió para mostrarla: se conserva y el otro se calcula con la proporción real
+(añadido tras la revisión del 2026-09-23; pisarlo con la medida natural
+cambiaba el tamaño que quiso).
+
+En un JPEG, la etiqueta **Orientation del EXIF** se respeta: con 5 a 8 (fotos
+de celular giradas 90°) ancho y alto salen intercambiados, porque el navegador
+muestra la foto ya girada.
 
 ### Formatos
 
@@ -61,7 +68,12 @@ medidas**, igual que hoy. No es un error.
 
 - **3 segundos por imagen**, con `AbortSignal.timeout`.
 - **Todas en paralelo**: el tiempo de la subida es el de la imagen más lenta, no
-  la suma.
+  la suma. Límite conocido: workerd deja como mucho 6 conexiones esperando
+  cabeceras a la vez, y los 3 s cuentan desde que se pide, no desde que sale de
+  la cola. Con más de 6 servidores lentos, alguna imagen puede quedarse sin
+  medir sin serlo de verdad. Se acepta: el tiempo total sigue acotado.
+- El tope de 3 s vale **también mientras se lee el cuerpo**: cada lectura
+  compite contra él, para que un servidor que gotea bytes no alargue la subida.
 - **Como mucho 20 imágenes medidas** por artículo; el resto se queda sin
   medidas. Un artículo de este blog lleva pocas y el tope evita que una subida
   dispare cientos de peticiones.
@@ -79,9 +91,10 @@ URL:
 Sin nombrar el motivo técnico: el arreglo es el mismo en todos los casos
 (revisar que la URL abra, o poner `width` y `height` a mano).
 
-Se nombran **como mucho 5** URLs y el resto se cuenta («… y 3 más»): el aviso
-viaja en la URL de la redirección, y veinte URLs largas la inflarían sin
-ayudar a quien lo lee.
+Se nombran **como mucho 5** URLs, **cada una recortada a 100 caracteres**, y
+el resto se cuenta («… y 3 más»): el aviso viaja en la URL de la redirección, y
+cinco URLs firmadas de CDN pasarían el límite de Cloudflare (414). El artículo
+se guardaría, pero quien lo sube vería un error.
 
 ## Seguridad
 

@@ -149,3 +149,61 @@ describe("medidasDeImagen", () => {
     expect(medidasDeImagen(roto)).toBeNull();
   });
 });
+
+// Una foto de celular se guarda «acostada» y el EXIF dice como girarla. El
+// navegador la gira, asi que las medidas tienen que salir ya giradas.
+function jpegConOrientacion(
+  ancho: number,
+  alto: number,
+  orientacion: number,
+  orden: "II" | "MM" = "II",
+) {
+  const u16 = orden === "II" ? le16 : be16;
+  const u32 = orden === "II" ? le32 : be32;
+  const tiff = [
+    ...ascii(orden),
+    ...u16(42),
+    ...u32(8),
+    ...u16(1), // una entrada en el IFD0
+    ...u16(0x0112), // Orientation
+    ...u16(3), // SHORT
+    ...u32(1),
+    ...u16(orientacion),
+    0,
+    0,
+    ...u32(0), // no hay siguiente IFD
+  ];
+  const app1 = [...ascii("Exif"), 0, 0, ...tiff];
+  return bytes(
+    [0xff, 0xd8],
+    [0xff, 0xe1],
+    be16(app1.length + 2),
+    app1,
+    [0xff, 0xc0],
+    be16(17),
+    [8],
+    be16(alto),
+    be16(ancho),
+    [3],
+  );
+}
+
+describe("medidasDeImagen · orientacion EXIF", () => {
+  it.each([5, 6, 7, 8])("orientacion %i: intercambia ancho y alto", (o) => {
+    expect(medidasDeImagen(jpegConOrientacion(800, 600, o))).toEqual({ ancho: 600, alto: 800 });
+  });
+
+  it.each([1, 2, 3, 4])("orientacion %i: las deja como estan", (o) => {
+    expect(medidasDeImagen(jpegConOrientacion(800, 600, o))).toEqual({ ancho: 800, alto: 600 });
+  });
+
+  it("lee el EXIF big-endian (MM) igual que el little-endian (II)", () => {
+    expect(medidasDeImagen(jpegConOrientacion(800, 600, 6, "MM"))).toEqual({ ancho: 600, alto: 800 });
+  });
+
+  it("un EXIF roto no impide medir: se toma sin girar", () => {
+    const roto = jpegConOrientacion(800, 600, 6);
+    roto[12] = 0x58; // estropea la marca de orden de bytes («II» → «XI»)
+    expect(medidasDeImagen(roto)).toEqual({ ancho: 800, alto: 600 });
+  });
+});

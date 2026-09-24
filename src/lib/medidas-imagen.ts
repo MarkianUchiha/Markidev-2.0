@@ -57,6 +57,7 @@ function jpeg(datos: Uint8Array, lector: DataView): Medidas | null {
   if (!empiezaCon(datos, [0xff, 0xd8])) return null;
 
   let pos = 2;
+  let girada = false;
   while (pos + 4 <= datos.length) {
     if (datos[pos] !== 0xff) return null;
     const marcador = datos[pos + 1];
@@ -86,15 +87,59 @@ function jpeg(datos: Uint8Array, lector: DataView): Medidas | null {
       marcador !== 0xcc;
     if (esSof) {
       if (pos + 9 > datos.length) return null;
-      return {
-        alto: lector.getUint16(pos + 5),
-        ancho: lector.getUint16(pos + 7),
-      };
+      const alto = lector.getUint16(pos + 5);
+      const ancho = lector.getUint16(pos + 7);
+      return girada ? { ancho: alto, alto: ancho } : { ancho, alto };
+    }
+
+    // El EXIF viene antes del SOF, asi que se lee de paso.
+    if (marcador === 0xe1) {
+      girada =
+        girada ||
+        estaGirada(datos, pos + 4, Math.min(pos + 2 + longitud, datos.length));
     }
 
     pos += 2 + longitud;
   }
   return null;
+}
+
+// Una foto de celular se guarda «acostada» y la etiqueta Orientation del EXIF
+// dice como girarla. El navegador la gira (`image-orientation: from-image` es
+// el valor por defecto), asi que con orientacion 5 a 8 —las que giran 90°— el
+// ancho y el alto que se ven son los del SOF intercambiados. Un EXIF roto o
+// ausente se toma como «sin girar»: peor medir sin girar que no medir.
+function estaGirada(datos: Uint8Array, desde: number, hasta: number): boolean {
+  try {
+    if (!empiezaCon(datos, [...ascii("Exif"), 0, 0], desde)) return false;
+    const tiff = desde + 6;
+    const segmento = new DataView(
+      datos.buffer,
+      datos.byteOffset + tiff,
+      hasta - tiff,
+    );
+
+    const orden = segmento.getUint16(0);
+    // «II» es little-endian e «MM» big-endian; cualquier otra cosa no es TIFF.
+    if (orden !== 0x4949 && orden !== 0x4d4d) return false;
+    const le = orden === 0x4949;
+    if (segmento.getUint16(2, le) !== 42) return false;
+
+    const ifd = segmento.getUint32(4, le);
+    const entradas = segmento.getUint16(ifd, le);
+    for (let i = 0; i < entradas; i++) {
+      const entrada = ifd + 2 + i * 12;
+      if (segmento.getUint16(entrada, le) === 0x0112) {
+        const orientacion = segmento.getUint16(entrada + 8, le);
+        return orientacion >= 5 && orientacion <= 8;
+      }
+    }
+    return false;
+  } catch {
+    // Un desplazamiento del EXIF que apunta fuera del segmento: DataView lanza
+    // RangeError. No es motivo para dejar la imagen sin medir.
+    return false;
+  }
 }
 
 // Contenedor RIFF. El primer bloque dice que variante es y cada una guarda las

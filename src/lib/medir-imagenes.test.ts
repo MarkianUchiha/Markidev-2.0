@@ -236,3 +236,53 @@ describe("describirSinMedir", () => {
     );
   });
 });
+
+// Hallazgos de la revision previa al deploy de M-248.
+describe("medirImagenes · medidas parciales del autor", () => {
+  const origen = "https://markidev.com";
+
+  it("con solo width, lo conserva y calcula el alto por proporcion", async () => {
+    const imagen = img("https://img.test/a.png", { width: 300 });
+    await medirImagenes(arbol(imagen), { origen, pedir: async () => new Response(PNG) });
+    // 1200 × 630 a 300 de ancho: 300 × 157,5 → 158.
+    expect(imagen.properties).toMatchObject({ width: 300, height: 158 });
+  });
+
+  it("con solo height, lo conserva y calcula el ancho por proporcion", async () => {
+    const imagen = img("https://img.test/a.png", { height: "63" });
+    await medirImagenes(arbol(imagen), { origen, pedir: async () => new Response(PNG) });
+    expect(imagen.properties).toMatchObject({ width: 120, height: 63 });
+  });
+
+  it("width y height en 0 cuentan como puestos por el autor", async () => {
+    const imagen = img("https://img.test/a.png", { width: 0, height: 0 });
+    const pedir = vi.fn(async () => new Response(PNG));
+    await medirImagenes(arbol(imagen), { origen, pedir });
+    expect(pedir).not.toHaveBeenCalled();
+  });
+});
+
+describe("leerInicio · cuerpo a cuentagotas", () => {
+  it("corta por tiempo tambien mientras lee el cuerpo, no solo al esperar las cabeceras", async () => {
+    // Manda las cabeceras y luego nada: sin el tope en cada lectura, la subida
+    // se quedaria esperando.
+    const cuerpo = new ReadableStream<Uint8Array>({ pull: () => new Promise(() => {}) });
+    const inicio = Date.now();
+    const datos = await leerInicio("https://img.test/a.png", {
+      pedir: async () => new Response(cuerpo),
+      tiempoMs: 50,
+    });
+    expect(datos).toBeNull();
+    expect(Date.now() - inicio).toBeLessThan(1000);
+  });
+});
+
+describe("describirSinMedir · URLs largas", () => {
+  it("recorta cada URL para que el aviso no pase el limite de una URL", () => {
+    const larga = `https://cdn.test/foto.jpg?firma=${"x".repeat(3000)}`;
+    const aviso = describirSinMedir([larga, larga + "2", larga + "3", larga + "4", larga + "5"]);
+    expect(aviso.length).toBeLessThan(800);
+    expect(aviso).toContain("https://cdn.test/foto.jpg?firma=xxx");
+    expect(aviso).toContain("…");
+  });
+});

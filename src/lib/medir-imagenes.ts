@@ -35,19 +35,30 @@ export async function leerInicio(
   }: { pedir?: Pedir; tiempoMs?: number } = {},
 ): Promise<Uint8Array | null> {
   try {
-    // La misma señal corta la espera de la respuesta y la lectura del cuerpo.
+    const señal = AbortSignal.timeout(tiempoMs);
     const respuesta = await pedir(url, {
       headers: { Accept: ACEPTA, Range: `bytes=0-${TOPE_BYTES - 1}` },
-      signal: AbortSignal.timeout(tiempoMs),
+      signal: señal,
     });
-    if (!respuesta.ok || !respuesta.body) return null;
+    if (!respuesta.ok || !respuesta.body) {
+      // Una respuesta de error tambien trae cuerpo; sin cancelarlo, la conexion
+      // queda abierta hasta que el servidor termine de mandarlo.
+      await respuesta.body?.cancel().catch(() => {});
+      return null;
+    }
 
     const lector = respuesta.body.getReader();
     const trozos: Uint8Array[] = [];
     let total = 0;
     try {
       while (total < TOPE_BYTES) {
-        const { done, value } = await lector.read();
+        // La señal corta `fetch`, pero no siempre una lectura ya en curso: un
+        // servidor que manda las cabeceras y luego gotea bytes alargaria la
+        // subida sin limite. Cada lectura compite contra el tope de tiempo.
+        const { done, value } = await Promise.race([
+          lector.read(),
+          agotado(señal),
+        ]);
         if (done) break;
         trozos.push(value);
         total += value.length;
@@ -74,6 +85,21 @@ export async function leerInicio(
   }
 }
 
+// Una promesa que falla cuando la señal se agota, para ponerla a competir.
+function agotado(señal: AbortSignal): Promise<never> {
+  return new Promise((_, rechazar) => {
+    if (señal.aborted) return rechazar(señal.reason);
+    señal.addEventListener("abort", () => rechazar(señal.reason), {
+      once: true,
+    });
+  });
+}
+
+// Lo que el autor escribio a mano en un `<img>` de HTML crudo. El 0 cuenta: es
+// una decision suya, aunque rara.
+const puesto = (valor: unknown) =>
+  valor !== undefined && valor !== null && valor !== "";
+
 function imagenesDe(nodo: NodoHtml, encontradas: NodoHtml[] = []): NodoHtml[] {
   if (nodo.type === "element" && nodo.tagName === "img") encontradas.push(nodo);
   for (const hijo of nodo.children ?? []) imagenesDe(hijo, encontradas);
@@ -91,7 +117,7 @@ export async function medirImagenes(
 ): Promise<string[]> {
   // Las que el autor ya midio a mano se respetan y no se piden.
   const pendientes = imagenesDe(arbol).filter(
-    (img) => !(img.properties?.width && img.properties?.height),
+    (img) => !(puesto(img.properties?.width) && puesto(img.properties?.height)),
   );
 
   // Una peticion por URL distinta, aunque la imagen salga varias veces.
@@ -130,8 +156,7 @@ export async function medirImagenes(
     for (const img of porUrl.get(src) ?? []) {
       img.properties = {
         ...img.properties,
-        width: medida.ancho,
-        height: medida.alto,
+        ...completar(img.properties, medida),
       };
     }
   });
@@ -140,7 +165,34 @@ export async function medirImagenes(
   return urls.filter((src) => sinMedir.has(src));
 }
 
+// Si el autor dio una sola medida, es la que eligio para mostrarla: se conserva
+// y la otra sale de la proporcion real. Pisarla con la medida natural cambiaria
+// el tamaño que quiso.
+function completar(
+  propiedades: Record<string, unknown> | undefined,
+  { ancho, alto }: { ancho: number; alto: number },
+): { width: number; height: number } {
+  const suAncho = Number(propiedades?.width);
+  const suAlto = Number(propiedades?.height);
+  if (puesto(propiedades?.width) && suAncho > 0) {
+    return { width: suAncho, height: Math.round((suAncho * alto) / ancho) };
+  }
+  if (puesto(propiedades?.height) && suAlto > 0) {
+    return { width: Math.round((suAlto * ancho) / alto), height: suAlto };
+  }
+  return { width: ancho, height: alto };
+}
+
 const MAXIMO_NOMBRADAS = 5;
+// Una URL firmada de CDN puede medir kilobytes. El aviso viaja en la URL de la
+// redireccion, y cinco de esas pasarian el limite: el articulo se guardaria,
+// pero quien lo sube veria un error.
+const MAXIMO_CARACTERES_URL = 100;
+
+const recortar = (url: string) =>
+  url.length > MAXIMO_CARACTERES_URL
+    ? `${url.slice(0, MAXIMO_CARACTERES_URL)}…`
+    : url;
 
 /**
  * El trozo del aviso de la subida que dice que imagenes se quedaron sin medir.
@@ -149,7 +201,7 @@ const MAXIMO_NOMBRADAS = 5;
  */
 export function describirSinMedir(urls: string[]): string {
   if (urls.length === 0) return "";
-  const nombradas = urls.slice(0, MAXIMO_NOMBRADAS).join(", ");
+  const nombradas = urls.slice(0, MAXIMO_NOMBRADAS).map(recortar).join(", ");
   const resto = urls.length - MAXIMO_NOMBRADAS;
   const lista = resto > 0 ? `${nombradas} y ${resto} más` : nombradas;
   return urls.length === 1
