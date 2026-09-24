@@ -18,16 +18,27 @@ export const esquemaSlug = z
   .max(80, "La URL pasa de 80 caracteres.")
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, SOLO_SLUG);
 
+// Se recorta ANTES de validar. Al reves, 69 caracteres mas un espacio pasaban el
+// minimo de 70, se guardaban recortados y el articulo dejaba de cumplir
+// `esquemaBlog`: `aPost` lo descartaba y desaparecia del sitio y del panel.
+function recortar(entrada: unknown): unknown {
+  if (typeof entrada !== "object" || entrada === null) return entrada;
+  return Object.fromEntries(
+    Object.entries(entrada).map(([campo, valor]) => [
+      campo,
+      typeof valor === "string" ? valor.trim() : valor,
+    ]),
+  );
+}
+
 // `pick` y no un esquema propio: si cambia el limite del titulo en el
 // frontmatter, la edicion lo hereda sin que nadie se acuerde de copiarlo.
-const esquemaEdicion = esquemaBlog
-  .pick({ title: true, description: true })
-  .extend({ slug: esquemaSlug })
-  .transform(({ title, description, slug }) => ({
-    title: title.trim(),
-    description: description.trim(),
-    slug,
-  }));
+const esquemaEdicion = z.preprocess(
+  recortar,
+  esquemaBlog
+    .pick({ title: true, description: true })
+    .extend({ slug: esquemaSlug }),
+);
 
 export type Edicion = z.output<typeof esquemaEdicion>;
 

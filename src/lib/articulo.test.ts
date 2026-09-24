@@ -71,6 +71,25 @@ describe("validarEdicion", () => {
     });
   });
 
+  // Recortar despues de validar dejaba pasar 69 caracteres + un espacio, y el
+  // articulo guardado ya no cumplia `esquemaBlog`: desaparecia del sitio y del
+  // panel. Hallazgo de la revision de M-234.
+  it("mide la descripción ya recortada", () => {
+    expect(
+      validarEdicion(edicion({ description: `${"x".repeat(69)} \n` })),
+    ).toEqual({
+      ok: false,
+      error: "La descripción necesita al menos 70 caracteres.",
+    });
+  });
+
+  it("rechaza un título hecho solo de espacios", () => {
+    expect(validarEdicion(edicion({ title: "   " }))).toEqual({
+      ok: false,
+      error: "Falta el título.",
+    });
+  });
+
   it("rechaza una URL inválida", () => {
     const r = validarEdicion(edicion({ slug: "Con Espacios" }));
     expect(r.ok).toBe(false);

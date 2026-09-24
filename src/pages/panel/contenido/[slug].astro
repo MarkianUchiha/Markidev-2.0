@@ -2,6 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import ArticuloBlog from "../../../components/ArticuloBlog.astro";
 import { getPostHtml } from "../../../lib/content";
+import { redirigir } from "../../../lib/redireccion";
 
 export const prerender = false;
 
@@ -16,10 +17,12 @@ const resultado = slug
 	: null;
 
 if (!resultado) {
-	return Astro.redirect(
-		"/panel/contenido/?error=Ese+artículo+ya+no+existe.&rotulo=No+se+abrió",
-		303,
-	);
+	// `redirigir` y no `Astro.redirect` con la consulta escrita a mano: las tildes
+	// tienen que ir codificadas, una cabecera HTTP no admite «í» en crudo.
+	return redirigir("/panel/contenido/", {
+		error: "Ese artículo ya no existe.",
+		rotulo: "No se abrió",
+	});
 }
 
 const { entrada: post, html, publicado } = resultado;

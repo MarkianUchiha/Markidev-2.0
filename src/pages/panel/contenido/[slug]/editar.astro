@@ -2,6 +2,7 @@
 import Panel from "../../../../layouts/Panel.astro";
 import Mensaje from "../../../../components/panel/Mensaje.astro";
 import { obtenerPost } from "../../../../lib/db";
+import { redirigir } from "../../../../lib/redireccion";
 
 export const prerender = false;
 
@@ -12,10 +13,12 @@ if (!usuario) return new Response("No autorizado.", { status: 401 });
 const { slug } = Astro.params;
 const post = slug ? await obtenerPost(slug, { soloPublicado: false }) : null;
 if (!post) {
-	return Astro.redirect(
-		"/panel/contenido/?error=Ese+artículo+ya+no+existe.&rotulo=No+se+abrió",
-		303,
-	);
+	// `redirigir` y no `Astro.redirect` con la consulta escrita a mano: las tildes
+	// tienen que ir codificadas, una cabecera HTTP no admite «í» en crudo.
+	return redirigir("/panel/contenido/", {
+		error: "Ese artículo ya no existe.",
+		rotulo: "No se abrió",
+	});
 }
 
 const parametros = Astro.url.searchParams;

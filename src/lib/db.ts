@@ -450,7 +450,7 @@ export async function editarPost(
   // mudan a ella las revisiones y las redirecciones, y solo entonces se borra la
   // vieja: al reves, el ON DELETE CASCADE se las llevaria. `batch` es una
   // transaccion, asi que o pasa todo o nada.
-  await db().batch([
+  const renombrado = db().batch([
     db()
       .prepare(
         `INSERT INTO posts (id, coleccion, datos, cuerpo, html, publicado, fecha, creado_en, actualizado_en)
@@ -477,6 +477,20 @@ export async function editarPost(
       .bind(id, nuevo, ahora),
     revision,
   ]);
+  try {
+    await renombrado;
+  } catch (error) {
+    // Si el articulo se borro entre la lectura y el batch, el INSERT...SELECT no
+    // copia nada y la llave foranea de la redireccion revierte todo. No hay datos
+    // perdidos, pero merece el mismo mensaje que cualquier articulo que ya no
+    // existe, no un 500. Cualquier otro fallo sigue siendo un error de verdad.
+    const sigue = await db()
+      .prepare("SELECT 1 FROM posts WHERE id = ?")
+      .bind(id)
+      .first();
+    if (!sigue) return { ok: false, error: "Ese artículo ya no existe." };
+    throw error;
+  }
   return { ok: true, cambios };
 }
 

@@ -38,6 +38,8 @@ import rehypeStringify from "rehype-stringify";
 export const esquemaBlog = z.object({
   title: z
     .string({ message: "Falta el título." })
+    // Un titulo vacio (o solo espacios, ya recortado) es un titulo que falta.
+    .min(1, "Falta el título.")
     .max(70, "El título pasa de 70 caracteres; Google lo va a recortar."),
   // Se convierte en la meta description; fuera de este rango Google la recorta
   // o la sustituye por texto suyo.
@@ -183,29 +185,31 @@ async function armarProcesador() {
     engine: createJavaScriptRegexEngine({ forgiving: true }),
   });
 
-  return unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    // `remarkRehype` deja el HTML incrustado como texto crudo, y el saneador,
-    // que solo entiende elementos, lo borra entero. Con `rehypeRaw` ese texto
-    // se convierte en nodos de verdad y entonces el saneado puede hacer su
-    // trabajo: quedarse con un <a href> y tirarle el onclick, en vez de tirar
-    // los dos. Sin esto, un articulo con una tabla escrita en HTML se publica
-    // sin la tabla y sin avisar.
-    .use(rehypeRaw)
-    .use(rehypeSlug)
-    .use(rehypeSanitize, SANEADO)
-    .use(rehypeShikiFromHighlighter, resaltador, {
-      theme: "github-dark",
-      // `default` es para los bloques que no declaran lenguaje y `fallback`
-      // para los que declaran uno que no esta cargado. Sin el primero, un bloque
-      // abierto con ``` a secas sale sin el fondo del tema y desentona con los
-      // de al lado.
-      defaultLanguage: "plaintext",
-      fallbackLanguage: "plaintext",
-    })
-    .use(rehypeStringify);
+  return (
+    unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      // `remarkRehype` deja el HTML incrustado como texto crudo, y el saneador,
+      // que solo entiende elementos, lo borra entero. Con `rehypeRaw` ese texto
+      // se convierte en nodos de verdad y entonces el saneado puede hacer su
+      // trabajo: quedarse con un <a href> y tirarle el onclick, en vez de tirar
+      // los dos. Sin esto, un articulo con una tabla escrita en HTML se publica
+      // sin la tabla y sin avisar.
+      .use(rehypeRaw)
+      .use(rehypeSlug)
+      .use(rehypeSanitize, SANEADO)
+      .use(rehypeShikiFromHighlighter, resaltador, {
+        theme: "github-dark",
+        // `default` es para los bloques que no declaran lenguaje y `fallback`
+        // para los que declaran uno que no esta cargado. Sin el primero, un bloque
+        // abierto con ``` a secas sale sin el fondo del tema y desentona con los
+        // de al lado.
+        defaultLanguage: "plaintext",
+        fallbackLanguage: "plaintext",
+      })
+      .use(rehypeStringify)
+  );
 }
 
 export async function aHtml(markdown: string): Promise<string> {
